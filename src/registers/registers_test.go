@@ -50,4 +50,99 @@ func TestGetFlagZf(t *testing.T) {
 	if set:= GetFlagZf(); set {
 		t.Errorf("GetFlagZf() test failed: Zero flag should not be set. (AF: 0x%04x)", registers.AF)
 	}
+
+	Reset()
+	SetF(0x00)
+	if set:= GetFlagZf(); set {
+		t.Errorf("GetFlagZf() test failed: Zero flag should not be set. (AF: 0x%04x)", registers.AF)
+	}
+}
+
+func TestGetFlagN(t *testing.T) {
+	Reset()
+	SetF(0xFF) // 11111111
+	if set := GetFlagN(); !set {
+		t.Errorf("GetFlagN() test failed: N flag should be set. (AF: 0x%04x)", registers.AF)
+	}
+
+	Reset()
+	SetF(0x5c) // 01011100
+	if set:= GetFlagN(); !set {
+		t.Errorf("GetFlagN() test failed: N flag should be set. (AF: 0x%04x)", registers.AF)
+	}
+
+	Reset()
+	SetF(0x35) // 00110101
+	if set:= GetFlagN(); set {
+		t.Errorf("GetFlagN() test failed: N flag should not be set. (AF: 0x%04x)", registers.AF)
+	}
+
+	Reset()
+	SetF(0x00)
+	if set:= GetFlagN(); set {
+		t.Errorf("GetFlagN() test failed: N flag should not be set. (AF: 0x%04x)", registers.AF)
+	}
+}
+
+func TestGetFlagH(t *testing.T) {
+	Reset()
+	SetF(0xFF) // 11111111
+	if set := GetFlagH(); !set {
+		t.Errorf("GetFlagH() test failed: N flag should be set. (AF: 0x%04x)", registers.AF)
+	}
+
+	Reset()
+	SetF(0x3c) // 00111100
+	if set:= GetFlagH(); !set {
+		t.Errorf("GetFlagH() test failed: N flag should be set. (AF: 0x%04x)", registers.AF)
+	}
+
+	Reset()
+	SetF(0x15) // 00010101
+	if set:= GetFlagH(); set {
+		t.Errorf("GetFlagH() test failed: N flag should not be set. (AF: 0x%04x)", registers.AF)
+	}
+
+	Reset()
+	SetF(0x00)
+	if set:= GetFlagH(); set {
+		t.Errorf("GetFlagH() test failed: N flag should not be set. (AF: 0x%04x)", registers.AF)
+	}
+}
+
+func TestGetFlagCy(t *testing.T) {
+	Reset()
+	SetF(0xFF) // 11111111
+	if set := GetFlagCy(); !set {
+		t.Errorf("GetFlagCy() test failed: CY flag should be set. (AF: 0x%04x)", registers.AF)
+	}
+
+	Reset()
+	SetF(0x3c) // 00111100
+	if set:= GetFlagCy(); !set {
+		t.Errorf("GetFlagCy() test failed: CY flag should be set. (AF: 0x%04x)", registers.AF)
+	}
+
+	Reset()
+	SetF(0x05) // 00000101
+	if set:= GetFlagCy(); set {
+		t.Errorf("GetFlagCy() test failed: CY flag should not be set. (AF: 0x%04x)", registers.AF)
+	}
+
+	Reset()
+	SetF(0x00)
+	if set:= GetFlagCy(); set {
+		t.Errorf("GetFlagCy() test failed: CY flag should not be set. (AF: 0x%04x)", registers.AF)
+	}
+
+	Reset()
+	SetFlagCy(true)
+	if set := GetFlagCy(); !set {
+		t.Errorf("GetFlagCy() test failed: CY flag should be set. (AF: 0x%04x)", registers.AF)
+	}
+
+	SetFlagCy(false)
+	if set := GetFlagCy(); set {
+		t.Errorf("GetFlagCy() test failed: CY flag should not be set. (AF: 0x%04x)", registers.AF)
+	}
 }

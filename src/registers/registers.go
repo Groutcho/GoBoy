@@ -213,6 +213,57 @@ func GetFlagZf() bool {
 	return (registers.AF & 0x0080) != 0
 }
 
+// Return the value of the N (Add/Sub) flag.
+func GetFlagN() bool {
+	return (registers.AF & 0x0040) != 0
+}
+
+// Return the value of the H (Half carry) flag.
+func GetFlagH() bool {
+	return (registers.AF & 0x0020) != 0
+}
+
+// Return the value of the CY (carry) flag.
+func GetFlagCy() bool {
+	return (registers.AF & 0x0010) != 0
+}
+
+// Set the value of the Zero flag.
+func SetFlagZf(b bool) {
+	if b {
+		registers.AF |= (1 << 7)
+	} else {
+		registers.AF &= ^(uint16(1 << 7))
+	}
+}
+
+// Set the value of the N (Add/Sub) flag.
+func SetFlagN(b bool) {
+	if b {
+		registers.AF |= (1 << 6)
+	} else {
+		registers.AF &= ^(uint16(1 << 6))
+	}
+}
+
+// Set the value of the H (Half carry) flag.
+func SetFlagH(b bool) {
+	if b {
+		registers.AF |= (1 << 5)
+	} else {
+		registers.AF &= ^(uint16(1 << 5))
+	}
+}
+
+// Set the value of the CY (carry) flag.
+func SetFlagCy(b bool) {
+	if b {
+		registers.AF |= (1 << 4)
+	} else {
+		registers.AF &= ^(uint16(1 << 4))
+	}
+}
+
 // Reset all registers to 0x0000.
 func Reset() {
 	registers.AF = 0x0000
