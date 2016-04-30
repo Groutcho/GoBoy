@@ -146,3 +146,12 @@ func TestGetFlagCy(t *testing.T) {
 		t.Errorf("GetFlagCy() test failed: CY flag should not be set. (AF: 0x%04x)", registers.AF)
 	}
 }
+
+func TestIncPC(t *testing.T) {
+	registers.PC = 0x0025
+	IncPC()
+
+	if pc := GetPC(); pc != 0x0026 {
+		t.Errorf("TestIncPC() failed: PC should be 0x0026, got 0x%04x", registers.PC)
+	}
+}

@@ -123,6 +123,11 @@ func SetPC(value uint16) {
 	registers.PC = value
 }
 
+// Increment the PC.
+func IncPC() {
+	registers.PC += 1
+}
+
 // Return the value of the PC register.
 func GetPC() uint16 {
 	return registers.PC
