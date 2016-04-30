@@ -13,6 +13,10 @@ const JOYPAD = 4
 const INTRPT_ENABLE_ADDR = 0xFFFF
 const INTRPT_REQUEST_ADDR = 0xFF0F
 
+func Get(addr uint16) byte {
+	return RAM[addr]
+}
+
 /* reset the RAM to 0 */
 func reset() {
 	for i := 0; i < len(RAM); i++ {

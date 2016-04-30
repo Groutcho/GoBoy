@@ -20,11 +20,11 @@ func TestInterruptsEnables(t *testing.T) {
 	serial 	= SerialInterruptEnabled()
 
 	if !vblank {
-		t.Error("TestInterrupts() test failed: the V-Blank interrupt should be enabled.")		
+		t.Error("TestInterrupts() test failed: the V-Blank interrupt should be enabled.")
 	}
 
 	if timer || lcdStat || joypad || serial {
-		t.Error("TestInterrupts() test failed: enabling V-Blank should not toggle other interrupts.")			
+		t.Error("TestInterrupts() test failed: enabling V-Blank should not toggle other interrupts.")
 	}
 
 	DisableVBlankInterrupt()
@@ -36,11 +36,11 @@ func TestInterruptsEnables(t *testing.T) {
 	serial 	= SerialInterruptEnabled()
 
 	if vblank {
-		t.Error("TestInterrupts() test failed: the V-Blank interrupt should be disabled.")		
+		t.Error("TestInterrupts() test failed: the V-Blank interrupt should be disabled.")
 	}
 
 	if timer || lcdStat || joypad || serial {
-		t.Error("TestInterrupts() test failed: disabling V-Blank should not toggle other interrupts.")			
+		t.Error("TestInterrupts() test failed: disabling V-Blank should not toggle other interrupts.")
 	}
 
 	EnableTimerInterrupt()
@@ -52,11 +52,11 @@ func TestInterruptsEnables(t *testing.T) {
 	serial 	= SerialInterruptEnabled()
 
 	if !timer {
-		t.Error("TestInterrupts() test failed: the Timer interrupt should be enabled.")		
+		t.Error("TestInterrupts() test failed: the Timer interrupt should be enabled.")
 	}
 
 	if vblank || lcdStat || joypad || serial {
-		t.Error("TestInterrupts() test failed: disabling Timer should not toggle other interrupts.")			
+		t.Error("TestInterrupts() test failed: disabling Timer should not toggle other interrupts.")
 	}
 
 	DisableTimerInterrupt()
@@ -68,11 +68,11 @@ func TestInterruptsEnables(t *testing.T) {
 	serial 	= SerialInterruptEnabled()
 
 	if timer {
-		t.Error("TestInterrupts() test failed: the Timer interrupt should be disabled.")		
+		t.Error("TestInterrupts() test failed: the Timer interrupt should be disabled.")
 	}
 
 	if vblank || lcdStat || joypad || serial {
-		t.Error("TestInterrupts() test failed: disabling Timer should not toggle other interrupts.")			
+		t.Error("TestInterrupts() test failed: disabling Timer should not toggle other interrupts.")
 	}
 
 	EnableLcdStatInterrupt()
@@ -84,11 +84,11 @@ func TestInterruptsEnables(t *testing.T) {
 	serial 	= SerialInterruptEnabled()
 
 	if !lcdStat {
-		t.Error("TestInterrupts() test failed: the LCD STAT interrupt should be enabled.")		
+		t.Error("TestInterrupts() test failed: the LCD STAT interrupt should be enabled.")
 	}
 
 	if vblank || timer || joypad || serial {
-		t.Error("TestInterrupts() test failed: disabling LCD STAT should not toggle other interrupts.")			
+		t.Error("TestInterrupts() test failed: disabling LCD STAT should not toggle other interrupts.")
 	}
 
 	DisableLcdStatInterrupt()
@@ -100,11 +100,11 @@ func TestInterruptsEnables(t *testing.T) {
 	serial 	= SerialInterruptEnabled()
 
 	if lcdStat {
-		t.Error("TestInterrupts() test failed: the LCD STAT interrupt should be disabled.")		
+		t.Error("TestInterrupts() test failed: the LCD STAT interrupt should be disabled.")
 	}
 
 	if vblank || timer || joypad || serial {
-		t.Error("TestInterrupts() test failed: disabling LCD STAT should not toggle other interrupts.")			
+		t.Error("TestInterrupts() test failed: disabling LCD STAT should not toggle other interrupts.")
 	}
 
 	EnableSerialInterrupt()
@@ -116,11 +116,11 @@ func TestInterruptsEnables(t *testing.T) {
 	serial 	= SerialInterruptEnabled()
 
 	if !serial {
-		t.Error("TestInterrupts() test failed: the Serial interrupt should be enabled.")		
+		t.Error("TestInterrupts() test failed: the Serial interrupt should be enabled.")
 	}
 
 	if vblank || timer || joypad || lcdStat {
-		t.Error("TestInterrupts() test failed: disabling Serial should not toggle other interrupts.")			
+		t.Error("TestInterrupts() test failed: disabling Serial should not toggle other interrupts.")
 	}
 
 	DisableSerialInterrupt()
@@ -132,11 +132,11 @@ func TestInterruptsEnables(t *testing.T) {
 	serial 	= SerialInterruptEnabled()
 
 	if serial {
-		t.Error("TestInterrupts() test failed: the Serial interrupt should be disabled.")		
+		t.Error("TestInterrupts() test failed: the Serial interrupt should be disabled.")
 	}
 
 	if vblank || timer || joypad || lcdStat {
-		t.Error("TestInterrupts() test failed: disabling Serial should not toggle other interrupts.")			
+		t.Error("TestInterrupts() test failed: disabling Serial should not toggle other interrupts.")
 	}
 
 	EnableJoypadInterrupt()
@@ -148,11 +148,11 @@ func TestInterruptsEnables(t *testing.T) {
 	serial 	= SerialInterruptEnabled()
 
 	if !joypad {
-		t.Error("TestInterrupts() test failed: the Joypad interrupt should be enabled.")		
+		t.Error("TestInterrupts() test failed: the Joypad interrupt should be enabled.")
 	}
 
 	if vblank || timer || serial || lcdStat {
-		t.Error("TestInterrupts() test failed: disabling Joypad should not toggle other interrupts.")			
+		t.Error("TestInterrupts() test failed: disabling Joypad should not toggle other interrupts.")
 	}
 
 	DisableJoypadInterrupt()
@@ -164,11 +164,11 @@ func TestInterruptsEnables(t *testing.T) {
 	serial 	= SerialInterruptEnabled()
 
 	if joypad {
-		t.Error("TestInterrupts() test failed: the Joypad interrupt should be disabled.")		
+		t.Error("TestInterrupts() test failed: the Joypad interrupt should be disabled.")
 	}
 
 	if vblank || timer || serial || lcdStat {
-		t.Error("TestInterrupts() test failed: disabling Joypad should not toggle other interrupts.")			
+		t.Error("TestInterrupts() test failed: disabling Joypad should not toggle other interrupts.")
 	}
 }
 
@@ -190,11 +190,11 @@ func TestInterruptsRequests(t *testing.T) {
 	serial 	= SerialInterruptRequested()
 
 	if !vblank {
-		t.Error("TestInterrupts() test failed: the V-Blank interrupt should be Requested.")		
+		t.Error("TestInterrupts() test failed: the V-Blank interrupt should be Requested.")
 	}
 
 	if timer || lcdStat || joypad || serial {
-		t.Error("TestInterrupts() test failed: enabling V-Blank should not toggle other interrupts.")			
+		t.Error("TestInterrupts() test failed: enabling V-Blank should not toggle other interrupts.")
 	}
 
 	RemoveVBlankInterrupt()
@@ -206,11 +206,11 @@ func TestInterruptsRequests(t *testing.T) {
 	serial 	= SerialInterruptRequested()
 
 	if vblank {
-		t.Error("TestInterrupts() test failed: the V-Blank interrupt should be disabled.")		
+		t.Error("TestInterrupts() test failed: the V-Blank interrupt should be disabled.")
 	}
 
 	if timer || lcdStat || joypad || serial {
-		t.Error("TestInterrupts() test failed: disabling V-Blank should not toggle other interrupts.")			
+		t.Error("TestInterrupts() test failed: disabling V-Blank should not toggle other interrupts.")
 	}
 
 	RequestTimerInterrupt()
@@ -222,11 +222,11 @@ func TestInterruptsRequests(t *testing.T) {
 	serial 	= SerialInterruptRequested()
 
 	if !timer {
-		t.Error("TestInterrupts() test failed: the Timer interrupt should be Requested.")		
+		t.Error("TestInterrupts() test failed: the Timer interrupt should be Requested.")
 	}
 
 	if vblank || lcdStat || joypad || serial {
-		t.Error("TestInterrupts() test failed: disabling Timer should not toggle other interrupts.")			
+		t.Error("TestInterrupts() test failed: disabling Timer should not toggle other interrupts.")
 	}
 
 	RemoveTimerInterrupt()
@@ -238,11 +238,11 @@ func TestInterruptsRequests(t *testing.T) {
 	serial 	= SerialInterruptRequested()
 
 	if timer {
-		t.Error("TestInterrupts() test failed: the Timer interrupt should be Removed.")		
+		t.Error("TestInterrupts() test failed: the Timer interrupt should be Removed.")
 	}
 
 	if vblank || lcdStat || joypad || serial {
-		t.Error("TestInterrupts() test failed: disabling Timer should not toggle other interrupts.")			
+		t.Error("TestInterrupts() test failed: disabling Timer should not toggle other interrupts.")
 	}
 
 	RequestLcdStatInterrupt()
@@ -254,11 +254,11 @@ func TestInterruptsRequests(t *testing.T) {
 	serial 	= SerialInterruptRequested()
 
 	if !lcdStat {
-		t.Error("TestInterrupts() test failed: the LCD STAT interrupt should be Requested.")		
+		t.Error("TestInterrupts() test failed: the LCD STAT interrupt should be Requested.")
 	}
 
 	if vblank || timer || joypad || serial {
-		t.Error("TestInterrupts() test failed: disabling LCD STAT should not toggle other interrupts.")			
+		t.Error("TestInterrupts() test failed: disabling LCD STAT should not toggle other interrupts.")
 	}
 
 	RemoveLcdStatInterrupt()
@@ -270,11 +270,11 @@ func TestInterruptsRequests(t *testing.T) {
 	serial 	= SerialInterruptRequested()
 
 	if lcdStat {
-		t.Error("TestInterrupts() test failed: the LCD STAT interrupt should be Removed.")		
+		t.Error("TestInterrupts() test failed: the LCD STAT interrupt should be Removed.")
 	}
 
 	if vblank || timer || joypad || serial {
-		t.Error("TestInterrupts() test failed: disabling LCD STAT should not toggle other interrupts.")			
+		t.Error("TestInterrupts() test failed: disabling LCD STAT should not toggle other interrupts.")
 	}
 
 	RequestSerialInterrupt()
@@ -286,11 +286,11 @@ func TestInterruptsRequests(t *testing.T) {
 	serial 	= SerialInterruptRequested()
 
 	if !serial {
-		t.Error("TestInterrupts() test failed: the Serial interrupt should be Requested.")		
+		t.Error("TestInterrupts() test failed: the Serial interrupt should be Requested.")
 	}
 
 	if vblank || timer || joypad || lcdStat {
-		t.Error("TestInterrupts() test failed: disabling Serial should not toggle other interrupts.")			
+		t.Error("TestInterrupts() test failed: disabling Serial should not toggle other interrupts.")
 	}
 
 	RemoveSerialInterrupt()
@@ -302,11 +302,11 @@ func TestInterruptsRequests(t *testing.T) {
 	serial 	= SerialInterruptRequested()
 
 	if serial {
-		t.Error("TestInterrupts() test failed: the Serial interrupt should be Removed.")		
+		t.Error("TestInterrupts() test failed: the Serial interrupt should be Removed.")
 	}
 
 	if vblank || timer || joypad || lcdStat {
-		t.Error("TestInterrupts() test failed: disabling Serial should not toggle other interrupts.")			
+		t.Error("TestInterrupts() test failed: disabling Serial should not toggle other interrupts.")
 	}
 
 	RequestJoypadInterrupt()
@@ -318,11 +318,11 @@ func TestInterruptsRequests(t *testing.T) {
 	serial 	= SerialInterruptRequested()
 
 	if !joypad {
-		t.Error("TestInterrupts() test failed: the Joypad interrupt should be Requested.")		
+		t.Error("TestInterrupts() test failed: the Joypad interrupt should be Requested.")
 	}
 
 	if vblank || timer || serial || lcdStat {
-		t.Error("TestInterrupts() test failed: disabling Joypad should not toggle other interrupts.")			
+		t.Error("TestInterrupts() test failed: disabling Joypad should not toggle other interrupts.")
 	}
 
 	RemoveJoypadInterrupt()
@@ -334,10 +334,18 @@ func TestInterruptsRequests(t *testing.T) {
 	serial 	= SerialInterruptRequested()
 
 	if joypad {
-		t.Error("TestInterrupts() test failed: the Joypad interrupt should be disabled.")		
+		t.Error("TestInterrupts() test failed: the Joypad interrupt should be disabled.")
 	}
 
 	if vblank || timer || serial || lcdStat {
-		t.Error("TestInterrupts() test failed: disabling Joypad should not toggle other interrupts.")			
+		t.Error("TestInterrupts() test failed: disabling Joypad should not toggle other interrupts.")
+	}
+}
+
+func TestGet(t *testing.T) {
+	RAM[0xFF21] = 39
+
+	if b := Get(0xFF21); b != 39 {
+		t.Error("TestGet() failed: expected 39, got ", b)
 	}
 }
