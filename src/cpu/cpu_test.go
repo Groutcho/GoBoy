@@ -44,3 +44,60 @@ func TestFetch(t* testing.T) {
 		t.Errorf("TestFetch(): at last Fetch(), expected PC @ 0x%04x, got 0x%04x", (startingPC + 4), currentPC)
 	}
 }
+
+func op0() uint8 {
+	SetA(0x27)
+	return 1
+}
+
+func op1() uint8 {
+	SetA(0x44)
+	return 1
+}
+
+func op2() uint8 {
+	SetA(0x38)
+	return 1
+}
+
+func op3() uint8 {
+	SetA(0xFF)
+	return 1
+}
+
+func TestExecuteNext(t* testing.T) {
+	SetPC(0x0000)
+
+	arr := make([]byte, 4)
+	arr[0] = 0xF8
+	arr[1] = 0xF9
+	arr[2] = 0xFA
+	arr[3] = 0xFB
+
+	SetRange(0x0000, 0x0003, arr)
+
+	dispatch_table[0xF8] = op0
+	dispatch_table[0xF9] = op1
+	dispatch_table[0xFA] = op2
+	dispatch_table[0xFB] = op3
+
+	ExecuteNext()
+	if a := GetA(); a != 0x27 {
+		t.Errorf("TestExecuteNext(): expected value 0x27 in register A, got 0x%02x", a)
+	}
+
+	ExecuteNext()
+	if a := GetA(); a != 0x44 {
+		t.Errorf("TestExecuteNext(): expected value 0x44 in register A, got 0x%02x", a)
+	}
+
+	ExecuteNext()
+	if a := GetA(); a != 0x38 {
+		t.Errorf("TestExecuteNext(): expected value 0x38 in register A, got 0x%02x", a)
+	}
+
+	ExecuteNext()
+	if a := GetA(); a != 0xFF {
+		t.Errorf("TestExecuteNext(): expected value 0xFF in register A, got 0x%02x", a)
+	}
+}
