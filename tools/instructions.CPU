@@ -6,13 +6,13 @@ ld   A,H             7C              4    ----     // A=H
 ld   A,L             7D              4    ----     // A=L
 ld   A,A             7F              4    ----     // A=A
 
-ld   A,n             3E nn           8    ----     // A=n
-ld   B,n             06 nn           8    ----     // B=n
-ld   C,n             0E nn           8    ----     // C=n
-ld   D,n             16 nn           8    ----     // D=n
-ld   E,n             1E nn           8    ----     // E=n
-ld   H,n             26 nn           8    ----     // H=n
-ld   L,n             2E nn           8    ----     // L=n
+ld   A,%1            3E              8    ----     // A=%1
+ld   B,%1            06              8    ----     // B=%1
+ld   C,%1            0E              8    ----     // C=%1
+ld   D,%1            16              8    ----     // D=%1
+ld   E,%1            1E              8    ----     // E=%1
+ld   H,%1            26              8    ----     // H=%1
+ld   L,%1            2E              8    ----     // L=%1
 
 ld   A,(HL)          7E              8    ----     // A=(HL)
 ld   B,(HL)          46              8    ----     // B=(HL)
@@ -29,25 +29,25 @@ ld   (HL),E          73              8    ----     // [HL]=E
 ld   (HL),H          74              8    ----     // [HL]=H
 ld   (HL),L          75              8    ----     // [HL]=L
 ld   (HL),A          77              8    ----     // [HL]=A
-ld   (HL),n          36 nn          12    ----     // [HL]=[NN]
+ld   (HL),%1         36             12    ----     // [HL]=[NN]
 
 ld   A,(BC)          0A              8    ----     // A=[BC]
 ld   A,(DE)          1A              8    ----     // A=[DE]
-ld   A,(nn)          FA nn          16    ----     // A=[NN]
+ld   A,(%2)          FA             16    ----     // A=[NN]
 ld   (BC),A          02              8    ----     // [BC]=A
 ld   (DE),A          12              8    ----     // [DE]=A
-ld   (nn),A          EA nn          16    ----     // [NN]=A
-ld   A,(FF00+n)      F0 nn          12    ----     // *read from io-port n (memory FF00+n)
-ld   (FF00+n),A      E0 nn          12    ----     // *write to io-port n (memory FF00+n)
+ld   (%2),A          EA             16    ----     // [NN]=A
+ld   A,(FF00+%1)     F0             12    ----     // *read from io-port %1 (memory FF00+%1)
+ld   (FF00+%1),A     E0             12    ----     // *write to io-port %1 (memory FF00+%1)
 ld   A,(FF00+C)      F2              8    ----     // *read from io-port C (memory FF00+C)
 ld   (FF00+C),A      E2              8    ----     // *write to io-port C (memory FF00+C)
-ld   BC,nn           01 nn nn       12    ----     // BC=nn
+ld   BC, %2          01             12    ----     // BC=%2
 
-ld   DE,nn           11 nn nn       12    ----     // DE=nn
-ld   HL,nn           21 nn nn       12    ----     // HL=nn
-ld   SP,nn           31 nn nn       12    ----     // SP=nn
+ld   DE,%2           11             12    ----     // DE=%2
+ld   HL,%2           21             12    ----     // HL=%2
+ld   SP,%2           31             12    ----     // SP=%2
 ld   SP,HL           F9              8    ----     // SP=HL
-ld   HL,SP+dd        F8             12    00hc     // *HL = SP +/- dd ;dd is 8bit signed number
+ld   HL,SP+%s        F8             12    00hc     // *HL = SP +/- %s ;%s is 8bit signed number
 
 ldi  (HL),A          22              8    ----     // (HL)=A, HL=HL+1
 ldi  A,(HL)          2A              8    ----     // A=(HL), HL=HL+1
@@ -72,7 +72,13 @@ add  A,H             84              4    z0hc     // A=A+H
 add  A,L             85              4    z0hc     // A=A+L
 add  A,(HL)          86              8    z0hc     // A=A+(HL)
 add  A,A             87              4    z0hc     // A=A+A
-add  A,n             C6 nn           8    z0hc     // A=A+n
+add  A,%1            C6              8    z0hc     // A=A+%1
+
+add  HL,BC           09              8    -0hc     // HL = HL+BC
+add  HL,DE           19              8    -0hc     // HL = HL+DE
+add  HL,HL           29              8    -0hc     // HL = HL+HL
+add  HL,SP           39              8    -0hc     // HL = HL+SP
+add  SP,%s           E8             16    00hc     // *SP = SP +/- %s ;%s is 8bit signed number
 
 adc  A,B             88              4    z0hc     // A=A+B+cy
 adc  A,C             89              4    z0hc     // A=A+C+cy
@@ -82,7 +88,7 @@ adc  A,H             8C              4    z0hc     // A=A+H+cy
 adc  A,L             8D              4    z0hc     // A=A+L+cy
 adc  A,(HL)          8E              8    z0hc     // A=A+(HL)+cy
 adc  A,A             8F              4    z0hc     // A=A+A+cy
-adc  A,n             CE nn           8    z0hc     // A=A+n+cy
+adc  A,%1            CE              8    z0hc     // A=A+%1+cy
 
 sub  B               90              4    z1hc     // A=A-B
 sub  C               91              4    z1hc     // A=A-C
@@ -92,7 +98,7 @@ sub  H               94              4    z1hc     // A=A-H
 sub  L               95              4    z1hc     // A=A-L
 sub  (HL)            96              8    z1hc     // A=A-(HL)
 sub  A               97              4    z1hc     // A=A-A
-sub  n               D6 nn           8    z1hc     // A=A-n
+sub  %1              D6              8    z1hc     // A=A-%1
 
 sbc  A,B             98              4    z1hc     // A=A-B-cy
 sbc  A,C             99              4    z1hc     // A=A-C-cy
@@ -102,7 +108,7 @@ sbc  A,H             9C              4    z1hc     // A=A-H-cy
 sbc  A,L             9D              4    z1hc     // A=A-L-cy
 sbc  A,(HL)          9E              8    z1hc     // A=A-(HL)-cy
 sbc  A,A             9F              4    z1hc     // A=A-A-cy
-sbc  A,n             DE nn           8    z1hc     // A=A-n-cy
+sbc  A,%1            DE              8    z1hc     // A=A-%1-cy
 
 and  B               A0              4    z010     // A=A & B
 and  C               A1              4    z010     // A=A & C
@@ -112,7 +118,7 @@ and  H               A4              4    z010     // A=A & H
 and  L               A5              4    z010     // A=A & L
 and  (HL)            A6              8    z010     // A=A & (HL)
 and  A               A7              4    z010     // A=A & A
-and  n               E6 nn           8    z010     // A=A & n
+and  %1              E6              8    z010     // A=A & %1
 
 xor  B               A8              4    z000     // A=A^B
 xor  C               A9              4    z000     // A=A^C
@@ -122,7 +128,7 @@ xor  H               AC              4    z000     // A=A^H
 xor  L               AD              4    z000     // A=A^L
 xor  (HL)            AE              8    z000     // A=A^[HL]
 xor  A               AF              4    z000     // A=A^A
-xor  n               EE nn           8    z000     // A=A^nn
+xor  %1              EE              8    z000     // A=A^%1
 
 or   B               B0              4    z000     // A=A | B
 or   C               B1              4    z000     // A=A | C
@@ -132,7 +138,7 @@ or   H               B4              4    z000     // A=A | H
 or   L               B5              4    z000     // A=A | L
 or   A               B7              4    z000     // A=A | A
 or   (HL)            B6              8    z000     // A=A | (HL)
-or   n               F6 nn           8    z000     // A=A | n
+or   %1              F6              8    z000     // A=A | %1
 
 cp   B               B8              4    z1hc     // compare A-B
 cp   C               B9              4    z1hc     // compare A-C
@@ -142,7 +148,7 @@ cp   H               BC              4    z1hc     // compare A-H
 cp   L               BD              4    z1hc     // compare A-L
 cp   (HL)            BE              8    z1hc     // compare A-(HL)
 cp   A               BF              4    z1hc     // compare A-A
-cp   n               FE nn           8    z1hc     // compare A-n
+cp   %1              FE              8    z1hc     // compare A-%1
 
 inc  A               3C              4    z0h-     // A = A+1
 inc  B               04              4    z0h-     // B = B+1
@@ -151,8 +157,12 @@ inc  D               14              4    z0h-     // D = D+1
 inc  E               1C              4    z0h-     // E = E+1
 inc  H               24              4    z0h-     // H = H+1
 inc  L               2C              4    z0h-     // L = L+1
-
 inc  (HL)            34             12    z0h-     // (HL)=(HL)+1
+
+inc  BC              03              8    ----     // BC = BC+1
+inc  DE              13              8    ----     // DE = DE+1
+inc  HL              23              8    ----     // HL = HL+1
+inc  SP              33              8    ----     // SP = SP+1
 
 dec  A               3D              4    z1h-     // A = A-1
 dec  B               05              4    z1h-     // B = B-1
@@ -161,26 +171,15 @@ dec  D               15              4    z1h-     // D = D-1
 dec  E               1D              4    z1h-     // E = E-1
 dec  H               25              4    z1h-     // H = H-1
 dec  L               2D              4    z1h-     // L = L-1
-
 dec  (HL)            35             12    z1h-     // (HL)=(HL)-1
-daa                  27              4    z-0x     // *A=adjust result to BCD-format
-cpl                  2F              4    -11-     // *A = A ^ FF
-
-add  HL,BC           09              8    -0hc     // HL = HL+BC
-add  HL,DE           19              8    -0hc     // HL = HL+DE
-add  HL,HL           29              8    -0hc     // HL = HL+HL
-add  HL,SP           39              8    -0hc     // HL = HL+SP
-add  SP,dd           E8             16    00hc     // *SP = SP +/- dd ;dd is 8bit signed number
-
-inc  BC              03              8    ----     // BC = BC+1
-inc  DE              13              8    ----     // DE = DE+1
-inc  HL              23              8    ----     // HL = HL+1
-inc  SP              33              8    ----     // SP = SP+1
 
 dec  BC              0B              8    ----     // BC = BC-1
 dec  DE              1B              8    ----     // DE = DE-1
 dec  HL              2B              8    ----     // HL = HL-1
 dec  SP              3B              8    ----     // SP = SP-1
+
+daa                  27              4    z-0x     // *A=adjust result to BCD-format
+cpl                  2F              4    -11-     // *A = A ^ FF
 
 rlca                 07              4    000c     // *rotate accumulator left
 rla                  17              4    000c     // *rotate accumulator left through carry
@@ -460,29 +459,29 @@ res  7,(HL)          CB BE          16    ----     // reset bit 7 of [HL]
 ccf                  3F              4    -00c     // cy=cy xor 1
 scf                  37              4    -001     // cy=1
 nop                  00              4    ----     // no operation
-halt                 76            N*4    ----     // halt until interrupt occurs (low power)
-stop                 10 00           ?    ----     // low power standby mode (VERY low power)
+halt                 76              1    ----     // halt until interrupt occurs (low power)
+stop                 10 00           1    ----     // low power standby mode (VERY low power)
 di                   F3              4    ----     // disable interrupts, IME=0
 ei                   FB              4    ----     // enable interrupts, IME=1
 
-jp   nn              C3 nn nn       16    ----     // jump to nn, PC=nn
+jp   %2              C3             16    ----     // jump to %2, PC=%2
 jp   HL              E9              4    ----     // jump to HL, PC=HL
-jp   CY ,nn          DA nn nn    16;12    ----     // conditional jump if CY 
-jp   !CY,nn          D2 nn nn    16;12    ----     // conditional jump if !CY
-jp   !Z ,nn          C2 nn nn    16;12    ----     // conditional jump if !Z 
-jp   Z  ,nn          CA nn nn    16;12    ----     // conditional jump if Z  
+jp   CY ,%2          DA          16;12    ----     // conditional jump if CY 
+jp   !CY,%2          D2          16;12    ----     // conditional jump if !CY
+jp   !Z ,%2          C2          16;12    ----     // conditional jump if !Z 
+jp   Z  ,%2          CA          16;12    ----     // conditional jump if Z  
 
-jr   PC+dd           18 dd          12    ----     // relative jump to nn (PC=PC+/-7bit)
-jr   CY ,PC+dd       38 dd        12;8    ----     // conditional relative jump if CY 
-jr   !CY,PC+dd       30 dd        12;8    ----     // conditional relative jump if !CY
-jr   !Z ,PC+dd       20 dd        12;8    ----     // conditional relative jump if !Z 
-jr   Z  ,PC+dd       28 dd        12;8    ----     // conditional relative jump if Z 
+jr   PC+%s           18             12    ----     // relative jump to %s (PC=PC+/-7bit)
+jr   CY ,PC+%s       38           12;8    ----     // conditional relative jump if CY 
+jr   !CY,PC+%s       30           12;8    ----     // conditional relative jump if !CY
+jr   !Z ,PC+%s       20           12;8    ----     // conditional relative jump if !Z 
+jr   Z  ,PC+%s       28           12;8    ----     // conditional relative jump if Z 
 
-call nn              CD nn nn       24    ----     // call to nn, SP=SP-2, (SP)=PC, PC=nn
-call CY ,nn          DC nn nn    24;12    ----     // conditional call if CY 
-call !CY,nn          D4 nn nn    24;12    ----     // conditional call if !CY
-call !Z ,nn          C4 nn nn    24;12    ----     // conditional call if !Z 
-call Z  ,nn          CC nn nn    24;12    ----     // conditional call if Z  
+call %2              CD             24    ----     // call to %2, SP=SP-2, (SP)=PC, PC=%2
+call CY ,%2          DC          24;12    ----     // conditional call if CY 
+call !CY,%2          D4          24;12    ----     // conditional call if !CY
+call !Z ,%2          C4          24;12    ----     // conditional call if !Z 
+call Z  ,%2          CC          24;12    ----     // conditional call if Z  
 
 ret                  C9             16    ----     // return, PC=(SP), SP=SP+2
 ret  CY              D8           20;8    ----     // conditional return if CY 
