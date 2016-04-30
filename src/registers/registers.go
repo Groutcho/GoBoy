@@ -50,12 +50,12 @@ func init() {
 
 // set the 8 high bits of <target> with <value>.
 func setHighBits(value uint8, target uint16) uint16 {
-	return target | (uint16(value) << 8)
+	return (target & 0x00FF) | (uint16(value) << 8)
 }
 
 // set the 8 low bits of <target> with <value>.
 func setLowBits(value uint8, target uint16) uint16 {
-	return target | uint16(value)
+	return (target & 0xFF00) | uint16(value)
 }
 
 // return the 8 high bits of <value>.

@@ -17,24 +17,58 @@ func TestSetGetAF(t *testing.T) {
 func TestSetGetA(t *testing.T) {
 	Reset()
 
-	var target uint8 = 0xFF
+	SetA(0xFF)
+	if a := GetA(); a != 0xFF {
+		t.Errorf("GetA() test failed: expected: 0xFF, got: Ox%02x (AF: 0x%04x)", a, registers.AF)
+	}
 
-	SetA(target)
+	SetA(0x28)
+	if a := GetA(); a != 0x28 {
+		t.Errorf("GetA() test failed: expected: 0x28, got: Ox%02x (AF: 0x%04x)", a, registers.AF)
+	}
 
-	if a := GetA(); a != target {
-		t.Errorf("GetA() test failed: expected: Ox%02x, got: Ox%02x (AF: 0x%04x)", target, a, registers.AF)
+	SetA(0x44)
+	if a := GetA(); a != 0x44 {
+		t.Errorf("GetA() test failed: expected: 0x44, got: Ox%02x (AF: 0x%04x)", a, registers.AF)
+	}
+
+	SetA(0x99)
+	if a := GetA(); a != 0x99 {
+		t.Errorf("GetA() test failed: expected: 0x99, got: Ox%02x (AF: 0x%04x)", a, registers.AF)
+	}
+
+	SetA(0xFC)
+	if a := GetA(); a != 0xFC {
+		t.Errorf("GetA() test failed: expected: 0xFC, got: Ox%02x (AF: 0x%04x)", a, registers.AF)
 	}
 }
 
 func TestSetGetF(t *testing.T) {
 	Reset()
 
-	var target uint8 = 0x5C
+	SetF(0x5C)
+	if f := GetF(); f != 0x5C {
+		t.Errorf("GetF() test failed: expected: 0x5C, got: Ox%02x (AF: 0x%04x)", f, registers.AF)
+	}
 
-	SetF(target)
+	SetF(0x8C)
+	if f := GetF(); f != 0x8C {
+		t.Errorf("GetF() test failed: expected: 0x8C, got: Ox%02x (AF: 0x%04x)", f, registers.AF)
+	}
 
-	if f := GetF(); f != target {
-		t.Errorf("GetF() test failed: expected: Ox%02x, got: Ox%02x (AF: 0x%04x)", target, f, registers.AF)
+	SetF(0xFF)
+	if f := GetF(); f != 0xFF {
+		t.Errorf("GetF() test failed: expected: 0xFF, got: Ox%02x (AF: 0x%04x)", f, registers.AF)
+	}
+
+	SetF(0xBB)
+	if f := GetF(); f != 0xBB {
+		t.Errorf("GetF() test failed: expected: 0xBB, got: Ox%02x (AF: 0x%04x)", f, registers.AF)
+	}
+
+	SetF(0x12)
+	if f := GetF(); f != 0x12 {
+		t.Errorf("GetF() test failed: expected: 0x12, got: Ox%02x (AF: 0x%04x)", f, registers.AF)
 	}
 }
 
