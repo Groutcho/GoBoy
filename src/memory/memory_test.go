@@ -343,9 +343,17 @@ func TestInterruptsRequests(t *testing.T) {
 }
 
 func TestGet(t *testing.T) {
-	RAM[0xFF21] = 39
+	RAM[0xFF21] = 0x28
 
-	if b := Get(0xFF21); b != 39 {
-		t.Error("TestGet() failed: expected 39, got ", b)
+	if b := Get(0xFF21); b != 0x28 {
+		t.Errorf("TestGet() failed: expected 0x28, got 0x%04x", b)
+	}
+}
+
+func TestSet(t *testing.T) {
+	Set(0x5247, 0x99)
+
+	if b := Get(0x5247); b != 0x99 {
+		t.Errorf("TestGet() failed: expected 39, got 0x%04x", b)
 	}
 }
