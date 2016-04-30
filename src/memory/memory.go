@@ -21,6 +21,25 @@ func Set(addr uint16, value byte) {
 	RAM[addr] = value
 }
 
+func SetRange(from uint16, to uint16, data []byte) {
+	k := 0
+	for i := from; i <= to; i++ {
+		RAM[i] = data[k]
+		k++
+	}
+}
+
+func GetRange(from uint16, to uint16) []byte {
+	result := make([]byte, to - from + 1)
+	k := 0
+	for i := from; i <= to; i++ {
+		result[k] = RAM[i]
+		k++
+	}
+
+	return result
+}
+
 /* reset the RAM to 0 */
 func reset() {
 	for i := 0; i < len(RAM); i++ {

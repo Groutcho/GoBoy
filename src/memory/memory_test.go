@@ -357,3 +357,22 @@ func TestSet(t *testing.T) {
 		t.Errorf("TestGet() failed: expected 39, got 0x%04x", b)
 	}
 }
+
+func TestSetRange(t *testing.T) {
+	var from uint16 = 0x405F
+	var to uint16 = 0x505F
+	size := to - from + 1
+
+	data := make([]byte, int(size))
+	data[0x00] = 0x66
+	// data[0x55] = 0x77
+	// data[0xF0] = 0x79
+
+	SetRange(from, to, data)
+
+	actual := GetRange(from, to)
+
+	if actual[0x00] != 0x66 {
+		t.Errorf("TestSetRange() failed: at 0x00, expected 0x66, got 0x%04x", actual[0x50])
+	}
+}
