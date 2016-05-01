@@ -24,6 +24,24 @@ func Fetch() uint16 {
 	return opcode
 }
 
+// Get the 8bit word at the address pointed by the program counter
+// and increment the program counter.
+func FetchOperand8() uint8 {
+	operand := Get(GetPC())
+	IncPC()
+	return operand
+}
+
+// Get the 8bit word at the address pointed by the program counter
+// and increment the program counter.
+func FetchOperand16() uint16 {
+	operand0 := uint16(Get(GetPC()))
+	IncPC()
+	operand1 := uint16(Get(GetPC()))
+	IncPC()
+	return (operand0 << 8) | operand1
+}
+
 // execute the next instruction and return the number of cycles taken
 // by this instruction, as a multiple of 4, i.e unit cycles and not
 // actual CPU cycles. The minimal amount of cycles is 1.
