@@ -323,6 +323,46 @@ func IncL() {
 	registers.L += 1
 }
 
+// Decrement the A register.
+func DecA() {
+	registers.A -= 1
+}
+
+// Decrement the F register.
+func DecF() {
+	registers.F -= 1
+}
+
+// Decrement the B register.
+func DecB() {
+	registers.B -= 1
+}
+
+// Decrement the C register.
+func DecC() {
+	registers.C -= 1
+}
+
+// Decrement the D register.
+func DecD() {
+	registers.D -= 1
+}
+
+// Decrement the E register.
+func DecE() {
+	registers.E -= 1
+}
+
+// Decrement the H register.
+func DecH() {
+	registers.H -= 1
+}
+
+// Decrement the L register.
+func DecL() {
+	registers.L -= 1
+}
+
 // Reset all registers to 0x0000.
 func Reset() {
 	registers.A = 0x00
