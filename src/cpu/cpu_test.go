@@ -242,3 +242,63 @@ func TestLdReferenceHLInstructions(t* testing.T) {
 		t.Errorf("TestLdRegistersInstructions() failed: expected HL = 0xFB00, got 0x%04x", hl)
 	}
 }
+
+func TestLdToReferenceHLInstructions(t* testing.T) {
+	program := [...]byte{
+        0x70, // ld   (HL), B
+        0x71, // ld   (HL), C
+        0x72, // ld   (HL), D
+        0x73, // ld   (HL), E
+        0x74, // ld   (HL), H
+        0x75, // ld   (HL), L
+        0x77, // ld   (HL), A
+        0x36, 0x88, // ld   (HL), 0x88
+	}
+
+	SetRange(0x0000, uint16(len(program)) -1, program[:])
+	SetPC(0x0000)
+
+	SetHL(0x1000)
+	Set(0x1000, 0xFB)
+
+	SetA(0x58)
+	SetB(0x99)
+	SetC(0xFE)
+	SetD(0xFF)
+	SetE(0xCD)
+	SetH(0x58)
+	SetL(0x00)
+
+	ExecuteNext()
+	if v:= Get(GetHL()); v != 0x99 {
+		t.Errorf("TestLdToReferenceHLInstructions() failed: expected [HL] = 0x99, got 0x%02x", v)
+	}
+	ExecuteNext()
+	if v:= Get(GetHL()); v != 0xFE {
+		t.Errorf("TestLdToReferenceHLInstructions() failed: expected [HL] = 0xFE, got 0x%02x", v)
+	}
+	ExecuteNext()
+	if v:= Get(GetHL()); v != 0xFF {
+		t.Errorf("TestLdToReferenceHLInstructions() failed: expected [HL] = 0xFF, got 0x%02x", v)
+	}
+	ExecuteNext()
+	if v:= Get(GetHL()); v != 0xCD {
+		t.Errorf("TestLdToReferenceHLInstructions() failed: expected [HL] = 0xCD, got 0x%02x", v)
+	}
+	ExecuteNext()
+	if v:= Get(GetHL()); v != 0x58 {
+		t.Errorf("TestLdToReferenceHLInstructions() failed: expected [HL] = 0x58, got 0x%02x", v)
+	}
+	ExecuteNext()
+	if v:= Get(GetHL()); v != 0x00 {
+		t.Errorf("TestLdToReferenceHLInstructions() failed: expected [HL] = 0x00, got 0x%02x", v)
+	}
+	ExecuteNext()
+	if v:= Get(GetHL()); v != 0x58 {
+		t.Errorf("TestLdToReferenceHLInstructions() failed: expected [HL] = 0x58, got 0x%02x", v)
+	}
+	ExecuteNext()
+	if v:= Get(GetHL()); v != 0x88 {
+		t.Errorf("TestLdToReferenceHLInstructions() failed: expected [HL] = 0x88, got 0x%02x", v)
+	}
+}
