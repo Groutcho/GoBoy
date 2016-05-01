@@ -302,3 +302,12 @@ func TestLdToReferenceHLInstructions(t* testing.T) {
 		t.Errorf("TestLdToReferenceHLInstructions() failed: expected [HL] = 0x88, got 0x%02x", v)
 	}
 }
+
+func BenchmarkLdRegistersInstructions(b *testing.B) {
+	Set(0x0000, 0x78) // ld A, B
+
+	for i := 0; i < b.N; i++ {
+		SetPC(0x0000)
+		ExecuteNext()
+	}
+}
