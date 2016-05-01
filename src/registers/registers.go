@@ -50,6 +50,7 @@ func init() {
 		C: 0x00,
 		D: 0x00,
 		E: 0x00,
+		F: 0x00,
 		H: 0x00,
 		L: 0x00,		
 		SP: 0x0000,
@@ -145,19 +146,9 @@ func GetPC() uint16 {
 	return registers.PC
 }
 
-// Set the value of the upper high bits of the AF register.
-func SetA(value uint8) {
-	registers.A = value
-}
-
 // Return the A register value as a 8bit unsigned integer.
 func GetA() uint8 {
 	return registers.A
-}
-
-// Set the value of the lower high bits of the AF register.
-func SetF(value uint8) {
-	registers.F = value
 }
 
 // Return the F register value as a 8bit unsigned integer.
@@ -165,19 +156,9 @@ func GetF() uint8 {
 	return registers.F
 }
 
-// Set the value of the upper high bits of the BC register.
-func SetB(value uint8) {
-	registers.B = value
-}
-
 // Return the B register value as a 8bit unsigned integer.
 func GetB() uint8 {
 	return registers.B
-}
-
-// Set the value of the lower high bits of the BC register.
-func SetC(value uint8) {
-	registers.C = value
 }
 
 // Return the F register value as a 8bit unsigned integer.
@@ -185,19 +166,9 @@ func GetC() uint8 {
 	return registers.C
 }
 
-// Set the value of the upper high bits of the DE register.
-func SetD(value uint8) {
-	registers.D = value
-}
-
 // Return the B register value as a 8bit unsigned integer.
 func GetD() uint8 {
 	return registers.D
-}
-
-// Set the value of the lower high bits of the DE register.
-func SetE(value uint8) {
-	registers.E = value
 }
 
 // Return the F register value as a 8bit unsigned integer.
@@ -205,19 +176,9 @@ func GetE() uint8 {
 	return registers.E
 }
 
-// Set the value of the upper high bits of the HL register.
-func SetH(value uint8) {
-	registers.H = value
-}
-
 // Return the H register value as a 8bit unsigned integer.
 func GetH() uint8 {
 	return registers.H
-}
-
-// Set the value of the lower high bits of the HL register.
-func SetL(value uint8) {
-	registers.L = value
 }
 
 // Return the L register value as a 8bit unsigned integer.
@@ -279,6 +240,87 @@ func SetFlagCy(b bool) {
 	} else {
 		registers.F &= ^(uint8(1 << 4))
 	}
+}
+
+
+// Set the value of the A register.
+func SetA(value uint8) {
+	registers.A = value
+}
+
+// Increment the A register.
+func IncA() {
+	registers.A += 1
+}
+
+// Set the value of the F register.
+func SetF(value uint8) {
+	registers.F = value
+}
+
+// Increment the F register.
+func IncF() {
+	registers.F += 1
+}
+
+// Set the value of the B register.
+func SetB(value uint8) {
+	registers.B = value
+}
+
+// Increment the B register.
+func IncB() {
+	registers.B += 1
+}
+
+// Set the value of the C register.
+func SetC(value uint8) {
+	registers.C = value
+}
+
+// Increment the C register.
+func IncC() {
+	registers.C += 1
+}
+
+// Set the value of the D register.
+func SetD(value uint8) {
+	registers.D = value
+}
+
+// Increment the D register.
+func IncD() {
+	registers.D += 1
+}
+
+// Set the value of the E register.
+func SetE(value uint8) {
+	registers.E = value
+}
+
+// Increment the E register.
+func IncE() {
+	registers.E += 1
+}
+
+// Set the value of the H register.
+func SetH(value uint8) {
+	registers.H = value
+}
+
+// Increment the H register.
+func IncH() {
+	registers.H += 1
+}
+
+// Set the value of the L register.
+func SetL(value uint8) {
+	registers.L = value
+}
+
+// Increment the L register.
+func IncL() {
+	registers.L += 1
 }
 
 // Reset all registers to 0x0000.
