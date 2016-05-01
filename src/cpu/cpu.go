@@ -32,8 +32,8 @@ func FetchOperand8() uint8 {
 	return operand
 }
 
-// Get the 8bit word at the address pointed by the program counter
-// and increment the program counter.
+// Get the 16bit word at the address pointed by the program counter
+// and increment the program counter twice.
 func FetchOperand16() uint16 {
 	operand0 := uint16(Get(GetPC()))
 	IncPC()
