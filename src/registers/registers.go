@@ -29,10 +29,14 @@ The Stack Pointer (SP) and Program Counter (PC) cannot be
 accessed outside their 16bit range.
 */
 type Registers struct {
-	AF uint16
-	BC uint16
-	DE uint16
-	HL uint16
+	A uint8
+	F uint8
+	B uint8
+	C uint8
+	D uint8
+	E uint8
+	H uint8
+	L uint8
 	SP uint16 /* stack pointer */
 	PC uint16 /* program counter */
 }
@@ -40,10 +44,14 @@ type Registers struct {
 var registers Registers
 
 func init() {
-	registers = Registers{AF: 0x0000,
-		BC: 0x0000,
-		DE: 0x0000,
-		HL: 0x0000,
+	registers = Registers{
+		A: 0x00,
+		B: 0x00,
+		C: 0x00,
+		D: 0x00,
+		E: 0x00,
+		H: 0x00,
+		L: 0x00,		
 		SP: 0x0000,
 		PC: 0x0000}
 }
@@ -70,42 +78,46 @@ func getLowBits(value uint16) uint8 {
 
 // Set the AF register with the given 16bit value.
 func SetAF(value uint16) {
-	registers.AF = value
+	registers.A = uint8(value >> 8)
+	registers.F = uint8(value)
 }
 
 // Return the value of the AF register.
 func GetAF() uint16 {
-	return registers.AF
+	return (uint16(registers.A) << 8) | uint16(registers.F)
 }
 
 // Set the BC register with the given 16bit value.
 func SetBC(value uint16) {
-	registers.BC = value
+	registers.B = uint8(value >> 8)
+	registers.C = uint8(value)
 }
 
 // Return the value of the BC register.
 func GetBC() uint16 {
-	return registers.BC
+	return (uint16(registers.B) << 8) | uint16(registers.C)
 }
 
 // Set the DE register with the given 16bit value.
 func SetDE(value uint16) {
-	registers.DE = value
+	registers.D = uint8(value >> 8)
+	registers.E = uint8(value)
 }
 
 // Return the value of the DE register.
 func GetDE() uint16 {
-	return registers.DE
+	return (uint16(registers.D) << 8) | uint16(registers.E)
 }
 
 // Set the HL register with the given 16bit value.
 func SetHL(value uint16) {
-	registers.HL = value
+	registers.H = uint8(value >> 8)
+	registers.L = uint8(value)
 }
 
 // Return the value of the HL register.
 func GetHL() uint16 {
-	return registers.HL
+	return (uint16(registers.H) << 8) | uint16(registers.L)
 }
 
 // Set the SP register with the given 16bit value.
@@ -135,146 +147,150 @@ func GetPC() uint16 {
 
 // Set the value of the upper high bits of the AF register.
 func SetA(value uint8) {
-	registers.AF = setHighBits(value, registers.AF)
+	registers.A = value
 }
 
 // Return the A register value as a 8bit unsigned integer.
 func GetA() uint8 {
-	return getHighBits(registers.AF)
+	return registers.A
 }
 
 // Set the value of the lower high bits of the AF register.
 func SetF(value uint8) {
-	registers.AF = setLowBits(value, registers.AF)
+	registers.F = value
 }
 
 // Return the F register value as a 8bit unsigned integer.
 func GetF() uint8 {
-	return getLowBits(registers.AF)
+	return registers.F
 }
 
 // Set the value of the upper high bits of the BC register.
 func SetB(value uint8) {
-	registers.BC = setHighBits(value, registers.BC)
+	registers.B = value
 }
 
 // Return the B register value as a 8bit unsigned integer.
 func GetB() uint8 {
-	return getHighBits(registers.BC)
+	return registers.B
 }
 
 // Set the value of the lower high bits of the BC register.
 func SetC(value uint8) {
-	registers.BC = setLowBits(value, registers.BC)
+	registers.C = value
 }
 
 // Return the F register value as a 8bit unsigned integer.
 func GetC() uint8 {
-	return getLowBits(registers.BC)
+	return registers.C
 }
 
 // Set the value of the upper high bits of the DE register.
 func SetD(value uint8) {
-	registers.DE = setHighBits(value, registers.DE)
+	registers.D = value
 }
 
 // Return the B register value as a 8bit unsigned integer.
 func GetD() uint8 {
-	return getHighBits(registers.DE)
+	return registers.D
 }
 
 // Set the value of the lower high bits of the DE register.
 func SetE(value uint8) {
-	registers.DE = setLowBits(value, registers.DE)
+	registers.E = value
 }
 
 // Return the F register value as a 8bit unsigned integer.
 func GetE() uint8 {
-	return getLowBits(registers.DE)
+	return registers.E
 }
 
 // Set the value of the upper high bits of the HL register.
 func SetH(value uint8) {
-	registers.HL = setHighBits(value, registers.HL)
+	registers.H = value
 }
 
 // Return the H register value as a 8bit unsigned integer.
 func GetH() uint8 {
-	return getHighBits(registers.HL)
+	return registers.H
 }
 
 // Set the value of the lower high bits of the HL register.
 func SetL(value uint8) {
-	registers.HL = setLowBits(value, registers.HL)
+	registers.L = value
 }
 
 // Return the L register value as a 8bit unsigned integer.
 func GetL() uint8 {
-	return getLowBits(registers.HL)
+	return registers.L
 }
 
 // Return the value of the Zero flag.
 func GetFlagZf() bool {
-	return (registers.AF & 0x0080) != 0
+	return (registers.F & 0x80) != 0
 }
 
 // Return the value of the N (Add/Sub) flag.
 func GetFlagN() bool {
-	return (registers.AF & 0x0040) != 0
+	return (registers.F & 0x40) != 0
 }
 
 // Return the value of the H (Half carry) flag.
 func GetFlagH() bool {
-	return (registers.AF & 0x0020) != 0
+	return (registers.F & 0x20) != 0
 }
 
 // Return the value of the CY (carry) flag.
 func GetFlagCy() bool {
-	return (registers.AF & 0x0010) != 0
+	return (registers.F & 0x10) != 0
 }
 
 // Set the value of the Zero flag.
 func SetFlagZf(b bool) {
 	if b {
-		registers.AF |= (1 << 7)
+		registers.F |= (1 << 7)
 	} else {
-		registers.AF &= ^(uint16(1 << 7))
+		registers.F &= ^(uint8(1 << 7))
 	}
 }
 
 // Set the value of the N (Add/Sub) flag.
 func SetFlagN(b bool) {
 	if b {
-		registers.AF |= (1 << 6)
+		registers.F |= (1 << 6)
 	} else {
-		registers.AF &= ^(uint16(1 << 6))
+		registers.F &= ^(uint8(1 << 6))
 	}
 }
 
 // Set the value of the H (Half carry) flag.
 func SetFlagH(b bool) {
 	if b {
-		registers.AF |= (1 << 5)
+		registers.F |= (1 << 5)
 	} else {
-		registers.AF &= ^(uint16(1 << 5))
+		registers.F &= ^(uint8(1 << 5))
 	}
 }
 
 // Set the value of the CY (carry) flag.
 func SetFlagCy(b bool) {
 	if b {
-		registers.AF |= (1 << 4)
+		registers.F |= (1 << 4)
 	} else {
-		registers.AF &= ^(uint16(1 << 4))
+		registers.F &= ^(uint8(1 << 4))
 	}
 }
 
 // Reset all registers to 0x0000.
 func Reset() {
-	registers.AF = 0x0000
-	registers.BC = 0x0000
-	registers.BC = 0x0000
-	registers.HL = 0x0000
+	registers.A = 0x00
+	registers.F = 0x00
+	registers.B = 0x00
+	registers.C = 0x00
+	registers.D = 0x00
+	registers.E = 0x00
+	registers.H = 0x00
+	registers.L = 0x00
 	registers.SP = 0x0000
 	registers.PC = 0x0000
 }
