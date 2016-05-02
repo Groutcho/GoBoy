@@ -45,6 +45,63 @@ CYCLE_COUNT = 'cycles'
 CYCLE_SEP = 'conditional cycles separator'
 ERROR = 'error'
 
+FLAG_MAY_CHANGE = 0
+FLAG_SET_TO_ONE = 1
+FLAG_SET_TO_ZERO = 2
+FLAG_UNCHANGED = 3
+
+class Instruction(object):
+    def __init__(self, mnemonic, description, opcode, cycles, flags, comment, line):
+        self.mnemonic = mnemonic
+        self.opcode = opcode
+        self.description = description
+        self.cycles = cycles
+        self.flags = flags
+        self.comment = comment
+        self.line = line
+
+    @staticmethod
+    def parse(line):
+        mnemonic = line[:4].strip()
+        description = tokenize(line[4:22])
+        opcode = parse_opcode(line[21:26].strip())
+        cycles = parse_cycles(line[33:38])
+        flags = parse_flags(line[42:46])
+        comment = line[51:]
+
+        return Instruction(mnemonic, description, opcode, cycles, flags, comment, line)
+
+    def func_name(self):
+        if self.opcode[1]:
+            return 'xCB_{}_{}'.format(self.opcode[0], self.mnemonic)
+        else:
+            return 'x{}_{}'.format(self.opcode[0], self.mnemonic)
+
+
+def parse_opcode(s):
+    if len(s) == 2:
+        return (s, False)
+
+    if len(s) == 5:
+        print(s[-2:])
+        return (s[-2:], True)
+
+
+def parse_flags(s):
+    flags = []
+    for flag in s:
+        if flag == '-':
+            flags.append(FLAG_UNCHANGED)
+        elif flag == '0':
+            flags.append(FLAG_SET_TO_ZERO)
+        elif flag == '1':
+            flags.append(FLAG_SET_TO_ONE)
+        else:
+            flags.append(FLAG_MAY_CHANGE)
+
+    return flags
+
+
 class Token(object):
     def __init__(self, code, pos, value=None):
         self.code = code
@@ -70,25 +127,17 @@ def apply(s, regexp, i):
         return None, i, i
 
 
-def tokenize(s):
+def tokenize(text):
     tokens = []
     i = 0
     t = 0
 
     limit = 40
 
+    s = text[:22]
+
     while limit and i < len(s) -1:
         error = True
-        t, i, p = apply(s, mnemonic_re, i)
-        if t:
-            error = False
-            tokens.append(Token(MNEMONIC, p, t))
-            continue
-        t, i, p = apply(s, cond_cycle_re, i)
-        if t:
-            error = False
-            tokens.append(Token(CYCLE_SEP, p, t))
-            continue
         t, i, p = apply(s, long_ref_reg_re, i)
         if t:
             error = False
@@ -119,11 +168,6 @@ def tokenize(s):
             error = False
             tokens.append(Token(OPERAND8, p, t))
             continue
-        t, i, p = apply(s, ex_opcode_re, i)
-        if t:
-            error = False
-            tokens.append(Token(EX_OPCODE, p, t))
-            continue
         t, i, p = apply(s, flag_re, i)
         if t:
             error = False
@@ -134,16 +178,6 @@ def tokenize(s):
             error = False
             tokens.append(Token(OPERAND16REF, p, t.strip('()')))
             continue
-        t, i, p = apply(s, opcode_re, i)
-        if t:
-            error = False
-            if 34 < p < 38:
-                tokens.append(Token(CYCLE_COUNT, p, t))
-            elif i > 21:
-                tokens.append(Token(OPCODE, p, t))
-            else:
-                tokens.append(Token(CONSTANT, p, t))
-            continue
         t, i, p = apply(s, not_re, i)
         if t:
             error = False
@@ -151,30 +185,13 @@ def tokenize(s):
             continue
         t, i, p = apply(s, constant_re, i)
         if t:
+            tokens.append(Token(CONSTANT, p, t))
             error = False
-            if 34 < p < 38:
-                tokens.append(Token(CYCLE_COUNT, p, t))
-            else:
-                tokens.append(Token(CONSTANT, p, t))
-            continue
-        t, i, p = apply(s, flags_re, i)
-        if t:
-            error = False
-            tokens.append(Token(FLAGS, p, t))
-            continue
-        t, i, p = apply(s, comment_re, i)
-        if t:
-            error = False
-            tokens.append(Token(COMMENT, p, t.lstrip('/ ')))
-            continue
 
         limit -= 1
         if error:
             tokens.append(Token(ERROR, p, None))
             i+=1
-
-    if limit == 0:
-        print('could not parse "%s"' % s[i:])
 
     return tokens
 
@@ -188,7 +205,7 @@ def get(tokens, code):
 
 
 def parse_cycles(s):
-    cycles = s[34:38].strip()
+    cycles = s.strip()
     try:
         if ';' in cycles:
             a, b = cycles.split(';')
@@ -201,9 +218,8 @@ def parse_cycles(s):
 
 
 def parse_ld(tokens, s):
-    assert tokens[0].code == MNEMONIC
-    opA = tokens[1]
-    opB = tokens[2]
+    opA = tokens[0]
+    opB = tokens[1]
 
     src = None
     if opB.code == OPERAND8:
@@ -236,8 +252,8 @@ def parse_ld(tokens, s):
 
 
 def parse_rst(tokens, s):
-    addr = unhexlify(tokens[1].value)[0]
-    
+    addr = unhexlify(tokens[0].value)[0]
+
     return  "Call(0x{:04x})".format(addr)
 
 
@@ -274,6 +290,18 @@ def parse_swap(tokens, s):
         operation += 'Set(addr, Swap(Get(addr)))'.format(target.value)
 
     return operation
+
+
+def custom_impl_F8():
+    """
+    ld   HL, SP+%s
+    """
+
+    code =  "operand := int32(FetchOperand8())\n" +\
+            "\tSetHL(uint16(int32(GetSP()) + operand))"
+
+
+    return code
 
 
 def parse_add(tokens, s):
@@ -404,7 +432,7 @@ def parse_bit(tokens, s):
 
 dispatch = {\
     'ld': parse_ld,
-    #'rst': parse_rst,
+    'rst': parse_rst,
     #'swap': parse_swap,
     #'inc': parse_inc,
     #'dec': parse_dec,
@@ -418,57 +446,46 @@ dispatch = {\
     #'bit': parse_bit,
 }
 
+custom_impl_table = {'F8': custom_impl_F8}
+
 
 unsupp = set()
 
-def make_func(tokens, s, file):
-    s = s.strip()
-    desc = s[:21].strip()
-    cycle_a, cycle_b = parse_cycles(s)
-    extended = False
+def make_func(instr, file):
 
-    opcode = get(tokens, OPCODE)
-    if not opcode:
-        extended = True
-        opcode = get(tokens, EX_OPCODE)
-
-    mnemonic = tokens[0]
-
-    if mnemonic.value in dispatch:
-        result = dispatch[mnemonic.value](tokens, s)
+    if instr.opcode[0] in custom_impl_table:
+        result = custom_impl_table[instr.opcode[0]]()
+    elif instr.mnemonic in dispatch:
+        result = dispatch[instr.mnemonic](instr.description, instr.line)
     else:
-        unsupp.add('unsupported mnemonic: %s' % mnemonic.value)
+        unsupp.add('unsupported mnemonic: %s' % instr.mnemonic)
         return
 
-    if extended:
-        func_name = "x{}_{}".format(opcode.value.replace(' ', '_'), mnemonic.value)
-    else:
-        func_name = "x{}_{}".format(opcode.value, mnemonic.value)
-    comment = '// {} - {}'.format(desc, get(tokens, COMMENT).value)
+    comment = '// {} - {}'.format(instr.line[:21].strip(), instr.comment.strip('/ \n'))
 
     print(comment, file=file)
-    print('func ' + func_name + '() uint8 {', file=file)
+    print('func ' + instr.func_name() + '() uint8 {', file=file)
 
-    if opcode.code == EX_OPCODE:
-        oc = unhexlify(opcode.value[-2:])[0] + 0xFF
-        ret =(oc, func_name)
+    print(instr.opcode[0])
+    if instr.opcode[1]:
+        oc = unhexlify(instr.opcode[0])[0] + 0xFF
     else:
-        oc = unhexlify(opcode.value)[0]
-        ret = (oc, func_name)
+        oc = unhexlify(instr.opcode[0])[0]
+
+    ret = (oc, instr.func_name())
 
     if result:
         print('\t%s\n' % result, file=file)
 
-    if cycle_b == 0:
-        print('\treturn %d' % cycle_a, file=file)  
-
+    if instr.cycles[1] == 0:
+        print('\treturn %d' % instr.cycles[0], file=file)
     else:
         print(indent(dedent("""\
         if jmp {{
         \treturn {}
         }} else {{
         \treturn {}
-        }}""".format(cycle_a, cycle_b)), '\t'), file=file)
+        }}""".format(instr.cycles[0], instr.cycles[1])), '\t'), file=file)
 
     print('}\n', file=file)
     return ret
@@ -486,42 +503,33 @@ def make_dispatch_table(instructions):
 
         print('}', file=f)
 
+header = \
+"""
+// this package is automatically generated by instruction_generator.py
+package cpu
 
-def main(use_file=True):
-    if use_file:
-        with open('instructions.CPU') as cpu:
-            with open('../src/cpu/instructions.go', 'wt') as f:
-                print("// this package is automatically generated.", file=f)
-                print('package cpu\n', file=f)
-                print('import . "memory"\n', file=f)
+import . "memory"
 
-                func_names = []
+"""
 
-                for line in cpu.readlines():
-                    if line.strip():
-                        tokens = tokenize(line)
-                        n = make_func(tokens, line, f)
-                        if n:
-                            func_names.append(n)
-                make_dispatch_table(func_names)
-                for un in unsupp:
-                    print('// %s' % un, file=f)
 
-    else:
-        txt = """
-bit  0,H             CB 44           8    z01-     // test bit 0 of register H
-bit  1,H             CB 4C           8    z01-     // test bit 1 of register H
-bit  2,H             CB 54           8    z01-     // test bit 2 of register H
-bit  3,H             CB 5C           8    z01-     // test bit 3 of register H
-bit  4,H             CB 64           8    z01-     // test bit 4 of register H
-        """
-        for line in txt.split('\n'):
-            if line.strip():
-                tokens = tokenize(line)
-                try:
-                    make_func(tokens, line)
-                except AssertionError as err:
-                    print('{}: {}'.format(line, err))
+def main():
+    with open('instructions.CPU') as cpu:
+        with open('../src/cpu/instructions.go', 'wt') as f:
+
+            print(header, file=f)
+
+            func_names = []
+
+            for line in cpu.readlines():
+                if line.strip():
+                    instruction = Instruction.parse(line)
+                    n = make_func(instruction, f)
+                    if n:
+                        func_names.append(n)
+            make_dispatch_table(func_names)
+            for un in unsupp:
+                print('// %s' % un, file=f)
 
 if __name__ == "__main__":
     main()
