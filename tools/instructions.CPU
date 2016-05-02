@@ -1,58 +1,58 @@
-ld   A,B             78              4    ----     // A=B
-ld   A,C             79              4    ----     // A=C
-ld   A,D             7A              4    ----     // A=D
-ld   A,E             7B              4    ----     // A=E
-ld   A,H             7C              4    ----     // A=H
-ld   A,L             7D              4    ----     // A=L
-ld   A,A             7F              4    ----     // A=A
+ld   A, B            78              4    ----     // A=B
+ld   A, C            79              4    ----     // A=C
+ld   A, D            7A              4    ----     // A=D
+ld   A, E            7B              4    ----     // A=E
+ld   A, H            7C              4    ----     // A=H
+ld   A, L            7D              4    ----     // A=L
+ld   A, A            7F              4    ----     // A=A
 
-ld   A,%1            3E              8    ----     // A=%1
-ld   B,%1            06              8    ----     // B=%1
-ld   C,%1            0E              8    ----     // C=%1
-ld   D,%1            16              8    ----     // D=%1
-ld   E,%1            1E              8    ----     // E=%1
-ld   H,%1            26              8    ----     // H=%1
-ld   L,%1            2E              8    ----     // L=%1
+ld   A, %1           3E              8    ----     // A=%1
+ld   B, %1           06              8    ----     // B=%1
+ld   C, %1           0E              8    ----     // C=%1
+ld   D, %1           16              8    ----     // D=%1
+ld   E, %1           1E              8    ----     // E=%1
+ld   H, %1           26              8    ----     // H=%1
+ld   L, %1           2E              8    ----     // L=%1
 
-ld   A,(HL)          7E              8    ----     // A=(HL)
-ld   B,(HL)          46              8    ----     // B=(HL)
-ld   C,(HL)          4E              8    ----     // C=(HL)
-ld   D,(HL)          56              8    ----     // D=(HL)
-ld   E,(HL)          5E              8    ----     // E=(HL)
-ld   H,(HL)          66              8    ----     // H=(HL)
-ld   L,(HL)          6E              8    ----     // L=(HL)
+ld   A, (HL)         7E              8    ----     // A=(HL)
+ld   B, (HL)         46              8    ----     // B=(HL)
+ld   C, (HL)         4E              8    ----     // C=(HL)
+ld   D, (HL)         56              8    ----     // D=(HL)
+ld   E, (HL)         5E              8    ----     // E=(HL)
+ld   H, (HL)         66              8    ----     // H=(HL)
+ld   L, (HL)         6E              8    ----     // L=(HL)
 
-ld   (HL),B          70              8    ----     // [HL]=B
-ld   (HL),C          71              8    ----     // [HL]=C
-ld   (HL),D          72              8    ----     // [HL]=D
-ld   (HL),E          73              8    ----     // [HL]=E
-ld   (HL),H          74              8    ----     // [HL]=H
-ld   (HL),L          75              8    ----     // [HL]=L
-ld   (HL),A          77              8    ----     // [HL]=A
-ld   (HL),%1         36             12    ----     // [HL]=[NN]
+ld   (HL), B         70              8    ----     // [HL]=B
+ld   (HL), C         71              8    ----     // [HL]=C
+ld   (HL), D         72              8    ----     // [HL]=D
+ld   (HL), E         73              8    ----     // [HL]=E
+ld   (HL), H         74              8    ----     // [HL]=H
+ld   (HL), L         75              8    ----     // [HL]=L
+ld   (HL), A         77              8    ----     // [HL]=A
+ld   (HL), %1        36             12    ----     // [HL]=[NN]
 
-ld   A,(BC)          0A              8    ----     // A=[BC]
-ld   A,(DE)          1A              8    ----     // A=[DE]
-ld   A,(%2)          FA             16    ----     // A=[NN]
-ld   (BC),A          02              8    ----     // [BC]=A
-ld   (DE),A          12              8    ----     // [DE]=A
-ld   (%2),A          EA             16    ----     // [NN]=A
-ld   A,(FF00+%1)     F0             12    ----     // *read from io-port %1 (memory FF00+%1)
-ld   (FF00+%1),A     E0             12    ----     // *write to io-port %1 (memory FF00+%1)
-ld   A,(FF00+C)      F2              8    ----     // *read from io-port C (memory FF00+C)
-ld   (FF00+C),A      E2              8    ----     // *write to io-port C (memory FF00+C)
+ld   A, (BC)         0A              8    ----     // A=[BC]
+ld   A, (DE)         1A              8    ----     // A=[DE]
+ld   A, (%2)         FA             16    ----     // A=[NN]
+ld   (BC), A         02              8    ----     // [BC]=A
+ld   (DE), A         12              8    ----     // [DE]=A
+ld   (%2), A         EA             16    ----     // [NN]=A
+ld   A, (FF00+%1)    F0             12    ----     // *read from io-port %1 (memory FF00+%1)
+ld   (FF00+%1), A    E0             12    ----     // *write to io-port %1 (memory FF00+%1)
+ld   A, (FF00+C)     F2              8    ----     // *read from io-port C (memory FF00+C)
+ld   (FF00+C), A     E2              8    ----     // *write to io-port C (memory FF00+C)
 ld   BC, %2          01             12    ----     // BC=%2
 
-ld   DE,%2           11             12    ----     // DE=%2
-ld   HL,%2           21             12    ----     // HL=%2
-ld   SP,%2           31             12    ----     // SP=%2
-ld   SP,HL           F9              8    ----     // SP=HL
-ld   HL,SP+%s        F8             12    00hc     // *HL = SP +/- %s ;%s is 8bit signed number
+ld   DE, %2          11             12    ----     // DE=%2
+ld   HL, %2          21             12    ----     // HL=%2
+ld   SP, %2          31             12    ----     // SP=%2
+ld   SP, HL          F9              8    ----     // SP=HL
+ld   HL, SP+%s       F8             12    00hc     // *HL = SP +/- %s ;%s is 8bit signed number
 
-ldi  (HL),A          22              8    ----     // (HL)=A, HL=HL+1
-ldi  A,(HL)          2A              8    ----     // A=(HL), HL=HL+1
-ldd  (HL),A          32              8    ----     // (HL)=A, HL=HL-1
-ldd  A,(HL)          3A              8    ----     // A=(HL), HL=HL-1
+ldi  (HL), A         22              8    ----     // (HL)=A, HL=HL+1
+ldi  A, (HL)         2A              8    ----     // A=(HL), HL=HL+1
+ldd  (HL), A         32              8    ----     // (HL)=A, HL=HL-1
+ldd  A, (HL)         3A              8    ----     // A=(HL), HL=HL-1
 
 push BC              C5             16    ----     // SP=SP-2,  (SP)=BC
 push DE              D5             16    ----     // SP=SP-2,  (SP)=DE
@@ -64,31 +64,31 @@ pop  BC              C1             12    (AF)     // BC=(SP),  SP=SP+2
 pop  DE              D1             12    (AF)     // DE=(SP),  SP=SP+2
 pop  HL              E1             12    (AF)     // HL=(SP),  SP=SP+2
 
-add  A,B             80              4    z0hc     // A=A+B
-add  A,C             81              4    z0hc     // A=A+C
-add  A,D             82              4    z0hc     // A=A+D
-add  A,E             83              4    z0hc     // A=A+E
-add  A,H             84              4    z0hc     // A=A+H
-add  A,L             85              4    z0hc     // A=A+L
-add  A,(HL)          86              8    z0hc     // A=A+(HL)
-add  A,A             87              4    z0hc     // A=A+A
-add  A,%1            C6              8    z0hc     // A=A+%1
+add  A, B            80              4    z0hc     // A=A+B
+add  A, C            81              4    z0hc     // A=A+C
+add  A, D            82              4    z0hc     // A=A+D
+add  A, E            83              4    z0hc     // A=A+E
+add  A, H            84              4    z0hc     // A=A+H
+add  A, L            85              4    z0hc     // A=A+L
+add  A, (HL)         86              8    z0hc     // A=A+(HL)
+add  A, A            87              4    z0hc     // A=A+A
+add  A, %1           C6              8    z0hc     // A=A+%1
 
-add  HL,BC           09              8    -0hc     // HL = HL+BC
-add  HL,DE           19              8    -0hc     // HL = HL+DE
-add  HL,HL           29              8    -0hc     // HL = HL+HL
-add  HL,SP           39              8    -0hc     // HL = HL+SP
-add  SP,%s           E8             16    00hc     // *SP = SP +/- %s ;%s is 8bit signed number
+add  HL, BC          09              8    -0hc     // HL = HL+BC
+add  HL, DE          19              8    -0hc     // HL = HL+DE
+add  HL, HL          29              8    -0hc     // HL = HL+HL
+add  HL, SP          39              8    -0hc     // HL = HL+SP
+add  SP, %s          E8             16    00hc     // *SP = SP +/- %s ;%s is 8bit signed number
 
-adc  A,B             88              4    z0hc     // A=A+B+cy
-adc  A,C             89              4    z0hc     // A=A+C+cy
-adc  A,D             8A              4    z0hc     // A=A+D+cy
-adc  A,E             8B              4    z0hc     // A=A+E+cy
-adc  A,H             8C              4    z0hc     // A=A+H+cy
-adc  A,L             8D              4    z0hc     // A=A+L+cy
-adc  A,(HL)          8E              8    z0hc     // A=A+(HL)+cy
-adc  A,A             8F              4    z0hc     // A=A+A+cy
-adc  A,%1            CE              8    z0hc     // A=A+%1+cy
+adc  A, B            88              4    z0hc     // A=A+B+cy
+adc  A, C            89              4    z0hc     // A=A+C+cy
+adc  A, D            8A              4    z0hc     // A=A+D+cy
+adc  A, E            8B              4    z0hc     // A=A+E+cy
+adc  A, H            8C              4    z0hc     // A=A+H+cy
+adc  A, L            8D              4    z0hc     // A=A+L+cy
+adc  A, (HL)         8E              8    z0hc     // A=A+(HL)+cy
+adc  A, A            8F              4    z0hc     // A=A+A+cy
+adc  A, %1           CE              8    z0hc     // A=A+%1+cy
 
 sub  B               90              4    z1hc     // A=A-B
 sub  C               91              4    z1hc     // A=A-C
@@ -100,15 +100,15 @@ sub  (HL)            96              8    z1hc     // A=A-(HL)
 sub  A               97              4    z1hc     // A=A-A
 sub  %1              D6              8    z1hc     // A=A-%1
 
-sbc  A,B             98              4    z1hc     // A=A-B-cy
-sbc  A,C             99              4    z1hc     // A=A-C-cy
-sbc  A,D             9A              4    z1hc     // A=A-D-cy
-sbc  A,E             9B              4    z1hc     // A=A-E-cy
-sbc  A,H             9C              4    z1hc     // A=A-H-cy
-sbc  A,L             9D              4    z1hc     // A=A-L-cy
-sbc  A,(HL)          9E              8    z1hc     // A=A-(HL)-cy
-sbc  A,A             9F              4    z1hc     // A=A-A-cy
-sbc  A,%1            DE              8    z1hc     // A=A-%1-cy
+sbc  A, B            98              4    z1hc     // A=A-B-cy
+sbc  A, C            99              4    z1hc     // A=A-C-cy
+sbc  A, D            9A              4    z1hc     // A=A-D-cy
+sbc  A, E            9B              4    z1hc     // A=A-E-cy
+sbc  A, H            9C              4    z1hc     // A=A-H-cy
+sbc  A, L            9D              4    z1hc     // A=A-L-cy
+sbc  A, (HL)         9E              8    z1hc     // A=A-(HL)-cy
+sbc  A, A            9F              4    z1hc     // A=A-A-cy
+sbc  A, %1           DE              8    z1hc     // A=A-%1-cy
 
 and  B               A0              4    z010     // A=A & B
 and  C               A1              4    z010     // A=A & C
@@ -258,71 +258,71 @@ srl  L               CB 3D           8    z00c     // shift L right logical (b7=
 srl  (HL)            CB 3E          16    z00c     // shift right logical (b7=0)
 srl  A               CB 3F           8    z00c     // shift A right logical (b7=0
 
-bit  0,B             CB 40           8    z01-     // test bit 0 of register B
-bit  1,B             CB 48           8    z01-     // test bit 1 of register B
-bit  2,B             CB 50           8    z01-     // test bit 2 of register B
-bit  3,B             CB 58           8    z01-     // test bit 3 of register B
-bit  4,B             CB 60           8    z01-     // test bit 4 of register B
-bit  5,B             CB 68           8    z01-     // test bit 5 of register B
-bit  6,B             CB 70           8    z01-     // test bit 6 of register B
-bit  7,B             CB 78           8    z01-     // test bit 7 of register B
-bit  0,C             CB 41           8    z01-     // test bit 0 of register C
-bit  1,C             CB 49           8    z01-     // test bit 1 of register C
-bit  2,C             CB 51           8    z01-     // test bit 2 of register C
-bit  3,C             CB 59           8    z01-     // test bit 3 of register C
-bit  4,C             CB 61           8    z01-     // test bit 4 of register C
-bit  5,C             CB 69           8    z01-     // test bit 5 of register C
-bit  6,C             CB 71           8    z01-     // test bit 6 of register C
-bit  7,C             CB 79           8    z01-     // test bit 7 of register C
-bit  0,D             CB 42           8    z01-     // test bit 0 of register D
-bit  1,D             CB 4A           8    z01-     // test bit 1 of register D
-bit  2,D             CB 52           8    z01-     // test bit 2 of register D
-bit  3,D             CB 5A           8    z01-     // test bit 3 of register D
-bit  4,D             CB 62           8    z01-     // test bit 4 of register D
-bit  5,D             CB 6A           8    z01-     // test bit 5 of register D
-bit  6,D             CB 72           8    z01-     // test bit 6 of register D
-bit  7,D             CB 7A           8    z01-     // test bit 7 of register D
-bit  0,E             CB 43           8    z01-     // test bit 0 of register E
-bit  1,E             CB 4B           8    z01-     // test bit 1 of register E
-bit  2,E             CB 53           8    z01-     // test bit 2 of register E
-bit  3,E             CB 5B           8    z01-     // test bit 3 of register E
-bit  4,E             CB 63           8    z01-     // test bit 4 of register E
-bit  5,E             CB 6B           8    z01-     // test bit 5 of register E
-bit  6,E             CB 73           8    z01-     // test bit 6 of register E
-bit  7,E             CB 7B           8    z01-     // test bit 7 of register E
-bit  0,H             CB 44           8    z01-     // test bit 0 of register H
-bit  1,H             CB 4C           8    z01-     // test bit 1 of register H
-bit  2,H             CB 54           8    z01-     // test bit 2 of register H
-bit  3,H             CB 5C           8    z01-     // test bit 3 of register H
-bit  4,H             CB 64           8    z01-     // test bit 4 of register H
-bit  5,H             CB 6C           8    z01-     // test bit 5 of register H
-bit  6,H             CB 74           8    z01-     // test bit 6 of register H
-bit  7,H             CB 7C           8    z01-     // test bit 7 of register H
-bit  0,L             CB 45           8    z01-     // test bit 0 of register L
-bit  1,L             CB 4D           8    z01-     // test bit 1 of register L
-bit  2,L             CB 55           8    z01-     // test bit 2 of register L
-bit  3,L             CB 5D           8    z01-     // test bit 3 of register L
-bit  4,L             CB 65           8    z01-     // test bit 4 of register L
-bit  5,L             CB 6D           8    z01-     // test bit 5 of register L
-bit  6,L             CB 75           8    z01-     // test bit 6 of register L
-bit  7,L             CB 7D           8    z01-     // test bit 7 of register L
-bit  0,A             CB 47           8    z01-     // test bit 0 of register A
-bit  1,A             CB 4F           8    z01-     // test bit 1 of register A
-bit  2,A             CB 57           8    z01-     // test bit 2 of register A
-bit  3,A             CB 5F           8    z01-     // test bit 3 of register A
-bit  4,A             CB 67           8    z01-     // test bit 4 of register A
-bit  5,A             CB 6F           8    z01-     // test bit 5 of register A
-bit  6,A             CB 77           8    z01-     // test bit 6 of register A
-bit  7,A             CB 7F           8    z01-     // test bit 7 of register A
+bit  0, B            CB 40           8    z01-     // test bit 0 of register B
+bit  1, B            CB 48           8    z01-     // test bit 1 of register B
+bit  2, B            CB 50           8    z01-     // test bit 2 of register B
+bit  3, B            CB 58           8    z01-     // test bit 3 of register B
+bit  4, B            CB 60           8    z01-     // test bit 4 of register B
+bit  5, B            CB 68           8    z01-     // test bit 5 of register B
+bit  6, B            CB 70           8    z01-     // test bit 6 of register B
+bit  7, B            CB 78           8    z01-     // test bit 7 of register B
+bit  0, C            CB 41           8    z01-     // test bit 0 of register C
+bit  1, C            CB 49           8    z01-     // test bit 1 of register C
+bit  2, C            CB 51           8    z01-     // test bit 2 of register C
+bit  3, C            CB 59           8    z01-     // test bit 3 of register C
+bit  4, C            CB 61           8    z01-     // test bit 4 of register C
+bit  5, C            CB 69           8    z01-     // test bit 5 of register C
+bit  6, C            CB 71           8    z01-     // test bit 6 of register C
+bit  7, C            CB 79           8    z01-     // test bit 7 of register C
+bit  0, D            CB 42           8    z01-     // test bit 0 of register D
+bit  1, D            CB 4A           8    z01-     // test bit 1 of register D
+bit  2, D            CB 52           8    z01-     // test bit 2 of register D
+bit  3, D            CB 5A           8    z01-     // test bit 3 of register D
+bit  4, D            CB 62           8    z01-     // test bit 4 of register D
+bit  5, D            CB 6A           8    z01-     // test bit 5 of register D
+bit  6, D            CB 72           8    z01-     // test bit 6 of register D
+bit  7, D            CB 7A           8    z01-     // test bit 7 of register D
+bit  0, E            CB 43           8    z01-     // test bit 0 of register E
+bit  1, E            CB 4B           8    z01-     // test bit 1 of register E
+bit  2, E            CB 53           8    z01-     // test bit 2 of register E
+bit  3, E            CB 5B           8    z01-     // test bit 3 of register E
+bit  4, E            CB 63           8    z01-     // test bit 4 of register E
+bit  5, E            CB 6B           8    z01-     // test bit 5 of register E
+bit  6, E            CB 73           8    z01-     // test bit 6 of register E
+bit  7, E            CB 7B           8    z01-     // test bit 7 of register E
+bit  0, H            CB 44           8    z01-     // test bit 0 of register H
+bit  1, H            CB 4C           8    z01-     // test bit 1 of register H
+bit  2, H            CB 54           8    z01-     // test bit 2 of register H
+bit  3, H            CB 5C           8    z01-     // test bit 3 of register H
+bit  4, H            CB 64           8    z01-     // test bit 4 of register H
+bit  5, H            CB 6C           8    z01-     // test bit 5 of register H
+bit  6, H            CB 74           8    z01-     // test bit 6 of register H
+bit  7, H            CB 7C           8    z01-     // test bit 7 of register H
+bit  0, L            CB 45           8    z01-     // test bit 0 of register L
+bit  1, L            CB 4D           8    z01-     // test bit 1 of register L
+bit  2, L            CB 55           8    z01-     // test bit 2 of register L
+bit  3, L            CB 5D           8    z01-     // test bit 3 of register L
+bit  4, L            CB 65           8    z01-     // test bit 4 of register L
+bit  5, L            CB 6D           8    z01-     // test bit 5 of register L
+bit  6, L            CB 75           8    z01-     // test bit 6 of register L
+bit  7, L            CB 7D           8    z01-     // test bit 7 of register L
+bit  0, A            CB 47           8    z01-     // test bit 0 of register A
+bit  1, A            CB 4F           8    z01-     // test bit 1 of register A
+bit  2, A            CB 57           8    z01-     // test bit 2 of register A
+bit  3, A            CB 5F           8    z01-     // test bit 3 of register A
+bit  4, A            CB 67           8    z01-     // test bit 4 of register A
+bit  5, A            CB 6F           8    z01-     // test bit 5 of register A
+bit  6, A            CB 77           8    z01-     // test bit 6 of register A
+bit  7, A            CB 7F           8    z01-     // test bit 7 of register A
 
-bit  0,(HL)          CB 46          12    z01-     // [HL] & {2^0}
-bit  1,(HL)          CB 4E          12    z01-     // [HL] & {2^1}
-bit  2,(HL)          CB 56          12    z01-     // [HL] & {2^2}
-bit  3,(HL)          CB 5E          12    z01-     // [HL] & {2^3}
-bit  4,(HL)          CB 66          12    z01-     // [HL] & {2^4}
-bit  5,(HL)          CB 6E          12    z01-     // [HL] & {2^5}
-bit  6,(HL)          CB 76          12    z01-     // [HL] & {2^6}
-bit  7,(HL)          CB 7E          12    z01-     // [HL] & {2^7}
+bit  0, (HL)         CB 46          12    z01-     // [HL] & {2^0}
+bit  1, (HL)         CB 4E          12    z01-     // [HL] & {2^1}
+bit  2, (HL)         CB 56          12    z01-     // [HL] & {2^2}
+bit  3, (HL)         CB 5E          12    z01-     // [HL] & {2^3}
+bit  4, (HL)         CB 66          12    z01-     // [HL] & {2^4}
+bit  5, (HL)         CB 6E          12    z01-     // [HL] & {2^5}
+bit  6, (HL)         CB 76          12    z01-     // [HL] & {2^6}
+bit  7, (HL)         CB 7E          12    z01-     // [HL] & {2^7}
 
 set  0, B            CB C0           8    ----     // set bit 0 of register B
 set  1, B            CB C8           8    ----     // set bit 1 of register B
@@ -381,80 +381,80 @@ set  5, A            CB EF           8    ----     // set bit 5 of register A
 set  6, A            CB F7           8    ----     // set bit 6 of register A
 set  7, A            CB FF           8    ----     // set bit 7 of register A
 
-set  0,(HL)          CB C6          16    ----     // set bit 0 of [HL]
-set  1,(HL)          CB CE          16    ----     // set bit 1 of [HL]
-set  2,(HL)          CB D6          16    ----     // set bit 2 of [HL]
-set  3,(HL)          CB DE          16    ----     // set bit 3 of [HL]
-set  4,(HL)          CB E6          16    ----     // set bit 4 of [HL]
-set  5,(HL)          CB EE          16    ----     // set bit 5 of [HL]
-set  6,(HL)          CB F6          16    ----     // set bit 6 of [HL]
-set  7,(HL)          CB FE          16    ----     // set bit 7 of [HL]
+set  0, (HL)         CB C6          16    ----     // set bit 0 of [HL]
+set  1, (HL)         CB CE          16    ----     // set bit 1 of [HL]
+set  2, (HL)         CB D6          16    ----     // set bit 2 of [HL]
+set  3, (HL)         CB DE          16    ----     // set bit 3 of [HL]
+set  4, (HL)         CB E6          16    ----     // set bit 4 of [HL]
+set  5, (HL)         CB EE          16    ----     // set bit 5 of [HL]
+set  6, (HL)         CB F6          16    ----     // set bit 6 of [HL]
+set  7, (HL)         CB FE          16    ----     // set bit 7 of [HL]
 
-res  0,B             CB 80           8    ----     // reset bit 0 of register B
-res  1,B             CB 88           8    ----     // reset bit 1 of register B
-res  2,B             CB 90           8    ----     // reset bit 2 of register B
-res  3,B             CB 98           8    ----     // reset bit 3 of register B
-res  4,B             CB A0           8    ----     // reset bit 4 of register B
-res  5,B             CB A8           8    ----     // reset bit 5 of register B
-res  6,B             CB B0           8    ----     // reset bit 6 of register B
-res  7,B             CB B8           8    ----     // reset bit 7 of register B
-res  0,C             CB 81           8    ----     // reset bit 0 of register C
-res  1,C             CB 89           8    ----     // reset bit 1 of register C
-res  2,C             CB 91           8    ----     // reset bit 2 of register C
-res  3,C             CB 99           8    ----     // reset bit 3 of register C
-res  4,C             CB A1           8    ----     // reset bit 4 of register C
-res  5,C             CB A9           8    ----     // reset bit 5 of register C
-res  6,C             CB B1           8    ----     // reset bit 6 of register C
-res  7,C             CB B9           8    ----     // reset bit 7 of register C
-res  0,D             CB 82           8    ----     // reset bit 0 of register D
-res  1,D             CB 8A           8    ----     // reset bit 1 of register D
-res  2,D             CB 92           8    ----     // reset bit 2 of register D
-res  3,D             CB 9A           8    ----     // reset bit 3 of register D
-res  4,D             CB A2           8    ----     // reset bit 4 of register D
-res  5,D             CB AA           8    ----     // reset bit 5 of register D
-res  6,D             CB B2           8    ----     // reset bit 6 of register D
-res  7,D             CB BA           8    ----     // reset bit 7 of register D
-res  0,E             CB 83           8    ----     // reset bit 0 of register E
-res  1,E             CB 8B           8    ----     // reset bit 1 of register E
-res  2,E             CB 93           8    ----     // reset bit 2 of register E
-res  3,E             CB 9B           8    ----     // reset bit 3 of register E
-res  4,E             CB A3           8    ----     // reset bit 4 of register E
-res  5,E             CB AB           8    ----     // reset bit 5 of register E
-res  6,E             CB B3           8    ----     // reset bit 6 of register E
-res  7,E             CB BB           8    ----     // reset bit 7 of register E
-res  0,H             CB 84           8    ----     // reset bit 0 of register H
-res  1,H             CB 8C           8    ----     // reset bit 1 of register H
-res  2,H             CB 94           8    ----     // reset bit 2 of register H
-res  3,H             CB 9C           8    ----     // reset bit 3 of register H
-res  4,H             CB A4           8    ----     // reset bit 4 of register H
-res  5,H             CB AC           8    ----     // reset bit 5 of register H
-res  6,H             CB B4           8    ----     // reset bit 6 of register H
-res  7,H             CB BC           8    ----     // reset bit 7 of register H
-res  0,L             CB 85           8    ----     // reset bit 0 of register L
-res  1,L             CB 8D           8    ----     // reset bit 1 of register L
-res  2,L             CB 95           8    ----     // reset bit 2 of register L
-res  3,L             CB 9D           8    ----     // reset bit 3 of register L
-res  4,L             CB A5           8    ----     // reset bit 4 of register L
-res  5,L             CB AD           8    ----     // reset bit 5 of register L
-res  6,L             CB B5           8    ----     // reset bit 6 of register L
-res  7,L             CB BD           8    ----     // reset bit 7 of register L
-res  0,A             CB 87           8    ----     // reset bit 0 of register A
-res  1,A             CB 8F           8    ----     // reset bit 1 of register A
-res  2,A             CB 97           8    ----     // reset bit 2 of register A
-res  3,A             CB 9F           8    ----     // reset bit 3 of register A
-res  4,A             CB A7           8    ----     // reset bit 4 of register A
-res  5,A             CB AF           8    ----     // reset bit 5 of register A
-res  6,A             CB B7           8    ----     // reset bit 6 of register A
-res  7,A             CB BF           8    ----     // reset bit 7 of register A
+res  0, B            CB 80           8    ----     // reset bit 0 of register B
+res  1, B            CB 88           8    ----     // reset bit 1 of register B
+res  2, B            CB 90           8    ----     // reset bit 2 of register B
+res  3, B            CB 98           8    ----     // reset bit 3 of register B
+res  4, B            CB A0           8    ----     // reset bit 4 of register B
+res  5, B            CB A8           8    ----     // reset bit 5 of register B
+res  6, B            CB B0           8    ----     // reset bit 6 of register B
+res  7, B            CB B8           8    ----     // reset bit 7 of register B
+res  0, C            CB 81           8    ----     // reset bit 0 of register C
+res  1, C            CB 89           8    ----     // reset bit 1 of register C
+res  2, C            CB 91           8    ----     // reset bit 2 of register C
+res  3, C            CB 99           8    ----     // reset bit 3 of register C
+res  4, C            CB A1           8    ----     // reset bit 4 of register C
+res  5, C            CB A9           8    ----     // reset bit 5 of register C
+res  6, C            CB B1           8    ----     // reset bit 6 of register C
+res  7, C            CB B9           8    ----     // reset bit 7 of register C
+res  0, D            CB 82           8    ----     // reset bit 0 of register D
+res  1, D            CB 8A           8    ----     // reset bit 1 of register D
+res  2, D            CB 92           8    ----     // reset bit 2 of register D
+res  3, D            CB 9A           8    ----     // reset bit 3 of register D
+res  4, D            CB A2           8    ----     // reset bit 4 of register D
+res  5, D            CB AA           8    ----     // reset bit 5 of register D
+res  6, D            CB B2           8    ----     // reset bit 6 of register D
+res  7, D            CB BA           8    ----     // reset bit 7 of register D
+res  0, E            CB 83           8    ----     // reset bit 0 of register E
+res  1, E            CB 8B           8    ----     // reset bit 1 of register E
+res  2, E            CB 93           8    ----     // reset bit 2 of register E
+res  3, E            CB 9B           8    ----     // reset bit 3 of register E
+res  4, E            CB A3           8    ----     // reset bit 4 of register E
+res  5, E            CB AB           8    ----     // reset bit 5 of register E
+res  6, E            CB B3           8    ----     // reset bit 6 of register E
+res  7, E            CB BB           8    ----     // reset bit 7 of register E
+res  0, H            CB 84           8    ----     // reset bit 0 of register H
+res  1, H            CB 8C           8    ----     // reset bit 1 of register H
+res  2, H            CB 94           8    ----     // reset bit 2 of register H
+res  3, H            CB 9C           8    ----     // reset bit 3 of register H
+res  4, H            CB A4           8    ----     // reset bit 4 of register H
+res  5, H            CB AC           8    ----     // reset bit 5 of register H
+res  6, H            CB B4           8    ----     // reset bit 6 of register H
+res  7, H            CB BC           8    ----     // reset bit 7 of register H
+res  0, L            CB 85           8    ----     // reset bit 0 of register L
+res  1, L            CB 8D           8    ----     // reset bit 1 of register L
+res  2, L            CB 95           8    ----     // reset bit 2 of register L
+res  3, L            CB 9D           8    ----     // reset bit 3 of register L
+res  4, L            CB A5           8    ----     // reset bit 4 of register L
+res  5, L            CB AD           8    ----     // reset bit 5 of register L
+res  6, L            CB B5           8    ----     // reset bit 6 of register L
+res  7, L            CB BD           8    ----     // reset bit 7 of register L
+res  0, A            CB 87           8    ----     // reset bit 0 of register A
+res  1, A            CB 8F           8    ----     // reset bit 1 of register A
+res  2, A            CB 97           8    ----     // reset bit 2 of register A
+res  3, A            CB 9F           8    ----     // reset bit 3 of register A
+res  4, A            CB A7           8    ----     // reset bit 4 of register A
+res  5, A            CB AF           8    ----     // reset bit 5 of register A
+res  6, A            CB B7           8    ----     // reset bit 6 of register A
+res  7, A            CB BF           8    ----     // reset bit 7 of register A
 
-res  0,(HL)          CB 86          16    ----     // reset bit 0 of [HL]
-res  1,(HL)          CB 8E          16    ----     // reset bit 1 of [HL]
-res  2,(HL)          CB 96          16    ----     // reset bit 2 of [HL]
-res  3,(HL)          CB 9E          16    ----     // reset bit 3 of [HL]
-res  4,(HL)          CB A6          16    ----     // reset bit 4 of [HL]
-res  5,(HL)          CB AE          16    ----     // reset bit 5 of [HL]
-res  6,(HL)          CB B6          16    ----     // reset bit 6 of [HL]
-res  7,(HL)          CB BE          16    ----     // reset bit 7 of [HL]
+res  0, (HL)         CB 86          16    ----     // reset bit 0 of [HL]
+res  1, (HL)         CB 8E          16    ----     // reset bit 1 of [HL]
+res  2, (HL)         CB 96          16    ----     // reset bit 2 of [HL]
+res  3, (HL)         CB 9E          16    ----     // reset bit 3 of [HL]
+res  4, (HL)         CB A6          16    ----     // reset bit 4 of [HL]
+res  5, (HL)         CB AE          16    ----     // reset bit 5 of [HL]
+res  6, (HL)         CB B6          16    ----     // reset bit 6 of [HL]
+res  7, (HL)         CB BE          16    ----     // reset bit 7 of [HL]
 
 ccf                  3F              4    -00c     // cy=cy xor 1
 scf                  37              4    -001     // cy=1
@@ -466,22 +466,22 @@ ei                   FB              4    ----     // enable interrupts, IME=1
 
 jp   %2              C3             16    ----     // jump to %2, PC=%2
 jp   HL              E9              4    ----     // jump to HL, PC=HL
-jp   CY ,%2          DA          16;12    ----     // conditional jump if CY 
-jp   !CY,%2          D2          16;12    ----     // conditional jump if !CY
-jp   !Z ,%2          C2          16;12    ----     // conditional jump if !Z 
-jp   Z  ,%2          CA          16;12    ----     // conditional jump if Z  
+jp   CY, %2          DA          16;12    ----     // conditional jump if CY 
+jp   !CY, %2         D2          16;12    ----     // conditional jump if !CY
+jp   !Z, %2          C2          16;12    ----     // conditional jump if !Z 
+jp   Z, %2           CA          16;12    ----     // conditional jump if Z  
 
 jr   PC+%s           18             12    ----     // relative jump to %s (PC=PC+/-7bit)
-jr   CY ,PC+%s       38           12;8    ----     // conditional relative jump if CY 
-jr   !CY,PC+%s       30           12;8    ----     // conditional relative jump if !CY
-jr   !Z ,PC+%s       20           12;8    ----     // conditional relative jump if !Z 
-jr   Z  ,PC+%s       28           12;8    ----     // conditional relative jump if Z 
+jr   CY, PC+%s       38           12;8    ----     // conditional relative jump if CY 
+jr   !CY, PC+%s      30           12;8    ----     // conditional relative jump if !CY
+jr   !Z, PC+%s       20           12;8    ----     // conditional relative jump if !Z 
+jr   Z, PC+%s        28           12;8    ----     // conditional relative jump if Z 
 
 call %2              CD             24    ----     // call to %2, SP=SP-2, (SP)=PC, PC=%2
-call CY ,%2          DC          24;12    ----     // conditional call if CY 
-call !CY,%2          D4          24;12    ----     // conditional call if !CY
-call !Z ,%2          C4          24;12    ----     // conditional call if !Z 
-call Z  ,%2          CC          24;12    ----     // conditional call if Z  
+call CY, %2          DC          24;12    ----     // conditional call if CY 
+call !CY, %2         D4          24;12    ----     // conditional call if !CY
+call !Z, %2          C4          24;12    ----     // conditional call if !Z 
+call Z, %2           CC          24;12    ----     // conditional call if Z  
 
 ret                  C9             16    ----     // return, PC=(SP), SP=SP+2
 ret  CY              D8           20;8    ----     // conditional return if CY 

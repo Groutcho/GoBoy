@@ -4,7 +4,6 @@
 import re
 import sys
 from textwrap import dedent, indent
-from stream import *
 from binascii import unhexlify
 
 skip_re = re.compile(r'[ ,]*')
@@ -405,18 +404,18 @@ def parse_bit(tokens, s):
 
 dispatch = {\
     'ld': parse_ld,
-    'rst': parse_rst,
-    'swap': parse_swap,
-    'inc': parse_inc,
-    'dec': parse_dec,
-    'push': parse_push,
-    'nop': parse_nop,
-    'res': parse_set,
-    'set': parse_set,
-    'add': parse_add,
-    'adc': parse_add,
-    'call': parse_call,
-    'bit': parse_bit,
+    #'rst': parse_rst,
+    #'swap': parse_swap,
+    #'inc': parse_inc,
+    #'dec': parse_dec,
+    #'push': parse_push,
+    #'nop': parse_nop,
+    #'res': parse_set,
+    #'set': parse_set,
+    #'add': parse_add,
+    #'adc': parse_add,
+    #'call': parse_call,
+    #'bit': parse_bit,
 }
 
 
@@ -434,7 +433,6 @@ def make_func(tokens, s, file):
         opcode = get(tokens, EX_OPCODE)
 
     mnemonic = tokens[0]
-    func_name = 'func '
 
     if mnemonic.value in dispatch:
         result = dispatch[mnemonic.value](tokens, s)
@@ -443,14 +441,20 @@ def make_func(tokens, s, file):
         return
 
     if extended:
-        func_name += "x{}_{}".format(opcode.value.replace(' ', '_'), mnemonic.value)
+        func_name = "x{}_{}".format(opcode.value.replace(' ', '_'), mnemonic.value)
     else:
-        func_name += "x{}_{}".format(opcode.value, mnemonic.value)
+        func_name = "x{}_{}".format(opcode.value, mnemonic.value)
     comment = '// {} - {}'.format(desc, get(tokens, COMMENT).value)
 
     print(comment, file=file)
-    print(func_name + '() uint8 {', file=file)
+    print('func ' + func_name + '() uint8 {', file=file)
 
+    if opcode.code == EX_OPCODE:
+        oc = unhexlify(opcode.value[-2:])[0] + 0xFF
+        ret =(oc, func_name)
+    else:
+        oc = unhexlify(opcode.value)[0]
+        ret = (oc, func_name)
 
     if result:
         print('\t%s\n' % result, file=file)
@@ -467,6 +471,20 @@ def make_func(tokens, s, file):
         }}""".format(cycle_a, cycle_b)), '\t'), file=file)
 
     print('}\n', file=file)
+    return ret
+
+
+def make_dispatch_table(instructions):
+    with open('../src/cpu/table.go', 'wt') as f:
+        print("// this package is automatically generated.", file=f)
+        print('package cpu\n', file=f)
+
+        print('func init() {', file=f)
+
+        for opcode, name in instructions:
+            print('\tdispatch_table[0x{:03X}] = {}'.format(opcode, name), file=f)
+
+        print('}', file=f)
 
 
 def main(use_file=True):
@@ -475,13 +493,17 @@ def main(use_file=True):
             with open('../src/cpu/instructions.go', 'wt') as f:
                 print("// this package is automatically generated.", file=f)
                 print('package cpu\n', file=f)
-                print('import . "registers"\n', file=f)
                 print('import . "memory"\n', file=f)
+
+                func_names = []
 
                 for line in cpu.readlines():
                     if line.strip():
                         tokens = tokenize(line)
-                        make_func(tokens, line, f)
+                        n = make_func(tokens, line, f)
+                        if n:
+                            func_names.append(n)
+                make_dispatch_table(func_names)
                 for un in unsupp:
                     print('// %s' % un, file=f)
 
