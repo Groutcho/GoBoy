@@ -2,7 +2,13 @@
     "folders":
     [
         {
-            "path": "."
+            "path": ".",
+            "folder_exclude_pattern": ["pkg"],
+            "file_exclude_patterns": ["*.pyc"]
         }
-    ]
+    ],
+    "settings":
+    {
+        "tab_size": 4
+    }
 }
