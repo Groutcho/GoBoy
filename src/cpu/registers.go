@@ -141,6 +141,21 @@ func IncPC() {
 	registers.PC += 1
 }
 
+// Increment the PC.
+func IncSP() {
+	registers.SP += 1
+}
+
+// Decrement the PC.
+func DecPC() {
+	registers.PC -= 1
+}
+
+// Decrement the PC.
+func DecSP() {
+	registers.SP -= 1
+}
+
 // Return the value of the PC register.
 func GetPC() uint16 {
 	return registers.PC

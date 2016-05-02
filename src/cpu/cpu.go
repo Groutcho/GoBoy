@@ -41,6 +41,19 @@ func FetchOperand16() uint16 {
 	return (operand0 << 8) | operand1
 }
 
+// Perform a call: Decrement the stack pointer of 2 bytes,
+// copy the current address in the two allocated bytes, then
+// set the program counter to the given address.
+func Call(addr uint16) {
+	DecSP()
+	DecSP()
+
+	Set(GetSP(), 	 getLowBits(GetPC()))
+	Set(GetSP() + 1, getHighBits(GetPC()))
+
+	SetPC(addr)
+}
+
 // execute the next instruction and return the number of cycles taken
 // by this instruction, as a multiple of 4, i.e unit cycles and not
 // actual CPU cycles. The minimal amount of cycles is 1.
