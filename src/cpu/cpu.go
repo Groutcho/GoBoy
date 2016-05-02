@@ -1,6 +1,5 @@
 package cpu
 
-import . "registers"
 import . "memory"
 
 // The dispatch table is used to redirect a given instruction to its

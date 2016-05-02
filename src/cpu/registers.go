@@ -2,7 +2,7 @@
 This package contains all functions relative to manipulating the registers
 of the GoBoy emulator.
 */
-package registers
+package cpu
 
 import (
 

@@ -2,7 +2,6 @@ package cpu
 
 import "testing"
 import . "memory"
-import . "registers"
 
 func TestFetch(t* testing.T) {
 	arr := make([]byte, 4)
