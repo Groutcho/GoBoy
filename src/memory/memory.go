@@ -1,5 +1,10 @@
 package memory
 
+import (
+	"bytes"
+	"fmt"
+)
+
 /* the game boy address space is 16bit wide */
 var RAM = new([65536]byte)
 
@@ -38,6 +43,20 @@ func GetRange(from uint16, to uint16) []byte {
 	}
 
 	return result
+}
+
+func DumpRange(from uint16, to uint16) string {
+
+	var buffer bytes.Buffer
+
+	for i := 0; i < len(RAM[from:to + 1]); i++ {
+		if RAM[i] == 0x00 {
+			buffer.WriteString("__ ")
+		} else {
+			buffer.WriteString(fmt.Sprintf("%02X ", RAM[i]))
+		}
+	}
+	return buffer.String()
 }
 
 /* reset the RAM to 0 */
