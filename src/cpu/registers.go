@@ -285,6 +285,48 @@ func GetFlagCy() bool {
 	return (registers.F & 0x10) != 0
 }
 
+func GetFlagCyInt() int {
+	if GetFlagCy() {
+		return 1
+	} else {
+		return 0
+	}
+}
+
+func GetFlagZfInt() int {
+	if GetFlagZf() {
+		return 1
+	} else {
+		return 0
+	}
+}
+
+func GetFlagHInt() int {
+	if GetFlagH() {
+		return 1
+	} else {
+		return 0
+	}
+}
+
+func GetFlagNInt() int {
+	if GetFlagN() {
+		return 1
+	} else {
+		return 0
+	}
+}
+
+func IsHalfCarry(left uint8, right uint8) int {
+	if (left & 0xF0) + (right & 0xF0) > 0xF {
+		return 1
+	} else {
+		return 0
+	}
+}
+
+
+
 // Set the Z, H, N, C flags according to the provided strategies:
 //  - F_SET_0: unset the flag
 //  - F_SET_1: set the flag
