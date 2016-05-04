@@ -50,7 +50,8 @@ FLAG_SET_TO_ONE = 1
 FLAG_SET_TO_ZERO = 2
 FLAG_UNCHANGED = 3
 
-write_packages = ('ld',)
+write_packages = ('ld', 'add', 'adc')
+write_table = ('ld', 'call', 'add', 'adc')
 
 class Instruction(object):
     def __init__(self, mnemonic, description, opcode, cycles, flags, comment, line):
@@ -317,41 +318,51 @@ def parse_add(instruction):
 
     opAstr = 'Get{}()'.format(opA.value)
 
-    opBstr = '<error>'
-    if opB.code in (REG8, REG16):
-        opBstr = 'Get{}()'.format(opB.value)
-    elif opB.code == OPERAND8:
-        opBstr = 'FetchOperand8()'
-    elif opB.code == OPERANDU8:
-        opBstr = 'int8(FetchOperand8())'
-    elif opB.code == OPERAND16REF:
-        opBstr = 'Get(FetchOperand16())'
-    elif opB.code == REF_REG:
-        opBstr = 'Get(Get{}())'.format(opB.value)
+    pattern = \
+    """
+    left := {left}
+    right := {right}
+    result := int(left) + int(right){opt}
 
-    dest = 'Set{}'.format(opA.value)
+    Set{dest}(uint{width}(result))
+    hcarry := {hc}
+    SetFlags(result, {zFlag}, F_SET_0, hcarry, F_SET_IF, F_{width}bit)
+    """
 
-    code = 'opA := {}\n'.format(opAstr)
-    code += '\topB := {}\n'.format(opBstr)
+    left = ""
+    right = ""
+    opt = " + GetFlagCyInt()" if instruction.mnemonic == "adc" else ""
+    dest = ""
+    hc = "IsHalfCarry(left, right)"
+    width = 8
+    zFlag = "F_SET_IF"
 
-    if instruction.mnemonic == 'add':
-        code += "\tresult := int(opA) + int(opB)\n"
-        code += "\tif result > 0xFF {\n"
-        code += "\t\tSetFlagCy(true)\n"
-        code += "\t}\n\n"
+    left = 'Get{}()'.format(opA.value)
+    dest = opA.value
+    if opA.code == REG16:
+        width = 16
+        zFlag = "F_IGNORE"
+        if opB.code == OPERANDU8:
+            hc = "IsHalfCarry(getHighBits(left), right)"
+        else:
+            hc = "IsHalfCarry(getHighBits(left), getHighBits(right))"
 
-        if opA.code == REG8:
-            code += '\t{}(uint8(result))'.format(dest)
-        elif opA.code == REG16:
-            code += '\t{}(uint16(result))'.format(dest)
+    b = opB.code
+    if b in (REG8, REG16):
+        right = 'Get{}()'.format(opB.value)
+    elif b == OPERAND8:
+        right = 'FetchOperand8()'
+    elif b == OPERANDU8:
+        right = 'FetchOperand8()'
+    elif b == OPERAND16REF:
+        right = 'Get(FetchOperand16())'
+    elif b == REF_REG:
+        right = 'Get(Get{}())'.format(opB.value)
 
-    elif instruction.mnemonic == 'adc':
-        code += '\n\tif GetFlagCy() {\n'
-        code += '\t\t{}(opA + opB + 1)\n'.format(dest)
-        code += '\t} else {\n'
-        code += '\t\t{}(opA + opB)\n'.format(dest)
-        code += '\t}'
-    return code
+    code = pattern.format(left=left, right=right, opt=opt, hc=hc,
+                          dest=dest, width=width, zFlag=zFlag)
+
+    return code.strip()
 
 
 def parse_inc(instruction):
@@ -449,7 +460,7 @@ dispatch = {\
     'res': parse_set,
     'set': parse_set,
     'add': parse_add,
-    #'adc': parse_add,
+    'adc': parse_add,
     # 'call': parse_call,
     'bit': parse_bit,
 }
@@ -506,13 +517,14 @@ def make_dispatch_table(instructions:dict):
 
         print('func init() {', file=f)
 
-        for lst in instructions.values():
-            for instr in lst:
-                if instr.opcode[1]:
-                    oc = 0xFF + unhexlify(instr.opcode[0])[0]
-                else:
-                    oc = unhexlify(instr.opcode[0])[0]
-                print('\tdispatch_table[0x{:03X}] = {}'.format(oc, instr.func_name()), file=f)
+        for k, v in instructions.items():
+            if k in write_table:
+                for instr in v:
+                    if instr.opcode[1]:
+                        oc = 0xFF + unhexlify(instr.opcode[0])[0]
+                    else:
+                        oc = unhexlify(instr.opcode[0])[0]
+                    print('\tdispatch_table[0x{:03X}] = {}'.format(oc, instr.func_name()), file=f)
 
         print('}', file=f)
 
