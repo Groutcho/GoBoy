@@ -318,7 +318,7 @@ func GetFlagNInt() int {
 }
 
 func IsHalfCarry(left uint8, right uint8) int {
-	if (left & 0xF0) + (right & 0xF0) > 0xF {
+	if (left & 0x0F) + (right & 0x0F) > 0xF {
 		return 1
 	} else {
 		return 0
