@@ -50,6 +50,8 @@ FLAG_SET_TO_ONE = 1
 FLAG_SET_TO_ZERO = 2
 FLAG_UNCHANGED = 3
 
+write_packages = ('ld',)
+
 class Instruction(object):
     def __init__(self, mnemonic, description, opcode, cycles, flags, comment, line):
         self.mnemonic = mnemonic
@@ -217,9 +219,9 @@ def parse_cycles(s):
         return 0, 0
 
 
-def parse_ld(tokens, s):
-    opA = tokens[0]
-    opB = tokens[1]
+def parse_ld(instruction):
+    opA = instruction.description[0]
+    opB = instruction.description[1]
 
     src = None
     if opB.code == OPERAND8:
@@ -251,37 +253,37 @@ def parse_ld(tokens, s):
     return '{}{})'.format(dest, src)
 
 
-def parse_rst(tokens, s):
-    addr = unhexlify(tokens[0].value)[0]
+def parse_rst(instruction):
+    addr = unhexlify(instruction.description[0].value)[0]
 
     return  "Call(0x{:04x})".format(addr)
 
 
-def parse_set(tokens, s):
-    assert tokens[1].code == CONSTANT
-    assert tokens[2].code in (REG8, REF_REG)
-    n_bit = int(tokens[1].value)
+def parse_set(instruction):
+    assert instruction.description[0].code == CONSTANT
+    assert instruction.descriptio[1].code in (REG8, REF_REG)
+    n_bit = int(instruction.description[0].value)
 
-    if tokens[0].value == 'res':
+    if instruction.description[0].value == 'res':
         value = '0'
     else:
         value = '1'
 
-    if tokens[2].code == REG8:
+    if instruction.description[1].code == REG8:
         code = indent(dedent("""
         value := SetBit(Get{0}(), {1}, {2})
-        Set{0}(value)""".format(tokens[2].value, n_bit, value)), '\t')
+        Set{0}(value)""".format(instruction.description[1].value, n_bit, value)), '\t')
     else:
         code = indent(dedent("""
         addr := Get{0}()
         value := SetBit(Get(addr), {1}, {2})
-        Set(addr, value)""".format(tokens[2].value, n_bit, value)), '\t')
+        Set(addr, value)""".format(instruction.description[1].value, n_bit, value)), '\t')
 
     return code.strip()
 
 
-def parse_swap(tokens, s):
-    target = tokens[1]
+def parse_swap(instruction):
+    target = instruction.description[1]
 
     if target.code == REG8:
         operation = 'Set{0}(Swap(Get{0}()))'.format(target.value)
@@ -297,16 +299,18 @@ def custom_impl_F8():
     ld   HL, SP+%s
     """
 
-    code =  "operand := int32(FetchOperand8())\n" +\
-            "\tSetHL(uint16(int32(GetSP()) + operand))"
+    code =  "operand := int(FetchOperand8())\n" +\
+            "\tresult := int(GetSP()) + operand\n" +\
+            "\tSetHL(uint16(result))\n" +\
+            "\tSetFlags(result, F_SET_IF, F_SET_0, F_SET_0, F_IGNORE, F_16bit)"
 
 
     return code
 
 
-def parse_add(tokens, s):
-    opA = tokens[1]
-    opB = tokens[2]
+def parse_add(instruction):
+    opA = instruction.description[0]
+    opB = instruction.description[1]
 
     assert opA.code in (REG8, REG16), "first operand of add should be 8bit or 16bit register"
     assert opB.code in (REG8, REG16, OPERANDU8, OPERAND8, REF_REG), "second operand of add invalid %s" % opB.code
@@ -330,9 +334,18 @@ def parse_add(tokens, s):
     code = 'opA := {}\n'.format(opAstr)
     code += '\topB := {}\n'.format(opBstr)
 
-    if tokens[0].value == 'add':
-        code += '\t{}(opA + opB)'.format(dest)
-    elif tokens[0].value == 'adc':
+    if instruction.mnemonic == 'add':
+        code += "\tresult := int(opA) + int(opB)\n"
+        code += "\tif result > 0xFF {\n"
+        code += "\t\tSetFlagCy(true)\n"
+        code += "\t}\n\n"
+
+        if opA.code == REG8:
+            code += '\t{}(uint8(result))'.format(dest)
+        elif opA.code == REG16:
+            code += '\t{}(uint16(result))'.format(dest)
+
+    elif instruction.mnemonic == 'adc':
         code += '\n\tif GetFlagCy() {\n'
         code += '\t\t{}(opA + opB + 1)\n'.format(dest)
         code += '\t} else {\n'
@@ -341,8 +354,8 @@ def parse_add(tokens, s):
     return code
 
 
-def parse_inc(tokens, s):
-    target = tokens[1]
+def parse_inc(instruction):
+    target = instruction.description[0]
 
     assert target.code in (REG8, REG16, REF_REG)
 
@@ -355,8 +368,8 @@ def parse_inc(tokens, s):
     return code
 
 
-def parse_dec(tokens, s):
-    target = tokens[1]
+def parse_dec(instruction):
+    target = instruction.description[0]
 
     assert target.code in (REG8, REG16, REF_REG)
 
@@ -369,15 +382,15 @@ def parse_dec(tokens, s):
     return code
 
 
-def parse_push(tokens, s):
-    reg = tokens[1]
+def parse_push(instruction):
+    reg = instruction.description[1]
     assert reg.code == REG16
 
     code = 'Push(Get{}())'.format(reg.value)
     return code
 
 
-def parse_nop(tokens, s):
+def parse_nop(instruction):
     return None
 
 
@@ -388,12 +401,12 @@ def get_flag(flag):
         return 'GetFlagZf'
 
 
-def parse_call(tokens, s):
-    if tokens[1].code == OPERAND16:
+def parse_call(instruction):
+    if instruction.description[1].code == OPERAND16:
         return "Call(FetchOperand16())"
-    elif tokens[1].code == BOOL_NOT:
-        if tokens[2].code == FLAG:
-            fl = get_flag(tokens[2].value)
+    elif instruction.description[1].code == BOOL_NOT:
+        if instruction.description[2].code == FLAG:
+            fl = get_flag(instruction.description[2].value)
             code = 'jmp := false\n\n'
             code += '\tif !{}() {{\n'.format(fl)
             code += '\t\tjmp = true\n'
@@ -401,8 +414,8 @@ def parse_call(tokens, s):
             code += '\t}'
             return code
 
-    elif tokens[1].code == FLAG:
-        fl = get_flag(tokens[1].value)
+    elif instruction.description[1].code == FLAG:
+        fl = get_flag(instruction.description[1].value)
         code = 'jmp := false\n\n'
         code += '\tif {}() {{\n'.format(fl)
         code += '\t\tjmp = true\n'
@@ -411,21 +424,16 @@ def parse_call(tokens, s):
         return code
 
 
-def parse_bit(tokens, s):
-    n_bit = tokens[1].value
-    if tokens[2].code == REG8:
-        target = 'Get{}()'.format(tokens[2].value)
+def parse_bit(instruction):
+    operand = instruction.description[1]
+    n_bit = instruction.description[0].value
+    if operand.code == REG8:
+        target = 'Get{}()'.format(operand.value)
     else:
-        target = 'Get(Get{}())'.format(tokens[2].value)
+        target = 'Get(Get{}())'.format(operand.value)
 
-    code = 'if set := GetBit({}, {}); set {{\n'.format(n_bit, target)
-    code += '\t\tSetFlagZf(true)\n'
-    code += '\t} else {\n'
-    code += '\t\tSetFlagZf(false)\n'
-    code += '\t}\n\n'
-
-    code += '\tSetFlagN(false)\n'
-    code += '\tSetFlagHc(false)\n'
+    code = 'set := GetBit({}, {});\n'.format(n_bit, target)
+    code += '\tSetFlags(int(set), F_SET_IF, F_SET_0, F_SET_0, F_IGNORE, F_8bit)'
 
     return code
 
@@ -434,16 +442,16 @@ dispatch = {\
     'ld': parse_ld,
     'rst': parse_rst,
     'swap': parse_swap,
-    #'inc': parse_inc,
-    #'dec': parse_dec,
+    'inc': parse_inc,
+    'dec': parse_dec,
     #'push': parse_push,
-    #'nop': parse_nop,
-    #'res': parse_set,
-    #'set': parse_set,
-    #'add': parse_add,
+    'nop': parse_nop,
+    'res': parse_set,
+    'set': parse_set,
+    'add': parse_add,
     #'adc': parse_add,
-    #'call': parse_call,
-    #'bit': parse_bit,
+    # 'call': parse_call,
+    'bit': parse_bit,
 }
 
 custom_impl_table = {'F8': custom_impl_F8}
@@ -456,7 +464,7 @@ def make_func(instr, file):
     if instr.opcode[0] in custom_impl_table:
         result = custom_impl_table[instr.opcode[0]]()
     elif instr.mnemonic in dispatch:
-        result = dispatch[instr.mnemonic](instr.description, instr.line)
+        result = dispatch[instr.mnemonic](instr)
     else:
         unsupp.add('unsupported mnemonic: %s' % instr.mnemonic)
         return
@@ -491,45 +499,55 @@ def make_func(instr, file):
     return ret
 
 
-def make_dispatch_table(instructions):
+def make_dispatch_table(instructions:dict):
     with open('../src/cpu/table.go', 'wt') as f:
         print("// this package is automatically generated.", file=f)
         print('package cpu\n', file=f)
 
         print('func init() {', file=f)
 
-        for opcode, name in instructions:
-            print('\tdispatch_table[0x{:03X}] = {}'.format(opcode, name), file=f)
+        for lst in instructions.values():
+            for instr in lst:
+                if instr.opcode[1]:
+                    oc = 0xFF + unhexlify(instr.opcode[0])[0]
+                else:
+                    oc = unhexlify(instr.opcode[0])[0]
+                print('\tdispatch_table[0x{:03X}] = {}'.format(oc, instr.func_name()), file=f)
 
         print('}', file=f)
 
 header = \
-"""
-// this package is automatically generated by instruction_generator.py
+"""// this package is automatically generated by instruction_generator.py
 package cpu
 
 import . "memory"
 
 """
 
+def parse_file(filename):
+    result = dict()
+    with open(filename) as cpu:
+        for line in cpu.readlines():
+            if line.strip():
+                instruction = Instruction.parse(line)
+                if instruction.mnemonic not in result:
+                    result[instruction.mnemonic] = []
+                result[instruction.mnemonic].append(instruction)
+    return result
 
 def main():
-    with open('instructions.CPU') as cpu:
-        with open('../src/cpu/instructions.go', 'wt') as f:
+    instructions = parse_file('instructions.CPU')
 
-            print(header, file=f)
-
-            func_names = []
-
-            for line in cpu.readlines():
-                if line.strip():
-                    instruction = Instruction.parse(line)
+    for mnemonic in instructions:
+        if mnemonic in write_packages:
+            with open('../src/cpu/{}.go'.format(mnemonic), 'wt') as f:
+                print(header, file=f)
+                for instruction in instructions[mnemonic]:
                     n = make_func(instruction, f)
-                    if n:
-                        func_names.append(n)
-            make_dispatch_table(func_names)
-            for un in unsupp:
-                print('// %s' % un, file=f)
+
+    make_dispatch_table(instructions)
+    for un in unsupp:
+        print(un)
 
 if __name__ == "__main__":
     main()
