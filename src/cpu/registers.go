@@ -333,14 +333,12 @@ func IsHalfCarry(left uint8, right uint8) int {
 //  - F_SET_IF: set the flag if needed (e.g the value equals to 0,
 //    the zero flag is set)
 //  - F_IGNORE: leave this flag unchanged
-func SetFlags(value int, Z int, H int, N int, C int, size int) {
+func SetFlags(value int, Z int, N int, H int, C int, size int) {
 	if Z == F_SET_0 {
 		SetFlagZf(false)
-	}
-	if Z == F_SET_1 {
+	} else if Z == F_SET_1 {
 		SetFlagZf(true)
-	}
-	if Z == F_SET_IF {
+	} else if Z == F_SET_IF {
 		if value == 0 {
 			SetFlagZf(true)
 		} else {
@@ -348,27 +346,23 @@ func SetFlags(value int, Z int, H int, N int, C int, size int) {
 		}
 	}
 
-	// if H == F_SET_0 {
-	// 	SetFlagH(false)
-	// }
-	// if H == F_SET_1 {
-	// 	SetFlagH(true)
-	// }
-	// if H == F_SET_IF {
-	// 	if value == 0 {
-	// 		SetFlagZf(true)
-	// 	} else {
-	// 		SetFlagZf(false)
-	// 	}
-	// }
+	if H == F_SET_0 {
+		SetFlagH(false)
+	} else if H == F_SET_1 {
+		SetFlagH(true)
+	}
+
+	if N == F_SET_0 {
+		SetFlagN(false)
+	} else if N == F_SET_1 {
+		SetFlagN(true)
+	}
 
 	if C == F_SET_0 {
 		SetFlagCy(false)
-	}
-	if C == F_SET_1 {
+	} else if C == F_SET_1 {
 		SetFlagCy(true)
-	}
-	if C == F_SET_IF {
+	} else if C == F_SET_IF {
 		limit := 0xFF
 		if size == F_16bit {
 			limit = 0xFFFF
