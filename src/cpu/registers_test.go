@@ -190,6 +190,33 @@ func TestIncPC(t *testing.T) {
 	}
 }
 
+func TestIncBC(t *testing.T) {
+	SetBC(0x0025)
+	IncBC()
+
+	if bc := GetBC(); bc != 0x0026 {
+		t.Errorf("TestIncBC() failed: BC should be 0x0026, got 0x%04x", bc)
+	}
+}
+
+func TestIncDE(t *testing.T) {
+	SetDE(0x0025)
+	IncDE()
+
+	if de := GetDE(); de != 0x0026 {
+		t.Errorf("TestIncDE() failed: DE should be 0x0026, got 0x%04x", de)
+	}
+}
+
+func TestIncAF(t *testing.T) {
+	SetAF(0x0025)
+	IncAF()
+
+	if af := GetAF(); af != 0x0026 {
+		t.Errorf("TestIncAF() failed: AF should be 0x0026, got 0x%04x", af)
+	}
+}
+
 func TestSwap(t *testing.T) {
 
 	values := [...]uint8{
