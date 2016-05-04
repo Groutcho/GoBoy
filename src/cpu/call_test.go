@@ -1,9 +1,10 @@
 package cpu
 
 import "testing"
+// import . "memory"
 
-func TestxCD_call(t* testing.T) {
-	program := [...]byte{
+func TestXCD_call(t* testing.T) {
+	program := []byte{
 		0x45, // garbage
 		0x45, // garbage
 		0x45, // garbage

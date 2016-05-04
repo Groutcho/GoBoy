@@ -10,7 +10,8 @@ func TestFetch(t* testing.T) {
 	arr[2] = 0xCB
 	arr[3] = 0x98
 
-	SetRange(0x0000, 0x0003, arr)
+	LoadProgram(arr)
+	SetPC(0x0000)
 
 	startingPC := GetPC()
 	currentPC := startingPC
@@ -73,7 +74,8 @@ func TestExecuteNext(t* testing.T) {
 	arr[2] = 0xFA
 	arr[3] = 0xFB
 
-	SetRange(0x0000, 0x0003, arr)
+	LoadProgram(arr)
+	SetPC(0x0000)
 
 	dispatch_table[0xF8] = op0
 	dispatch_table[0xF9] = op1
@@ -102,7 +104,7 @@ func TestExecuteNext(t* testing.T) {
 }
 
 func TestLdImmediateInstructions(t* testing.T) {
-	program := [...]byte{
+	program := []byte{
 		0x3E, 0x25, // ld A 0x25
 		0x06, 0x65, // ld B 0x65
 		0x0E, 0x77, // ld C 0x77
@@ -112,7 +114,7 @@ func TestLdImmediateInstructions(t* testing.T) {
 		0x2E, 0x9D, // ld L 0x9D
 	}
 
-	SetRange(0x0000, uint16(len(program)) -1, program[:])
+	LoadProgram(program)
 	SetPC(0x0000)
 
 	ExecuteNext()
@@ -147,7 +149,7 @@ func TestLdImmediateInstructions(t* testing.T) {
 }
 
 func TestLdRegistersInstructions(t* testing.T) {
-	program := [...]byte{
+	program := []byte{
 		0x78, // ld A, B
 		0x79, // ld A, C
 		0x7A, // ld A, D
@@ -157,7 +159,7 @@ func TestLdRegistersInstructions(t* testing.T) {
 		0x7F, // ld A, A
 	}
 
-	SetRange(0x0000, uint16(len(program)) -1, program[:])
+	LoadProgram(program)
 	SetPC(0x0000)
 
 	SetA(0x58)
@@ -195,7 +197,7 @@ func TestLdRegistersInstructions(t* testing.T) {
 }
 
 func TestLdReferenceHLInstructions(t* testing.T) {
-	program := [...]byte{
+	program := []byte{
 		0x7E, // ld   A, (HL)
 		0x46, // ld   B, (HL)
 		0x4E, // ld   C, (HL)
@@ -205,7 +207,7 @@ func TestLdReferenceHLInstructions(t* testing.T) {
 		0x6E, // ld   L, (HL)
 	}
 
-	SetRange(0x0000, uint16(len(program)) -1, program[:])
+	LoadProgram(program)
 	SetPC(0x0000)
 
 	SetHL(0x1000)
@@ -243,7 +245,7 @@ func TestLdReferenceHLInstructions(t* testing.T) {
 }
 
 func TestLdToReferenceHLInstructions(t* testing.T) {
-	program := [...]byte{
+	program := []byte{
         0x70, // ld   (HL), B
         0x71, // ld   (HL), C
         0x72, // ld   (HL), D
@@ -254,7 +256,7 @@ func TestLdToReferenceHLInstructions(t* testing.T) {
         0x36, 0x88, // ld   (HL), 0x88
 	}
 
-	SetRange(0x0000, uint16(len(program)) -1, program[:])
+	LoadProgram(program)
 	SetPC(0x0000)
 
 	SetHL(0x1000)
