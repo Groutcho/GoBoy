@@ -22,6 +22,10 @@ func Get(addr uint16) byte {
 	return RAM[addr]
 }
 
+func Get16(addr uint16) uint16 {
+	return uint16(uint16(RAM[addr]) << 8 | uint16(RAM[addr + 1]))
+}
+
 func Set(addr uint16, value byte) {
 	RAM[addr] = value
 }
