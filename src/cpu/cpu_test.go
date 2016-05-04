@@ -44,22 +44,22 @@ func TestFetch(t* testing.T) {
 	}
 }
 
-func op0() uint8 {
+func op0() int {
 	SetA(0x27)
 	return 1
 }
 
-func op1() uint8 {
+func op1() int {
 	SetA(0x44)
 	return 1
 }
 
-func op2() uint8 {
+func op2() int {
 	SetA(0x38)
 	return 1
 }
 
-func op3() uint8 {
+func op3() int {
 	SetA(0xFF)
 	return 1
 }

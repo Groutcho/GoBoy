@@ -433,7 +433,7 @@ def parse_bit(tokens, s):
 dispatch = {\
     'ld': parse_ld,
     'rst': parse_rst,
-    #'swap': parse_swap,
+    'swap': parse_swap,
     #'inc': parse_inc,
     #'dec': parse_dec,
     #'push': parse_push,
@@ -464,7 +464,7 @@ def make_func(instr, file):
     comment = '// {} - {}'.format(instr.line[:21].strip(), instr.comment.strip('/ \n'))
 
     print(comment, file=file)
-    print('func ' + instr.func_name() + '() uint8 {', file=file)
+    print('func ' + instr.func_name() + '() int {', file=file)
 
     print(instr.opcode[0])
     if instr.opcode[1]:

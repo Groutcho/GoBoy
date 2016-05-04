@@ -57,7 +57,7 @@ func Call(addr uint16) {
 // execute the next instruction and return the number of cycles taken
 // by this instruction, as a multiple of 4, i.e unit cycles and not
 // actual CPU cycles. The minimal amount of cycles is 1.
-func ExecuteNext() uint8 {
+func ExecuteNext() int {
 	opcode := Fetch()
 	return dispatch_table[opcode]()
 }
