@@ -42,6 +42,14 @@ type Registers struct {
 }
 
 var registers Registers
+var (
+	F_SET_0 = 0
+	F_SET_1 = 1
+	F_SET_IF = 2
+	F_IGNORE = 3
+	F_8bit = 4
+	F_16bit = 5
+)
 
 func init() {
 	registers = Registers{
@@ -82,6 +90,14 @@ func SetBit(value uint8, bit uint8, set uint8) uint8 {
 		return value | (1 << bit)
 	} else {
 		return value & ^(1 << bit)
+	}
+}
+
+func GetBit(value uint8, bit uint8) uint8 {
+	if value & (1 << bit) == 0 {
+		return 0
+	} else {
+		return 1
 	}
 }
 
@@ -267,6 +283,57 @@ func GetFlagH() bool {
 // Return the value of the CY (carry) flag.
 func GetFlagCy() bool {
 	return (registers.F & 0x10) != 0
+}
+
+// Set the Z, H, N, C flags according to the provided strategies:
+//  - F_SET_0: unset the flag
+//  - F_SET_1: set the flag
+//  - F_SET_IF: set the flag if needed (e.g the value equals to 0,
+//    the zero flag is set)
+//  - F_IGNORE: leave this flag unchanged
+func SetFlags(value int, Z int, H int, N int, C int, size int) {
+	if Z == F_SET_0 {
+		SetFlagZf(false)
+	}
+	if Z == F_SET_1 {
+		SetFlagZf(true)
+	}
+	if Z == F_SET_IF {
+		if value == 0 {
+			SetFlagZf(true)
+		} else {
+			SetFlagZf(false)
+		}
+	}
+
+	// if H == F_SET_0 {
+	// 	SetFlagH(false)
+	// }
+	// if H == F_SET_1 {
+	// 	SetFlagH(true)
+	// }
+	// if H == F_SET_IF {
+	// 	if value == 0 {
+	// 		SetFlagZf(true)
+	// 	} else {
+	// 		SetFlagZf(false)
+	// 	}
+	// }
+
+	if C == F_SET_0 {
+		SetFlagCy(false)
+	}
+	if C == F_SET_1 {
+		SetFlagCy(true)
+	}
+	if C == F_SET_IF {
+		limit := 0xFF
+		if size == F_16bit {
+			limit = 0xFFFF
+		}
+
+		SetFlagCy(value > limit || value < 0)
+	}
 }
 
 // Set the value of the Zero flag.

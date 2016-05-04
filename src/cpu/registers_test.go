@@ -310,6 +310,15 @@ func TestSetBit(t *testing.T) {
 	}
 }
 
+func TestGetBit(t *testing.T) {
+	if set := GetBit(0x0E, 3) /* 00001110 */; set != 1 {
+			t.Error("TestGetBit() failed: third bit of 0x0E should be set.")
+	}
+	if set := GetBit(0x0E, 5) /* 00001110 */; set != 0 {
+			t.Error("TestGetBit() failed: third bit of 0x0E should be unset.")
+	}
+}
+
 func TestSwap(t *testing.T) {
 
 	values := [...]uint8{
