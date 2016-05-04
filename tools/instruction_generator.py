@@ -50,8 +50,8 @@ FLAG_SET_TO_ONE = 1
 FLAG_SET_TO_ZERO = 2
 FLAG_UNCHANGED = 3
 
-write_packages = ('ld', 'add', 'adc')
-write_table = ('ld', 'call', 'add', 'adc')
+write_packages = ('ld', 'add', 'adc', 'bit')
+write_table = ('ld', 'call', 'add', 'adc', 'bit')
 
 class Instruction(object):
     def __init__(self, mnemonic, description, opcode, cycles, flags, comment, line):
@@ -443,7 +443,7 @@ def parse_bit(instruction):
     else:
         target = 'Get(Get{}())'.format(operand.value)
 
-    code = 'set := GetBit({}, {});\n'.format(n_bit, target)
+    code = 'set := GetBit({}, {});\n'.format(target, n_bit)
     code += '\tSetFlags(int(set), F_SET_IF, F_SET_0, F_SET_0, F_IGNORE, F_8bit)'
 
     return code
