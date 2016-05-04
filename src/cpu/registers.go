@@ -378,6 +378,10 @@ func DecL() {
 	registers.L -= 1
 }
 
+func Swap(value uint8) uint8 {
+	return uint8(value << 4 | value >> 4)
+}
+
 // Reset all registers to 0x0000.
 func Reset() {
 	registers.A = 0x00

@@ -189,3 +189,20 @@ func TestIncPC(t *testing.T) {
 		t.Errorf("TestIncPC() failed: PC should be 0x0026, got 0x%04x", registers.PC)
 	}
 }
+
+func TestSwap(t *testing.T) {
+
+	values := [...]uint8{
+		0xFE, 0xEF,
+		0x00, 0x00,
+		0xFF, 0xFF,
+		0x58, 0x85,
+		0x1F, 0xF1,
+	}
+
+	for i := 0; i < len(values); i+=2 {
+		if actual := Swap(values[i]); actual != values[i+1] {
+			t.Errorf("TestSwap() failed: expected 0x%02x, got 0x%02x", 0xEF, actual)
+		}
+	}
+}
