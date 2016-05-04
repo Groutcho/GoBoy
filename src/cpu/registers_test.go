@@ -273,6 +273,43 @@ func TestDecAF(t *testing.T) {
 	}
 }
 
+func TestSetBit(t *testing.T) {
+
+	values0x00 := [...]uint8{
+		0x01,
+		0x02,
+		0x04,
+		0x08,
+		0x10,
+		0x20,
+		0x40,
+		0x80,
+	}
+
+	for i := 0; i < len(values0x00); i+=2 {
+		if actual := SetBit(0x00, uint8(i), 1); actual != values0x00[i] {
+			t.Errorf("TestSetBit() failed: expected 0x%02x, got 0x%02x", values0x00[i], actual)
+		}
+	}
+
+	values0xFF := [...]uint8{
+		0xFE,
+		0xFD,
+		0xFB,
+		0xF7,
+		0xEF,
+		0xDF,
+		0xBF,
+		0x7F,
+	}
+
+	for i := 0; i < len(values0xFF); i+=2 {
+		if actual := SetBit(0xFF, uint8(i), 0); actual != values0xFF[i] {
+			t.Errorf("TestSetBit() failed: expected 0x%02x, got 0x%02x", values0xFF[i], actual)
+		}
+	}
+}
+
 func TestSwap(t *testing.T) {
 
 	values := [...]uint8{

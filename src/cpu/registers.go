@@ -77,6 +77,14 @@ func getLowBits(value uint16) uint8 {
 	return uint8(value & 0x00FF)
 }
 
+func SetBit(value uint8, bit uint8, set uint8) uint8 {
+	if set != 0 {
+		return value | (1 << bit)
+	} else {
+		return value & ^(1 << bit)
+	}
+}
+
 // Set the AF register with the given 16bit value.
 func SetAF(value uint16) {
 	registers.A = uint8(value >> 8)
@@ -296,7 +304,6 @@ func SetFlagCy(b bool) {
 		registers.F &= ^(uint8(1 << 4))
 	}
 }
-
 
 // Set the value of the A register.
 func SetA(value uint8) {
