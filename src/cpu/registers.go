@@ -93,6 +93,11 @@ func IncAF() {
 	SetAF(GetAF() + 1)
 }
 
+// Decrement AF.
+func DecAF() {
+	SetAF(GetAF() - 1)
+}
+
 // Set the BC register with the given 16bit value.
 func SetBC(value uint16) {
 	registers.B = uint8(value >> 8)
@@ -107,6 +112,11 @@ func GetBC() uint16 {
 // Increment BC.
 func IncBC() {
 	SetBC(GetBC() + 1)
+}
+
+// Decrement BC.
+func DecBC() {
+	SetBC(GetBC() - 1)
 }
 
 // Set the DE register with the given 16bit value.
@@ -125,6 +135,11 @@ func IncDE() {
 	SetDE(GetDE() + 1)
 }
 
+// Decrement DE.
+func DecDE() {
+	SetDE(GetDE() - 1)
+}
+
 // Set the HL register with the given 16bit value.
 func SetHL(value uint16) {
 	registers.H = uint8(value >> 8)
@@ -139,6 +154,11 @@ func GetHL() uint16 {
 // Increment HL.
 func IncHL() {
 	SetHL(GetHL() + 1)
+}
+
+// Decrement HL.
+func DecHL() {
+	SetHL(GetHL() - 1)
 }
 
 // Set the SP register with the given 16bit value.

@@ -208,12 +208,68 @@ func TestIncDE(t *testing.T) {
 	}
 }
 
+func TestIncHL(t *testing.T) {
+	SetHL(0x0025)
+	IncHL()
+
+	if hl := GetHL(); hl != 0x0026 {
+		t.Errorf("TestIncHL() failed: HL should be 0x0026, got 0x%04x", hl)
+	}
+}
+
+
 func TestIncAF(t *testing.T) {
 	SetAF(0x0025)
 	IncAF()
 
 	if af := GetAF(); af != 0x0026 {
 		t.Errorf("TestIncAF() failed: AF should be 0x0026, got 0x%04x", af)
+	}
+}
+
+func TestDecPC(t *testing.T) {
+	registers.PC = 0x0025
+	DecPC()
+
+	if pc := GetPC(); pc != 0x0024 {
+		t.Errorf("TestDecPC() failed: PC should be 0x0024, got 0x%04x", registers.PC)
+	}
+}
+
+func TestDecBC(t *testing.T) {
+	SetBC(0x0025)
+	DecBC()
+
+	if bc := GetBC(); bc != 0x0024 {
+		t.Errorf("TestDecBC() failed: BC should be 0x0024, got 0x%04x", bc)
+	}
+}
+
+func TestDecDE(t *testing.T) {
+	SetDE(0x0025)
+	DecDE()
+
+	if de := GetDE(); de != 0x0024 {
+		t.Errorf("TestDecDE() failed: DE should be 0x0024, got 0x%04x", de)
+	}
+}
+
+func TestDecHL(t *testing.T) {
+	SetHL(0x0025)
+	DecHL()
+
+	if hl := GetHL(); hl != 0x0024 {
+		t.Errorf("TestDecHL() failed: HL should be 0x0024, got 0x%04x", hl)
+	}
+}
+
+
+func TestDecAF(t *testing.T) {
+	SetAF(0x0025)
+	DecAF()
+
+	if af := GetAF(); af != 0x0024 {
+		t.Errorf("TestDecAF() failed: AF should be 0x0024, got 0x%04x", af)
 	}
 }
 
