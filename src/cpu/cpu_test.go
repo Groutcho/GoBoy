@@ -302,6 +302,7 @@ func TestLdToReferenceHLInstructions(t* testing.T) {
 	}
 }
 
+// measure the duration of a ld instruction
 func BenchmarkLdRegistersInstructions(b *testing.B) {
 	Set(0x0000, 0x78) // ld A, B
 

@@ -1,6 +1,7 @@
 package cpu
 
 import . "memory"
+import t "time"
 
 // The dispatch table is used to redirect a given instruction to its
 // implementation by having a direct mapping between the opcode and the array index.
@@ -62,4 +63,16 @@ func ExecuteNext() int {
 	return dispatch_table[opcode]()
 }
 
-type instrFunc func() uint8
+// Starts the execution of the program at 0x0000
+func Start() {
+	SetPC(0x0000)
+	wait_microsec := 0
+
+	for {
+		// execute the next instruction and get its execution time, in microseconds
+		wait_microsec = ExecuteNext()
+		t.Sleep(t.Duration(wait_microsec) * t.Microsecond)
+	}
+}
+
+type instrFunc func() int
