@@ -71,11 +71,12 @@ func TestCE_adc(t* testing.T) {
 	SetA(0x20)
 	SetPC(0x0000)
 	Set(0x0000, 0x88)
+	SetFlagCy(true)
 
 	xCE_adc()
 
-	if a:= GetA(); a != 0xA8 {
-		t.Errorf("TestCE_adc() failed: expected A = 0xA8, got 0x%02x", a)
+	if a:= GetA(); a != 0xA9 {
+		t.Errorf("TestCE_adc() failed: expected A = 0xA9, got 0x%02x", a)
 	}
 
 	testFlags(t, false, false, false, false)
