@@ -64,7 +64,7 @@ func DumpRange(from uint16, to uint16) string {
 }
 
 /* reset the RAM to 0 */
-func reset() {
+func ResetMemory() {
 	for i := 0; i < len(RAM); i++ {
 		RAM[i] = 0x00
 	}
