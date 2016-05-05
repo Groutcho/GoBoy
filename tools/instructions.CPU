@@ -60,9 +60,9 @@ push HL              E5             16    ----     // SP=SP-2,  (SP)=HL
 push AF              F5             16    ----     // SP=SP-2,  (SP)=AF
 
 pop  AF              F1             12    (AF)     // AF=(SP),  SP=SP+2
-pop  BC              C1             12    (AF)     // BC=(SP),  SP=SP+2
-pop  DE              D1             12    (AF)     // DE=(SP),  SP=SP+2
-pop  HL              E1             12    (AF)     // HL=(SP),  SP=SP+2
+pop  BC              C1             12    ----     // BC=(SP),  SP=SP+2
+pop  DE              D1             12    ----     // DE=(SP),  SP=SP+2
+pop  HL              E1             12    ----     // HL=(SP),  SP=SP+2
 
 add  A, B            80              4    z0hc     // A=A+B
 add  A, C            81              4    z0hc     // A=A+C
