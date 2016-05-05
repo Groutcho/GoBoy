@@ -202,3 +202,33 @@ func TestLdToReferenceHLInstructions(t* testing.T) {
 		t.Errorf("TestLdToReferenceHLInstructions() failed: expected [HL] = 0x88, got 0x%02x", v)
 	}
 }
+
+// ld   HL, SP+%s, where %s is a signed 8bit integer
+func TestF8_ld(t* testing.T) {
+	SetPC(0x0000)
+	Set(0x0000, 0x55)
+	SetSP(0x0050)
+	xF8_ld()
+
+	if hl := GetHL(); hl != 0x00A5 {
+		t.Errorf("TestF8_ld() failed: expected HL @ 0x00A5, got 0x%04X", hl)
+	}
+
+	SetPC(0x0000)
+	Set(0x0000, 0x8F) // 0x8F = -0x71 as 2's complement
+	SetSP(0x0071)
+	xF8_ld()
+
+	if hl := GetHL(); hl != 0x0000 {
+		t.Errorf("TestF8_ld() failed: expected HL @ 0x0000, got 0x%04X", hl)
+	}
+
+	SetPC(0x0000)
+	Set(0x0000, 0xFF) // 0xFF = -0x01 as 2's complement
+	SetSP(0x0001)
+	xF8_ld()
+
+	if hl := GetHL(); hl != 0x0000 {
+		t.Errorf("TestF8_ld() failed: expected HL @ 0x0000, got 0x%04X", hl)
+	}
+}
