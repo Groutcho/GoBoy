@@ -50,8 +50,8 @@ FLAG_SET_TO_ONE = 1
 FLAG_SET_TO_ZERO = 2
 FLAG_UNCHANGED = 3
 
-write_packages = ('ld', 'add', 'adc', 'bit')
-write_table = ('ld', 'call', 'add', 'adc', 'bit')
+write_packages = ('ld', 'add', 'adc', 'bit', 'set')
+write_table = ('ld', 'call', 'add', 'adc', 'bit', 'set')
 
 class Instruction(object):
     def __init__(self, mnemonic, description, opcode, cycles, flags, comment, line):
@@ -260,25 +260,25 @@ def parse_rst(instruction):
     return  "Call(0x{:04x})".format(addr)
 
 
-def parse_set(instruction):
-    assert instruction.description[0].code == CONSTANT
-    assert instruction.descriptio[1].code in (REG8, REF_REG)
-    n_bit = int(instruction.description[0].value)
+def parse_set(instr):
+    assert instr.description[0].code == CONSTANT
+    assert instr.description[1].code in (REG8, REF_REG)
+    n_bit = int(instr.description[0].value)
 
-    if instruction.description[0].value == 'res':
+    if instr.mnemonic == 'res':
         value = '0'
     else:
         value = '1'
 
-    if instruction.description[1].code == REG8:
+    if instr.description[1].code == REG8:
         code = indent(dedent("""
         value := SetBit(Get{0}(), {1}, {2})
-        Set{0}(value)""".format(instruction.description[1].value, n_bit, value)), '\t')
+        Set{0}(value)""".format(instr.description[1].value, n_bit, value)), '\t')
     else:
         code = indent(dedent("""
         addr := Get{0}()
         value := SetBit(Get(addr), {1}, {2})
-        Set(addr, value)""".format(instruction.description[1].value, n_bit, value)), '\t')
+        Set(addr, value)""".format(instr.description[1].value, n_bit, value)), '\t')
 
     return code.strip()
 
@@ -461,19 +461,22 @@ dispatch = {\
     'set': parse_set,
     'add': parse_add,
     'adc': parse_add,
-    # 'call': parse_call,
     'bit': parse_bit,
 }
 
-custom_impl_table = {'F8': custom_impl_F8}
+custom_impl_table = {0xF8: custom_impl_F8}
 
 
 unsupp = set()
 
 def make_func(instr, file):
+    if instr.opcode[1]:
+        oc = unhexlify(instr.opcode[0])[0] + 0xFF
+    else:
+        oc = unhexlify(instr.opcode[0])[0]
 
-    if instr.opcode[0] in custom_impl_table:
-        result = custom_impl_table[instr.opcode[0]]()
+    if oc in custom_impl_table:
+        result = custom_impl_table[oc]()
     elif instr.mnemonic in dispatch:
         result = dispatch[instr.mnemonic](instr)
     else:
@@ -485,11 +488,7 @@ def make_func(instr, file):
     print(comment, file=file)
     print('func ' + instr.func_name() + '() int {', file=file)
 
-    print(instr.opcode[0])
-    if instr.opcode[1]:
-        oc = unhexlify(instr.opcode[0])[0] + 0xFF
-    else:
-        oc = unhexlify(instr.opcode[0])[0]
+
 
     ret = (oc, instr.func_name())
 
