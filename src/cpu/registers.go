@@ -327,15 +327,29 @@ func GetFlagNInt() int {
 	}
 }
 
-func IsHalfCarry(left uint8, right uint8) int {
-	if (left & 0x0F) + (right & 0x0F) > 0xF {
+// return 1 is left + right overflows
+func IsAddHalfCarry(left uint8, right uint8) int {
+	l := int(getLowNibble(left))
+	r := int(getLowNibble(right))
+
+	if l + r > 0xF {
 		return 1
 	} else {
 		return 0
 	}
 }
 
+// return 1 is left - right underflows
+func IsSubHalfCarry(left uint8, right uint8) int {
+	l := int(getLowNibble(left))
+	r := int(getLowNibble(right))
 
+	if l - r < 0x0 {
+		return 1
+	} else {
+		return 0
+	}
+}
 
 // Set the Z, H, N, C flags according to the provided strategies:
 //  - F_SET_0: unset the flag
