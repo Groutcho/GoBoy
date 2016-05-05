@@ -90,15 +90,15 @@ adc  A, (HL)         8E              8    z0hc     // A=A+(HL)+cy
 adc  A, A            8F              4    z0hc     // A=A+A+cy
 adc  A, %1           CE              8    z0hc     // A=A+%1+cy
 
-sub  B               90              4    z1hc     // A=A-B
-sub  C               91              4    z1hc     // A=A-C
-sub  D               92              4    z1hc     // A=A-D
-sub  E               93              4    z1hc     // A=A-E
-sub  H               94              4    z1hc     // A=A-H
-sub  L               95              4    z1hc     // A=A-L
-sub  (HL)            96              8    z1hc     // A=A-(HL)
-sub  A               97              4    z1hc     // A=A-A
-sub  %1              D6              8    z1hc     // A=A-%1
+sub  A, B            90              4    z1hc     // A=A-B
+sub  A, C            91              4    z1hc     // A=A-C
+sub  A, D            92              4    z1hc     // A=A-D
+sub  A, E            93              4    z1hc     // A=A-E
+sub  A, H            94              4    z1hc     // A=A-H
+sub  A, L            95              4    z1hc     // A=A-L
+sub  A, (HL)         96              8    z1hc     // A=A-(HL)
+sub  A, A            97              4    z1hc     // A=A-A
+sub  A, %1           D6              8    z1hc     // A=A-%1
 
 sbc  A, B            98              4    z1hc     // A=A-B-cy
 sbc  A, C            99              4    z1hc     // A=A-C-cy
