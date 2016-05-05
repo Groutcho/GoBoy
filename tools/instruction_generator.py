@@ -50,8 +50,9 @@ FLAG_SET_TO_ONE = 1
 FLAG_SET_TO_ZERO = 2
 FLAG_UNCHANGED = 3
 
-write_packages = ('ld', 'add', 'adc', 'bit', 'set', 'res', 'sub', 'sbc', 'rst')
-write_table = ('ld', 'call', 'add', 'adc', 'bit', 'set', 'res', 'sub', 'sbc', 'rst', 'pop')
+write_packages = ('ld', 'add', 'adc', 'bit', 'set', 'res', 'sub', 'sbc', 'rst', 'inc')
+write_table = ( 'ld', 'call', 'add', 'adc', 'bit', 'set', 'res',
+                'sub', 'sbc', 'rst', 'pop', 'jp', 'jr', 'inc')
 
 dont_require_memory = ('rst',)
 
@@ -75,6 +76,13 @@ class Instruction(object):
         comment = line[51:]
 
         return Instruction(mnemonic, pseudocode, opcode, cycles, flags, comment, line)
+
+    def full_opcode(self):
+        oc = unhexlify(self.opcode[0])[0]
+        if self.opcode[1]:
+            return 0x100 + oc
+        else:
+            return oc
 
     def func_name(self):
         if self.opcode[1]:
@@ -323,6 +331,46 @@ def custom_impl_F8():
     return code.strip()
 
 
+def parse_inc(instr):
+    target = instr.pseudocode[0]
+
+    pattern = \
+    """
+    original := {dest}
+    value := original {sign} 1
+    {assign}
+
+    hc := F_SET_0
+    if getLowNibble({nibble}) == 0xF {{
+        hc = F_SET_1
+    }}
+
+    SetFlags(int(value), F_SET_IF, F_SET_0, hc, F_IGNORE, F_{width}bit)
+    """
+
+    if instr.mnemonic == 'inc':
+        sign = '+'
+    else:
+        sign = '-'
+
+    width = 8
+    nibble = "original"
+    if target.code in (REG8, REG16):
+        dest = "Get{}()".format(target.value)
+        assign = "Set{}(value)".format(target.value)
+        if target.code == REG16:
+            width = 16
+            nibble = "getHighBits(original)"
+    elif target.code == REF_REG:
+        dest = "Get(Get{}())".format(target.value)
+        assign = "Set(Get{}(), value)".format(target.value)
+
+    code = pattern.format(dest=dest, sign=sign, assign=assign, width=width,
+        nibble=nibble)
+
+    return code.strip()
+
+
 def parse_add(instr):
     opA = instr.pseudocode[0]
     opB = instr.pseudocode[1]
@@ -388,18 +436,18 @@ def parse_add(instr):
     return code.strip()
 
 
-def parse_inc(instruction):
-    target = instruction.pseudocode[0]
+# def parse_inc(instruction):
+#     target = instruction.pseudocode[0]
 
-    assert target.code in (REG8, REG16, REF_REG)
+#     assert target.code in (REG8, REG16, REF_REG)
 
-    if target.code in (REG16, REG8):
-        code = "Inc{0}()".format(target.value)
-    elif target.code == REF_REG:
-        code = 'addr := Get%s()\n' % target.value
-        code += "\tSet(addr, Get(addr) + 1)"
+#     if target.code in (REG16, REG8):
+#         code = "Inc{0}()".format(target.value)
+#     elif target.code == REF_REG:
+#         code = 'addr := Get%s()\n' % target.value
+#         code += "\tSet(addr, Get(addr) + 1)"
 
-    return code
+#     return code
 
 
 def parse_dec(instruction):
@@ -422,10 +470,6 @@ def parse_push(instruction):
 
     code = 'Push(Get{}())'.format(reg.value)
     return code
-
-
-def parse_nop(instruction):
-    return None
 
 
 def get_flag(flag):
@@ -456,7 +500,6 @@ dispatch = {\
     'inc': parse_inc,
     'dec': parse_dec,
     #'push': parse_push,
-    'nop': parse_nop,
     'res': parse_set,
     'set': parse_set,
     'add': parse_add,
@@ -518,14 +561,9 @@ def make_dispatch_table(instructions:dict):
 
         print('func init() {', file=f)
 
-        for k, v in instructions.items():
-            if k in write_table:
-                for instr in v:
-                    if instr.opcode[1]:
-                        oc = 0xFF + unhexlify(instr.opcode[0])[0]
-                    else:
-                        oc = unhexlify(instr.opcode[0])[0]
-                    print('\tdispatch_table[0x{:03X}] = {}'.format(oc, instr.func_name()), file=f)
+        for instr in sorted(instructions, key=lambda x: x.full_opcode()):
+            if instr.mnemonic in write_table:
+                print('\tdispatch_table[0x{:03X}] = {}'.format(instr.full_opcode(), instr.func_name()), file=f)
 
         print('}', file=f)
 
@@ -545,6 +583,7 @@ package cpu
 
 def parse_file(filename):
     result = dict()
+    lst = []
     with open(filename) as cpu:
         for line in cpu.readlines():
             if line.strip():
@@ -552,12 +591,14 @@ def parse_file(filename):
                 if instruction.mnemonic not in result:
                     result[instruction.mnemonic] = []
                 result[instruction.mnemonic].append(instruction)
-    return result
+                lst.append(instruction)
+    return result, lst
+
 
 def main():
-    instructions = parse_file('instructions.CPU')
+    instr_dict, instr_list = parse_file('instructions.CPU')
 
-    for mnemonic in instructions:
+    for mnemonic in instr_dict:
         if mnemonic in write_packages:
             with open('../src/cpu/{}.go'.format(mnemonic), 'wt') as f:
                 if mnemonic not in dont_require_memory:
@@ -566,10 +607,10 @@ def main():
                     print(header_nomem, file=f)
 
 
-                for instruction in instructions[mnemonic]:
+                for instruction in instr_dict[mnemonic]:
                     n = make_func(instruction, f)
 
-    make_dispatch_table(instructions)
+    make_dispatch_table(instr_list)
     for un in unsupp:
         print(un)
 
