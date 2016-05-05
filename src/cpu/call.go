@@ -8,45 +8,45 @@ func xCD_call() int {
 	return 6
 }
 
-// conditional call if CY 
+// conditional call if CY
 func xDC_call() int {
 	addr := FetchOperand16()
 	if GetFlagCy() {
 		Call(addr)
-		return 6		
+		return 6
 	} else {
 		return 3
 	}
 }
 
-// conditional call if !CY 
+// conditional call if !CY
 func xD4_call() int {
 	addr := FetchOperand16()
 	if !GetFlagCy() {
 		Call(addr)
-		return 6		
+		return 6
 	} else {
 		return 3
 	}
 }
 
-// conditional call if Z 
+// conditional call if Z
 func xC4_call() int {
 	addr := FetchOperand16()
 	if GetFlagZf() {
 		Call(addr)
-		return 6		
+		return 6
 	} else {
 		return 3
 	}
 }
 
-// conditional call if !Z 
+// conditional call if !Z
 func xCC_call() int {
 	addr := FetchOperand16()
 	if !GetFlagZf() {
 		Call(addr)
-		return 6		
+		return 6
 	} else {
 		return 3
 	}

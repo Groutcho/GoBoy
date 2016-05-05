@@ -32,6 +32,17 @@ func FetchOperand8() uint8 {
 	return operand
 }
 
+// Get the 8bit signed word at the address pointed by the program counter
+// and increment the program counter.
+func FetchOperand8s() int {
+	operand := Get(GetPC())
+	IncPC()
+	if operand > 128 {
+		return int(operand) - 0x100
+	}
+	return int(operand)
+}
+
 // Get the 16bit word at the address pointed by the program counter
 // and increment the program counter twice.
 func FetchOperand16() uint16 {
@@ -60,18 +71,30 @@ func Call(addr uint16) {
 // actual CPU cycles. The minimal amount of cycles is 1.
 func ExecuteNext() int {
 	opcode := Fetch()
+
+	if opcode == 0x76 { // halt
+		// TODO
+		return 1
+	} else if opcode == 0x10 { // stop
+		// TODO
+		return 0
+	}
+
 	return dispatch_table[opcode]()
 }
 
-// Starts the execution of the program at 0x0000
+// Starts the execution of the program at any point
 func Start() {
-	SetPC(0x0000)
 	wait_microsec := 0
 
 	for {
 		// execute the next instruction and get its execution time, in microseconds
 		wait_microsec = ExecuteNext()
-		t.Sleep(t.Duration(wait_microsec) * t.Microsecond)
+		if wait_microsec > 0 {
+			t.Sleep(t.Duration(wait_microsec) * t.Microsecond)
+		} else {
+			return
+		}
 	}
 }
 
