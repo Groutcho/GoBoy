@@ -412,29 +412,6 @@ def get_flag(flag):
         return 'GetFlagZf'
 
 
-def parse_call(instruction):
-    if instruction.description[1].code == OPERAND16:
-        return "Call(FetchOperand16())"
-    elif instruction.description[1].code == BOOL_NOT:
-        if instruction.description[2].code == FLAG:
-            fl = get_flag(instruction.description[2].value)
-            code = 'jmp := false\n\n'
-            code += '\tif !{}() {{\n'.format(fl)
-            code += '\t\tjmp = true\n'
-            code += '\t\tCall(FetchOperand16())\n'
-            code += '\t}'
-            return code
-
-    elif instruction.description[1].code == FLAG:
-        fl = get_flag(instruction.description[1].value)
-        code = 'jmp := false\n\n'
-        code += '\tif {}() {{\n'.format(fl)
-        code += '\t\tjmp = true\n'
-        code += '\t\tCall(FetchOperand16())\n'
-        code += '\t}'
-        return code
-
-
 def parse_bit(instruction):
     operand = instruction.description[1]
     n_bit = instruction.description[0].value
