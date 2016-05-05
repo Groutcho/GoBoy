@@ -50,9 +50,9 @@ FLAG_SET_TO_ONE = 1
 FLAG_SET_TO_ZERO = 2
 FLAG_UNCHANGED = 3
 
-write_packages = ('ld', 'add', 'adc', 'bit', 'set', 'res', 'sub', 'sbc', 'rst', 'inc')
+write_packages = ('ld', 'add', 'adc', 'bit', 'set', 'res', 'sub', 'sbc', 'rst', 'inc', 'dec', 'swap')
 write_table = ( 'ld', 'call', 'add', 'adc', 'bit', 'set', 'res',
-                'sub', 'sbc', 'rst', 'pop', 'jp', 'jr', 'inc')
+                'sub', 'sbc', 'rst', 'pop', 'jp', 'jr', 'inc', 'dec', 'swap')
 
 dont_require_memory = ('rst',)
 
@@ -294,13 +294,13 @@ def parse_set(instr):
 
 
 def parse_swap(instruction):
-    target = instruction.pseudocode[1]
+    target = instruction.pseudocode[0]
 
     if target.code == REG8:
         operation = 'Set{0}(Swap(Get{0}()))'.format(target.value)
     elif target.code == REF_REG:
         operation = 'addr := Get%s()\n' % target.value
-        operation += 'Set(addr, Swap(Get(addr)))'.format(target.value)
+        operation += '\tSet(addr, Swap(Get(addr)))'.format(target.value)
 
     return operation
 
@@ -340,18 +340,19 @@ def parse_inc(instr):
     value := original {sign} 1
     {assign}
 
-    hc := F_SET_0
-    if getLowNibble({nibble}) == 0xF {{
-        hc = F_SET_1
-    }}
+    hc := Is{hctype}HalfCarry({nibble}, uint8(1))
 
-    SetFlags(int(value), F_SET_IF, F_SET_0, hc, F_IGNORE, F_{width}bit)
+    SetFlags(int(value), F_SET_IF, F_SET_{n}, hc, F_IGNORE, F_{width}bit)
     """
 
     if instr.mnemonic == 'inc':
         sign = '+'
+        n = 0
+        hctype = 'Add'
     else:
         sign = '-'
+        n = 1
+        hctype = 'Sub'
 
     width = 8
     nibble = "original"
@@ -366,7 +367,7 @@ def parse_inc(instr):
         assign = "Set(Get{}(), value)".format(target.value)
 
     code = pattern.format(dest=dest, sign=sign, assign=assign, width=width,
-        nibble=nibble)
+        nibble=nibble, n=n, hctype=hctype)
 
     return code.strip()
 
@@ -404,7 +405,7 @@ def parse_add(instr):
         opt = " - GetFlagCyInt()"
 
     dest = ""
-    hc = "IsHalfCarry(left, right)"
+    hc = "Is{}HalfCarry(left, right)"
     width = 8
     zFlag = "F_SET_IF"
 
@@ -414,9 +415,14 @@ def parse_add(instr):
         width = 16
         zFlag = "F_IGNORE"
         if opB.code == OPERANDU8:
-            hc = "IsHalfCarry(getHighBits(left), right)"
+            hc = "Is{}HalfCarry(getHighBits(left), right)"
         else:
-            hc = "IsHalfCarry(getHighBits(left), getHighBits(right))"
+            hc = "Is{}HalfCarry(getHighBits(left), getHighBits(right))"
+
+    if m in ('adc', 'add'):
+        hc = hc.format('Add')
+    else:
+        hc = hc.format('Sub')
 
     b = opB.code
     if b in (REG8, REG16):
@@ -434,34 +440,6 @@ def parse_add(instr):
                           dest=dest, width=width, zFlag=zFlag, sign=sign, optype=optype)
 
     return code.strip()
-
-
-# def parse_inc(instruction):
-#     target = instruction.pseudocode[0]
-
-#     assert target.code in (REG8, REG16, REF_REG)
-
-#     if target.code in (REG16, REG8):
-#         code = "Inc{0}()".format(target.value)
-#     elif target.code == REF_REG:
-#         code = 'addr := Get%s()\n' % target.value
-#         code += "\tSet(addr, Get(addr) + 1)"
-
-#     return code
-
-
-def parse_dec(instruction):
-    target = instruction.pseudocode[0]
-
-    assert target.code in (REG8, REG16, REF_REG)
-
-    if target.code in (REG16, REG8):
-        code = "Dec{0}()".format(target.value)
-    elif target.code == REF_REG:
-        code = 'addr := Get%s()\n' % target.value
-        code += "\tSet(addr, Get(addr) - 1)"
-
-    return code
 
 
 def parse_push(instruction):
@@ -498,7 +476,7 @@ dispatch = {\
     'rst': parse_rst,
     'swap': parse_swap,
     'inc': parse_inc,
-    'dec': parse_dec,
+    'dec': parse_inc,
     #'push': parse_push,
     'res': parse_set,
     'set': parse_set,
