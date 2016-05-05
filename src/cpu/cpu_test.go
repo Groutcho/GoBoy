@@ -103,6 +103,54 @@ func TestExecuteNext(t* testing.T) {
 	}
 }
 
+// Test a conditional jump that should return to 0x0000 (0x0001 after incrementing PC)
+func TestSimpleProgram01(t* testing.T) {
+	program := []byte {
+		0x10, 0x00, 	 // stop
+		0x3E, 0xF0, 	 // ld A, 0xF0
+		0x06, 0x02, 	 // ld B, 0x02
+		0x80, 			 // add A, B
+		0x11, 0x89, 0xF8,// ld DE 0xF889
+		0xD6, 0xF2,		 // sub A, 0xF2 (should give zero)
+		0xCA, 0x00, 0x00,// jump to 0x0000 if zero flag
+		0x10, 0x00,
+	}
+
+	LoadProgram(program)
+	SetFlagZf(false)
+	SetPC(0x0002) // at instruction ld A, 0xF0
+	Start()
+
+	if de := GetDE(); de != 0xF889 {
+		t.Errorf("TestSimpleProgram01() failed: expected DE @ 0xF889, got 0x%04X", de)
+	}
+
+	if pc := GetPC(); pc != 0x0001 { // incremented after fetch, so not 0x0000
+		t.Errorf("TestSimpleProgram01() failed: expected PC @ 0x0001, got 0x%04X", pc)
+	}
+}
+
+// Test an overflowing increment
+func TestSimpleProgram02(t* testing.T) {
+	program := []byte {
+		0x3C,		 	// inc A
+		0x10, 0x00,		// stop
+	}
+
+	SetPC(0x0000)
+	SetFlagH(false)
+	SetA(0x0F)
+	LoadProgram(program)
+	Start()
+
+	if a := GetA(); a!= 0x10 {
+		t.Errorf("TestSimpleProgram02() failed: expected A @ 0x10, got 0x%02X", a)
+	}
+	if !GetFlagH() {
+		t.Error("TestSimpleProgram02() failed: half carry should be set.")
+	}
+}
+
 // measure the duration of a ld instruction
 func BenchmarkLdRegistersInstructions(b *testing.B) {
 	Set(0x0000, 0x78) // ld A, B
