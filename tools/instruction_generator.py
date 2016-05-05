@@ -52,7 +52,8 @@ FLAG_UNCHANGED = 3
 
 write_packages = ('ld', 'add', 'adc', 'bit', 'set', 'res', 'sub', 'sbc', 'rst', 'inc', 'dec', 'swap')
 write_table = ( 'ld', 'call', 'add', 'adc', 'bit', 'set', 'res',
-                'sub', 'sbc', 'rst', 'pop', 'jp', 'jr', 'inc', 'dec', 'swap')
+                'sub', 'sbc', 'rst', 'pop', 'jp', 'jr', 'inc',
+                'dec', 'swap', 'ldi', 'ldd')
 
 dont_require_memory = ('rst',)
 
