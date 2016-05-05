@@ -35,11 +35,11 @@ func FetchOperand8() uint8 {
 // Get the 16bit word at the address pointed by the program counter
 // and increment the program counter twice.
 func FetchOperand16() uint16 {
-	operand0 := uint16(Get(GetPC()))
+	lsb := uint16(Get(GetPC()))
 	IncPC()
-	operand1 := uint16(Get(GetPC()))
+	msb := uint16(Get(GetPC()))
 	IncPC()
-	return (operand0 << 8) | operand1
+	return (msb << 8) | lsb
 }
 
 // Perform a call: Decrement the stack pointer of 2 bytes,
