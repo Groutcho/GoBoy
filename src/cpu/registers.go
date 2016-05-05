@@ -85,6 +85,16 @@ func getLowBits(value uint16) uint8 {
 	return uint8(value & 0x00FF)
 }
 
+// return the 4 low bits of <value>.
+func getLowNibble(value uint8) uint8 {
+	return uint8(value & 0x0F)
+}
+
+// return the 4 high bits of <value>.
+func getHighNibble(value uint8) uint8 {
+	return uint8((value & 0xF0) >> 4)
+}
+
 func SetBit(value uint8, bit uint8, set uint8) uint8 {
 	if set != 0 {
 		return value | (1 << bit)
