@@ -50,14 +50,14 @@ FLAG_SET_TO_ONE = 1
 FLAG_SET_TO_ZERO = 2
 FLAG_UNCHANGED = 3
 
-write_packages = ('ld', 'add', 'adc', 'bit', 'set')
-write_table = ('ld', 'call', 'add', 'adc', 'bit', 'set')
+write_packages = ('ld', 'add', 'adc', 'bit', 'set', 'res', 'sub', 'sbc')
+write_table = ('ld', 'call', 'add', 'adc', 'bit', 'set', 'res', 'sub', 'sbc')
 
 class Instruction(object):
-    def __init__(self, mnemonic, description, opcode, cycles, flags, comment, line):
+    def __init__(self, mnemonic, pseudocode, opcode, cycles, flags, comment, line):
         self.mnemonic = mnemonic
         self.opcode = opcode
-        self.description = description
+        self.pseudocode = pseudocode
         self.cycles = cycles
         self.flags = flags
         self.comment = comment
@@ -66,13 +66,13 @@ class Instruction(object):
     @staticmethod
     def parse(line):
         mnemonic = line[:4].strip()
-        description = tokenize(line[4:22])
+        pseudocode = tokenize(line[4:22])
         opcode = parse_opcode(line[21:26].strip())
         cycles = parse_cycles(line[33:38])
         flags = parse_flags(line[42:46])
         comment = line[51:]
 
-        return Instruction(mnemonic, description, opcode, cycles, flags, comment, line)
+        return Instruction(mnemonic, pseudocode, opcode, cycles, flags, comment, line)
 
     def func_name(self):
         if self.opcode[1]:
@@ -221,8 +221,8 @@ def parse_cycles(s):
 
 
 def parse_ld(instruction):
-    opA = instruction.description[0]
-    opB = instruction.description[1]
+    opA = instruction.pseudocode[0]
+    opB = instruction.pseudocode[1]
 
     src = None
     if opB.code == OPERAND8:
@@ -255,36 +255,36 @@ def parse_ld(instruction):
 
 
 def parse_rst(instruction):
-    addr = unhexlify(instruction.description[0].value)[0]
+    addr = unhexlify(instruction.pseudocode[0].value)[0]
 
     return  "Call(0x{:04x})".format(addr)
 
 
 def parse_set(instr):
-    assert instr.description[0].code == CONSTANT
-    assert instr.description[1].code in (REG8, REF_REG)
-    n_bit = int(instr.description[0].value)
+    assert instr.pseudocode[0].code == CONSTANT
+    assert instr.pseudocode[1].code in (REG8, REF_REG)
+    n_bit = int(instr.pseudocode[0].value)
 
     if instr.mnemonic == 'res':
         value = '0'
     else:
         value = '1'
 
-    if instr.description[1].code == REG8:
+    if instr.pseudocode[1].code == REG8:
         code = indent(dedent("""
         value := SetBit(Get{0}(), {1}, {2})
-        Set{0}(value)""".format(instr.description[1].value, n_bit, value)), '\t')
+        Set{0}(value)""".format(instr.pseudocode[1].value, n_bit, value)), '\t')
     else:
         code = indent(dedent("""
         addr := Get{0}()
         value := SetBit(Get(addr), {1}, {2})
-        Set(addr, value)""".format(instr.description[1].value, n_bit, value)), '\t')
+        Set(addr, value)""".format(instr.pseudocode[1].value, n_bit, value)), '\t')
 
     return code.strip()
 
 
 def parse_swap(instruction):
-    target = instruction.description[1]
+    target = instruction.pseudocode[1]
 
     if target.code == REG8:
         operation = 'Set{0}(Swap(Get{0}()))'.format(target.value)
@@ -300,18 +300,30 @@ def custom_impl_F8():
     ld   HL, SP+%s
     """
 
-    code =  "operand := int(FetchOperand8())\n" +\
-            "\tresult := int(GetSP()) + operand\n" +\
-            "\tSetHL(uint16(result))\n" +\
-            "\tSetFlags(result, F_SET_IF, F_SET_0, F_SET_0, F_IGNORE, F_16bit)"
+    code = \
+    """
+    operand := int(FetchOperand8s())
+    result := int(GetSP()) + operand
+    SetHL(uint16(result))
+
+    hc := 0
+    if operand > 0 {
+        if getLowNibble(uint8(operand)) + getLowNibble(getLowBits(GetSP())) > 0xF {
+            hc = 1
+        } else {
+            hc = 0
+        }
+    }
+
+    SetFlags(result, F_SET_0, F_SET_0, hc, F_SET_IF, F_16bit)
+    """
+
+    return code.strip()
 
 
-    return code
-
-
-def parse_add(instruction):
-    opA = instruction.description[0]
-    opB = instruction.description[1]
+def parse_add(instr):
+    opA = instr.pseudocode[0]
+    opB = instr.pseudocode[1]
 
     assert opA.code in (REG8, REG16), "first operand of add should be 8bit or 16bit register"
     assert opB.code in (REG8, REG16, OPERANDU8, OPERAND8, REF_REG), "second operand of add invalid %s" % opB.code
@@ -322,16 +334,25 @@ def parse_add(instruction):
     """
     left := {left}
     right := {right}
-    result := int(left) + int(right){opt}
+    result := int(left) {sign} int(right){opt}
 
     Set{dest}(uint{width}(result))
     hcarry := {hc}
-    SetFlags(result, {zFlag}, F_SET_0, hcarry, F_SET_IF, F_{width}bit)
+    SetFlags(result, {zFlag}, F_SET_{optype}, hcarry, F_SET_IF, F_{width}bit)
     """
 
+    m = instr.mnemonic
     left = ""
     right = ""
-    opt = " + GetFlagCyInt()" if instruction.mnemonic == "adc" else ""
+    sign = "+" if m in ('add', 'adc') else "-"
+    optype = "0" if m in ('add', 'adc') else "1"
+
+    opt = ""
+    if m == 'adc':
+        opt = " + GetFlagCyInt()"
+    elif m == 'sbc':
+        opt = " - GetFlagCyInt()"
+
     dest = ""
     hc = "IsHalfCarry(left, right)"
     width = 8
@@ -360,13 +381,13 @@ def parse_add(instruction):
         right = 'Get(Get{}())'.format(opB.value)
 
     code = pattern.format(left=left, right=right, opt=opt, hc=hc,
-                          dest=dest, width=width, zFlag=zFlag)
+                          dest=dest, width=width, zFlag=zFlag, sign=sign, optype=optype)
 
     return code.strip()
 
 
 def parse_inc(instruction):
-    target = instruction.description[0]
+    target = instruction.pseudocode[0]
 
     assert target.code in (REG8, REG16, REF_REG)
 
@@ -380,7 +401,7 @@ def parse_inc(instruction):
 
 
 def parse_dec(instruction):
-    target = instruction.description[0]
+    target = instruction.pseudocode[0]
 
     assert target.code in (REG8, REG16, REF_REG)
 
@@ -394,7 +415,7 @@ def parse_dec(instruction):
 
 
 def parse_push(instruction):
-    reg = instruction.description[1]
+    reg = instruction.pseudocode[1]
     assert reg.code == REG16
 
     code = 'Push(Get{}())'.format(reg.value)
@@ -413,8 +434,8 @@ def get_flag(flag):
 
 
 def parse_bit(instruction):
-    operand = instruction.description[1]
-    n_bit = instruction.description[0].value
+    operand = instruction.pseudocode[1]
+    n_bit = instruction.pseudocode[0].value
     if operand.code == REG8:
         target = 'Get{}()'.format(operand.value)
     else:
@@ -438,6 +459,8 @@ dispatch = {\
     'set': parse_set,
     'add': parse_add,
     'adc': parse_add,
+    'sub': parse_add,
+    'sbc': parse_add,
     'bit': parse_bit,
 }
 
