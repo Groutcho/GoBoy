@@ -1,6 +1,7 @@
 package cpu
 
 import "testing"
+import . "memory"
 
 var (
 	REG_A = 0
@@ -24,7 +25,7 @@ func testFlags(t* testing.T, Z bool, N bool, H bool, C bool) {
 		if Z {
 			t.Error("TestFlags() failed: expected Z set")
 		} else {
-			t.Error("TestFlags() failed: expected Z unset")			
+			t.Error("TestFlags() failed: expected Z unset")
 		}
 	}
 
@@ -32,7 +33,7 @@ func testFlags(t* testing.T, Z bool, N bool, H bool, C bool) {
 		if N {
 			t.Error("TestFlags() failed: expected N set")
 		} else {
-			t.Error("TestFlags() failed: expected N unset")			
+			t.Error("TestFlags() failed: expected N unset")
 		}
 	}
 
@@ -40,7 +41,7 @@ func testFlags(t* testing.T, Z bool, N bool, H bool, C bool) {
 		if H {
 			t.Error("TestFlags() failed: expected H set")
 		} else {
-			t.Error("TestFlags() failed: expected H unset")			
+			t.Error("TestFlags() failed: expected H unset")
 		}
 	}
 
@@ -48,7 +49,7 @@ func testFlags(t* testing.T, Z bool, N bool, H bool, C bool) {
 		if C {
 			t.Error("TestFlags() failed: expected C set")
 		} else {
-			t.Error("TestFlags() failed: expected C unset")			
+			t.Error("TestFlags() failed: expected C unset")
 		}
 	}
 }
@@ -77,5 +78,11 @@ func testRegister(t* testing.T, registerCode int, expected int) {
 
 	if actual != expected {
 		t.Errorf("Register test failed: expected %s @ 0x%04X, got 0x%04X", name, expected, actual)
+	}
+}
+
+func testAddress(t* testing.T, addr uint16, expected byte) {
+	if actual := Get(addr); actual != expected {
+		t.Errorf("Address test failed: at 0x%04X, expected 0x%02X, got 0x%02X", addr, expected, actual)
 	}
 }
