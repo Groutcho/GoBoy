@@ -198,6 +198,14 @@ func init() {
 	dispatch_table[0x135] = xCB_35_swap
 	dispatch_table[0x136] = xCB_36_swap
 	dispatch_table[0x137] = xCB_37_swap
+	dispatch_table[0x138] = xCB_38_srl
+	dispatch_table[0x139] = xCB_39_srl
+	dispatch_table[0x13A] = xCB_3A_srl
+	dispatch_table[0x13B] = xCB_3B_srl
+	dispatch_table[0x13C] = xCB_3C_srl
+	dispatch_table[0x13D] = xCB_3D_srl
+	dispatch_table[0x13E] = xCB_3E_srl
+	dispatch_table[0x13F] = xCB_3F_srl
 	dispatch_table[0x140] = xCB_40_bit
 	dispatch_table[0x141] = xCB_41_bit
 	dispatch_table[0x142] = xCB_42_bit

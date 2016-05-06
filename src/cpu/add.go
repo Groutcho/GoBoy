@@ -7,12 +7,12 @@ import . "memory"
 // add  A, B - A=A+B
 func x80_add() int {
 	left := GetA()
-    right := GetB()
-    result := int(left) + int(right)
+	right := GetB()
+	result := int(left) + int(right)
 
-    SetA(uint8(result))
-    hcarry := IsAddHalfCarry(left, right)
-    SetFlags(result, F_SET_IF, F_SET_0, hcarry, F_SET_IF, F_8bit)
+	SetA(uint8(result))
+	hcarry := IsAddHalfCarry(left, right)
+	SetFlags(result, F_SET_IF, F_SET_0, hcarry, F_SET_IF, F_8bit)
 
 	return 1
 }
@@ -20,12 +20,12 @@ func x80_add() int {
 // add  A, C - A=A+C
 func x81_add() int {
 	left := GetA()
-    right := GetC()
-    result := int(left) + int(right)
+	right := GetC()
+	result := int(left) + int(right)
 
-    SetA(uint8(result))
-    hcarry := IsAddHalfCarry(left, right)
-    SetFlags(result, F_SET_IF, F_SET_0, hcarry, F_SET_IF, F_8bit)
+	SetA(uint8(result))
+	hcarry := IsAddHalfCarry(left, right)
+	SetFlags(result, F_SET_IF, F_SET_0, hcarry, F_SET_IF, F_8bit)
 
 	return 1
 }
@@ -33,12 +33,12 @@ func x81_add() int {
 // add  A, D - A=A+D
 func x82_add() int {
 	left := GetA()
-    right := GetD()
-    result := int(left) + int(right)
+	right := GetD()
+	result := int(left) + int(right)
 
-    SetA(uint8(result))
-    hcarry := IsAddHalfCarry(left, right)
-    SetFlags(result, F_SET_IF, F_SET_0, hcarry, F_SET_IF, F_8bit)
+	SetA(uint8(result))
+	hcarry := IsAddHalfCarry(left, right)
+	SetFlags(result, F_SET_IF, F_SET_0, hcarry, F_SET_IF, F_8bit)
 
 	return 1
 }
@@ -46,12 +46,12 @@ func x82_add() int {
 // add  A, E - A=A+E
 func x83_add() int {
 	left := GetA()
-    right := GetE()
-    result := int(left) + int(right)
+	right := GetE()
+	result := int(left) + int(right)
 
-    SetA(uint8(result))
-    hcarry := IsAddHalfCarry(left, right)
-    SetFlags(result, F_SET_IF, F_SET_0, hcarry, F_SET_IF, F_8bit)
+	SetA(uint8(result))
+	hcarry := IsAddHalfCarry(left, right)
+	SetFlags(result, F_SET_IF, F_SET_0, hcarry, F_SET_IF, F_8bit)
 
 	return 1
 }
@@ -59,12 +59,12 @@ func x83_add() int {
 // add  A, H - A=A+H
 func x84_add() int {
 	left := GetA()
-    right := GetH()
-    result := int(left) + int(right)
+	right := GetH()
+	result := int(left) + int(right)
 
-    SetA(uint8(result))
-    hcarry := IsAddHalfCarry(left, right)
-    SetFlags(result, F_SET_IF, F_SET_0, hcarry, F_SET_IF, F_8bit)
+	SetA(uint8(result))
+	hcarry := IsAddHalfCarry(left, right)
+	SetFlags(result, F_SET_IF, F_SET_0, hcarry, F_SET_IF, F_8bit)
 
 	return 1
 }
@@ -72,12 +72,12 @@ func x84_add() int {
 // add  A, L - A=A+L
 func x85_add() int {
 	left := GetA()
-    right := GetL()
-    result := int(left) + int(right)
+	right := GetL()
+	result := int(left) + int(right)
 
-    SetA(uint8(result))
-    hcarry := IsAddHalfCarry(left, right)
-    SetFlags(result, F_SET_IF, F_SET_0, hcarry, F_SET_IF, F_8bit)
+	SetA(uint8(result))
+	hcarry := IsAddHalfCarry(left, right)
+	SetFlags(result, F_SET_IF, F_SET_0, hcarry, F_SET_IF, F_8bit)
 
 	return 1
 }
@@ -85,12 +85,12 @@ func x85_add() int {
 // add  A, (HL) - A=A+(HL)
 func x86_add() int {
 	left := GetA()
-    right := Get(GetHL())
-    result := int(left) + int(right)
+	right := Get(GetHL())
+	result := int(left) + int(right)
 
-    SetA(uint8(result))
-    hcarry := IsAddHalfCarry(left, right)
-    SetFlags(result, F_SET_IF, F_SET_0, hcarry, F_SET_IF, F_8bit)
+	SetA(uint8(result))
+	hcarry := IsAddHalfCarry(left, right)
+	SetFlags(result, F_SET_IF, F_SET_0, hcarry, F_SET_IF, F_8bit)
 
 	return 2
 }
@@ -98,12 +98,12 @@ func x86_add() int {
 // add  A, A - A=A+A
 func x87_add() int {
 	left := GetA()
-    right := GetA()
-    result := int(left) + int(right)
+	right := GetA()
+	result := int(left) + int(right)
 
-    SetA(uint8(result))
-    hcarry := IsAddHalfCarry(left, right)
-    SetFlags(result, F_SET_IF, F_SET_0, hcarry, F_SET_IF, F_8bit)
+	SetA(uint8(result))
+	hcarry := IsAddHalfCarry(left, right)
+	SetFlags(result, F_SET_IF, F_SET_0, hcarry, F_SET_IF, F_8bit)
 
 	return 1
 }
@@ -111,12 +111,12 @@ func x87_add() int {
 // add  A, %1 - A=A+%1
 func xC6_add() int {
 	left := GetA()
-    right := FetchOperand8()
-    result := int(left) + int(right)
+	right := FetchOperand8()
+	result := int(left) + int(right)
 
-    SetA(uint8(result))
-    hcarry := IsAddHalfCarry(left, right)
-    SetFlags(result, F_SET_IF, F_SET_0, hcarry, F_SET_IF, F_8bit)
+	SetA(uint8(result))
+	hcarry := IsAddHalfCarry(left, right)
+	SetFlags(result, F_SET_IF, F_SET_0, hcarry, F_SET_IF, F_8bit)
 
 	return 2
 }
@@ -124,12 +124,12 @@ func xC6_add() int {
 // add  HL, BC - HL = HL+BC
 func x09_add() int {
 	left := GetHL()
-    right := GetBC()
-    result := int(left) + int(right)
+	right := GetBC()
+	result := int(left) + int(right)
 
-    SetHL(uint16(result))
-    hcarry := IsAddHalfCarry(getHighBits(left), getHighBits(right))
-    SetFlags(result, F_IGNORE, F_SET_0, hcarry, F_SET_IF, F_16bit)
+	SetHL(uint16(result))
+	hcarry := IsAddHalfCarry(getHighBits(left), getHighBits(right))
+	SetFlags(result, F_IGNORE, F_SET_0, hcarry, F_SET_IF, F_16bit)
 
 	return 2
 }
@@ -137,12 +137,12 @@ func x09_add() int {
 // add  HL, DE - HL = HL+DE
 func x19_add() int {
 	left := GetHL()
-    right := GetDE()
-    result := int(left) + int(right)
+	right := GetDE()
+	result := int(left) + int(right)
 
-    SetHL(uint16(result))
-    hcarry := IsAddHalfCarry(getHighBits(left), getHighBits(right))
-    SetFlags(result, F_IGNORE, F_SET_0, hcarry, F_SET_IF, F_16bit)
+	SetHL(uint16(result))
+	hcarry := IsAddHalfCarry(getHighBits(left), getHighBits(right))
+	SetFlags(result, F_IGNORE, F_SET_0, hcarry, F_SET_IF, F_16bit)
 
 	return 2
 }
@@ -150,12 +150,12 @@ func x19_add() int {
 // add  HL, HL - HL = HL+HL
 func x29_add() int {
 	left := GetHL()
-    right := GetHL()
-    result := int(left) + int(right)
+	right := GetHL()
+	result := int(left) + int(right)
 
-    SetHL(uint16(result))
-    hcarry := IsAddHalfCarry(getHighBits(left), getHighBits(right))
-    SetFlags(result, F_IGNORE, F_SET_0, hcarry, F_SET_IF, F_16bit)
+	SetHL(uint16(result))
+	hcarry := IsAddHalfCarry(getHighBits(left), getHighBits(right))
+	SetFlags(result, F_IGNORE, F_SET_0, hcarry, F_SET_IF, F_16bit)
 
 	return 2
 }
@@ -163,12 +163,12 @@ func x29_add() int {
 // add  HL, SP - HL = HL+SP
 func x39_add() int {
 	left := GetHL()
-    right := GetSP()
-    result := int(left) + int(right)
+	right := GetSP()
+	result := int(left) + int(right)
 
-    SetHL(uint16(result))
-    hcarry := IsAddHalfCarry(getHighBits(left), getHighBits(right))
-    SetFlags(result, F_IGNORE, F_SET_0, hcarry, F_SET_IF, F_16bit)
+	SetHL(uint16(result))
+	hcarry := IsAddHalfCarry(getHighBits(left), getHighBits(right))
+	SetFlags(result, F_IGNORE, F_SET_0, hcarry, F_SET_IF, F_16bit)
 
 	return 2
 }
@@ -176,12 +176,12 @@ func x39_add() int {
 // add  SP, %s - *SP = SP +/- %s ;%s is 8bit signed number
 func xE8_add() int {
 	left := GetSP()
-    right := FetchOperand8()
-    result := int(left) + int(right)
+	right := FetchOperand8()
+	result := int(left) + int(right)
 
-    SetSP(uint16(result))
-    hcarry := IsAddHalfCarry(getHighBits(left), right)
-    SetFlags(result, F_IGNORE, F_SET_0, hcarry, F_SET_IF, F_16bit)
+	SetSP(uint16(result))
+	hcarry := IsAddHalfCarry(getHighBits(left), right)
+	SetFlags(result, F_IGNORE, F_SET_0, hcarry, F_SET_IF, F_16bit)
 
 	return 4
 }

@@ -7,12 +7,12 @@ import . "memory"
 // sbc  A, B - A=A-B-cy
 func x98_sbc() int {
 	left := GetA()
-    right := GetB()
-    result := int(left) - int(right) - GetFlagCyInt()
+	right := GetB()
+	result := int(left) - int(right) - GetFlagCyInt()
 
-    SetA(uint8(result))
-    hcarry := IsSubHalfCarry(left, right)
-    SetFlags(result, F_SET_IF, F_SET_1, hcarry, F_SET_IF, F_8bit)
+	SetA(uint8(result))
+	hcarry := IsSubHalfCarry(left, right)
+	SetFlags(result, F_SET_IF, F_SET_1, hcarry, F_SET_IF, F_8bit)
 
 	return 1
 }
@@ -20,12 +20,12 @@ func x98_sbc() int {
 // sbc  A, C - A=A-C-cy
 func x99_sbc() int {
 	left := GetA()
-    right := GetC()
-    result := int(left) - int(right) - GetFlagCyInt()
+	right := GetC()
+	result := int(left) - int(right) - GetFlagCyInt()
 
-    SetA(uint8(result))
-    hcarry := IsSubHalfCarry(left, right)
-    SetFlags(result, F_SET_IF, F_SET_1, hcarry, F_SET_IF, F_8bit)
+	SetA(uint8(result))
+	hcarry := IsSubHalfCarry(left, right)
+	SetFlags(result, F_SET_IF, F_SET_1, hcarry, F_SET_IF, F_8bit)
 
 	return 1
 }
@@ -33,12 +33,12 @@ func x99_sbc() int {
 // sbc  A, D - A=A-D-cy
 func x9A_sbc() int {
 	left := GetA()
-    right := GetD()
-    result := int(left) - int(right) - GetFlagCyInt()
+	right := GetD()
+	result := int(left) - int(right) - GetFlagCyInt()
 
-    SetA(uint8(result))
-    hcarry := IsSubHalfCarry(left, right)
-    SetFlags(result, F_SET_IF, F_SET_1, hcarry, F_SET_IF, F_8bit)
+	SetA(uint8(result))
+	hcarry := IsSubHalfCarry(left, right)
+	SetFlags(result, F_SET_IF, F_SET_1, hcarry, F_SET_IF, F_8bit)
 
 	return 1
 }
@@ -46,12 +46,12 @@ func x9A_sbc() int {
 // sbc  A, E - A=A-E-cy
 func x9B_sbc() int {
 	left := GetA()
-    right := GetE()
-    result := int(left) - int(right) - GetFlagCyInt()
+	right := GetE()
+	result := int(left) - int(right) - GetFlagCyInt()
 
-    SetA(uint8(result))
-    hcarry := IsSubHalfCarry(left, right)
-    SetFlags(result, F_SET_IF, F_SET_1, hcarry, F_SET_IF, F_8bit)
+	SetA(uint8(result))
+	hcarry := IsSubHalfCarry(left, right)
+	SetFlags(result, F_SET_IF, F_SET_1, hcarry, F_SET_IF, F_8bit)
 
 	return 1
 }
@@ -59,12 +59,12 @@ func x9B_sbc() int {
 // sbc  A, H - A=A-H-cy
 func x9C_sbc() int {
 	left := GetA()
-    right := GetH()
-    result := int(left) - int(right) - GetFlagCyInt()
+	right := GetH()
+	result := int(left) - int(right) - GetFlagCyInt()
 
-    SetA(uint8(result))
-    hcarry := IsSubHalfCarry(left, right)
-    SetFlags(result, F_SET_IF, F_SET_1, hcarry, F_SET_IF, F_8bit)
+	SetA(uint8(result))
+	hcarry := IsSubHalfCarry(left, right)
+	SetFlags(result, F_SET_IF, F_SET_1, hcarry, F_SET_IF, F_8bit)
 
 	return 1
 }
@@ -72,12 +72,12 @@ func x9C_sbc() int {
 // sbc  A, L - A=A-L-cy
 func x9D_sbc() int {
 	left := GetA()
-    right := GetL()
-    result := int(left) - int(right) - GetFlagCyInt()
+	right := GetL()
+	result := int(left) - int(right) - GetFlagCyInt()
 
-    SetA(uint8(result))
-    hcarry := IsSubHalfCarry(left, right)
-    SetFlags(result, F_SET_IF, F_SET_1, hcarry, F_SET_IF, F_8bit)
+	SetA(uint8(result))
+	hcarry := IsSubHalfCarry(left, right)
+	SetFlags(result, F_SET_IF, F_SET_1, hcarry, F_SET_IF, F_8bit)
 
 	return 1
 }
@@ -85,12 +85,12 @@ func x9D_sbc() int {
 // sbc  A, (HL) - A=A-(HL)-cy
 func x9E_sbc() int {
 	left := GetA()
-    right := Get(GetHL())
-    result := int(left) - int(right) - GetFlagCyInt()
+	right := Get(GetHL())
+	result := int(left) - int(right) - GetFlagCyInt()
 
-    SetA(uint8(result))
-    hcarry := IsSubHalfCarry(left, right)
-    SetFlags(result, F_SET_IF, F_SET_1, hcarry, F_SET_IF, F_8bit)
+	SetA(uint8(result))
+	hcarry := IsSubHalfCarry(left, right)
+	SetFlags(result, F_SET_IF, F_SET_1, hcarry, F_SET_IF, F_8bit)
 
 	return 2
 }
@@ -98,12 +98,12 @@ func x9E_sbc() int {
 // sbc  A, A - A=A-A-cy
 func x9F_sbc() int {
 	left := GetA()
-    right := GetA()
-    result := int(left) - int(right) - GetFlagCyInt()
+	right := GetA()
+	result := int(left) - int(right) - GetFlagCyInt()
 
-    SetA(uint8(result))
-    hcarry := IsSubHalfCarry(left, right)
-    SetFlags(result, F_SET_IF, F_SET_1, hcarry, F_SET_IF, F_8bit)
+	SetA(uint8(result))
+	hcarry := IsSubHalfCarry(left, right)
+	SetFlags(result, F_SET_IF, F_SET_1, hcarry, F_SET_IF, F_8bit)
 
 	return 1
 }
@@ -111,12 +111,12 @@ func x9F_sbc() int {
 // sbc  A, %1 - A=A-%1-cy
 func xDE_sbc() int {
 	left := GetA()
-    right := FetchOperand8()
-    result := int(left) - int(right) - GetFlagCyInt()
+	right := FetchOperand8()
+	result := int(left) - int(right) - GetFlagCyInt()
 
-    SetA(uint8(result))
-    hcarry := IsSubHalfCarry(left, right)
-    SetFlags(result, F_SET_IF, F_SET_1, hcarry, F_SET_IF, F_8bit)
+	SetA(uint8(result))
+	hcarry := IsSubHalfCarry(left, right)
+	SetFlags(result, F_SET_IF, F_SET_1, hcarry, F_SET_IF, F_8bit)
 
 	return 2
 }

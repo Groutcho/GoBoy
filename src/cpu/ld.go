@@ -252,9 +252,9 @@ func xEA_ld() int {
 // ld   A, (FF00+%1) - *read from io-port %1 (memory FF00+%1)
 func xF0_ld() int {
 	offset := int(FetchOperand8())
-    addr := 0xFF00 + uint16(offset)
-    value := Get(addr)
-    SetA(value)
+	addr := 0xFF00 + uint16(offset)
+	value := Get(addr)
+	SetA(value)
 
 	return 3
 }
@@ -262,9 +262,9 @@ func xF0_ld() int {
 // ld   (FF00+%1), A - *write to io-port %1 (memory FF00+%1)
 func xE0_ld() int {
 	offset := int(FetchOperand8())
-    addr := 0xFF00 + uint16(offset)
-    value := GetA()
-    Set(addr, value)
+	addr := 0xFF00 + uint16(offset)
+	value := GetA()
+	Set(addr, value)
 
 	return 3
 }
@@ -272,9 +272,9 @@ func xE0_ld() int {
 // ld   A, (FF00+C) - *read from io-port C (memory FF00+C)
 func xF2_ld() int {
 	offset := GetC()
-    addr := 0xFF00 + uint16(offset)
-    value := Get(addr)
-    SetA(value)
+	addr := 0xFF00 + uint16(offset)
+	value := Get(addr)
+	SetA(value)
 
 	return 2
 }
@@ -282,9 +282,9 @@ func xF2_ld() int {
 // ld   (FF00+C), A - *write to io-port C (memory FF00+C)
 func xE2_ld() int {
 	offset := GetC()
-    addr := 0xFF00 + uint16(offset)
-    value := GetA()
-    Set(addr, value)
+	addr := 0xFF00 + uint16(offset)
+	value := GetA()
+	Set(addr, value)
 
 	return 2
 }
@@ -327,19 +327,19 @@ func xF9_ld() int {
 // ld   HL, SP+%s - *HL = SP +/- %s ;%s is 8bit signed number
 func xF8_ld() int {
 	operand := int(FetchOperand8s())
-    result := int(GetSP()) + operand
-    SetHL(uint16(result))
+	result := int(GetSP()) + operand
+	SetHL(uint16(result))
 
-    hc := 0
-    if operand > 0 {
-        if getLowNibble(uint8(operand)) + getLowNibble(getLowBits(GetSP())) > 0xF {
-            hc = 1
-        } else {
-            hc = 0
-        }
-    }
+	hc := 0
+	if operand > 0 {
+		if getLowNibble(uint8(operand)) + getLowNibble(getLowBits(GetSP())) > 0xF {
+			hc = 1
+		} else {
+			hc = 0
+		}
+	}
 
-    SetFlags(result, F_SET_0, F_SET_0, hc, F_SET_IF, F_16bit)
+	SetFlags(result, F_SET_0, F_SET_0, hc, F_SET_IF, F_16bit)
 
 	return 3
 }

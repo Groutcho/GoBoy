@@ -7,9 +7,9 @@ import . "memory"
 // or   B - A=A | B
 func xB0_or() int {
 	result := GetA() | GetB()
-    SetA(result)
+	SetA(result)
 
-    SetFlags(int(result), F_SET_IF, F_SET_0, F_SET_0, F_SET_0, F_8bit)
+	SetFlags(int(result), F_SET_IF, F_SET_0, F_SET_0, F_SET_0, F_8bit)
 
 	return 1
 }
@@ -17,9 +17,9 @@ func xB0_or() int {
 // or   C - A=A | C
 func xB1_or() int {
 	result := GetA() | GetC()
-    SetA(result)
+	SetA(result)
 
-    SetFlags(int(result), F_SET_IF, F_SET_0, F_SET_0, F_SET_0, F_8bit)
+	SetFlags(int(result), F_SET_IF, F_SET_0, F_SET_0, F_SET_0, F_8bit)
 
 	return 1
 }
@@ -27,9 +27,9 @@ func xB1_or() int {
 // or   D - A=A | D
 func xB2_or() int {
 	result := GetA() | GetD()
-    SetA(result)
+	SetA(result)
 
-    SetFlags(int(result), F_SET_IF, F_SET_0, F_SET_0, F_SET_0, F_8bit)
+	SetFlags(int(result), F_SET_IF, F_SET_0, F_SET_0, F_SET_0, F_8bit)
 
 	return 1
 }
@@ -37,9 +37,9 @@ func xB2_or() int {
 // or   E - A=A | E
 func xB3_or() int {
 	result := GetA() | GetE()
-    SetA(result)
+	SetA(result)
 
-    SetFlags(int(result), F_SET_IF, F_SET_0, F_SET_0, F_SET_0, F_8bit)
+	SetFlags(int(result), F_SET_IF, F_SET_0, F_SET_0, F_SET_0, F_8bit)
 
 	return 1
 }
@@ -47,9 +47,9 @@ func xB3_or() int {
 // or   H - A=A | H
 func xB4_or() int {
 	result := GetA() | GetH()
-    SetA(result)
+	SetA(result)
 
-    SetFlags(int(result), F_SET_IF, F_SET_0, F_SET_0, F_SET_0, F_8bit)
+	SetFlags(int(result), F_SET_IF, F_SET_0, F_SET_0, F_SET_0, F_8bit)
 
 	return 1
 }
@@ -57,9 +57,9 @@ func xB4_or() int {
 // or   L - A=A | L
 func xB5_or() int {
 	result := GetA() | GetL()
-    SetA(result)
+	SetA(result)
 
-    SetFlags(int(result), F_SET_IF, F_SET_0, F_SET_0, F_SET_0, F_8bit)
+	SetFlags(int(result), F_SET_IF, F_SET_0, F_SET_0, F_SET_0, F_8bit)
 
 	return 1
 }
@@ -67,9 +67,9 @@ func xB5_or() int {
 // or   A - A=A | A
 func xB7_or() int {
 	result := GetA() | GetA()
-    SetA(result)
+	SetA(result)
 
-    SetFlags(int(result), F_SET_IF, F_SET_0, F_SET_0, F_SET_0, F_8bit)
+	SetFlags(int(result), F_SET_IF, F_SET_0, F_SET_0, F_SET_0, F_8bit)
 
 	return 1
 }
@@ -77,9 +77,9 @@ func xB7_or() int {
 // or   (HL) - A=A | (HL)
 func xB6_or() int {
 	result := GetA() | Get(GetHL())
-    SetA(result)
+	SetA(result)
 
-    SetFlags(int(result), F_SET_IF, F_SET_0, F_SET_0, F_SET_0, F_8bit)
+	SetFlags(int(result), F_SET_IF, F_SET_0, F_SET_0, F_SET_0, F_8bit)
 
 	return 2
 }
@@ -87,9 +87,9 @@ func xB6_or() int {
 // or   %1 - A=A | %1
 func xF6_or() int {
 	result := GetA() | FetchOperand8()
-    SetA(result)
+	SetA(result)
 
-    SetFlags(int(result), F_SET_IF, F_SET_0, F_SET_0, F_SET_0, F_8bit)
+	SetFlags(int(result), F_SET_IF, F_SET_0, F_SET_0, F_SET_0, F_8bit)
 
 	return 2
 }

@@ -7,13 +7,13 @@ import . "memory"
 // cp   B - compare A-B
 func xB8_cp() int {
 	left := int(GetA())
-    right := int(GetB())
-    result := left - right
-    SetA(uint8(result))
+	right := int(GetB())
+	result := left - right
+	SetA(uint8(result))
 
-    hc := IsSubHalfCarry(uint8(left), uint8(right))
+	hc := IsSubHalfCarry(uint8(left), uint8(right))
 
-    SetFlags(result, F_SET_IF, F_SET_1, hc, F_SET_IF, F_8bit)
+	SetFlags(result, F_SET_IF, F_SET_1, hc, F_SET_IF, F_8bit)
 
 	return 1
 }
@@ -21,13 +21,13 @@ func xB8_cp() int {
 // cp   C - compare A-C
 func xB9_cp() int {
 	left := int(GetA())
-    right := int(GetC())
-    result := left - right
-    SetA(uint8(result))
+	right := int(GetC())
+	result := left - right
+	SetA(uint8(result))
 
-    hc := IsSubHalfCarry(uint8(left), uint8(right))
+	hc := IsSubHalfCarry(uint8(left), uint8(right))
 
-    SetFlags(result, F_SET_IF, F_SET_1, hc, F_SET_IF, F_8bit)
+	SetFlags(result, F_SET_IF, F_SET_1, hc, F_SET_IF, F_8bit)
 
 	return 1
 }
@@ -35,13 +35,13 @@ func xB9_cp() int {
 // cp   D - compare A-D
 func xBA_cp() int {
 	left := int(GetA())
-    right := int(GetD())
-    result := left - right
-    SetA(uint8(result))
+	right := int(GetD())
+	result := left - right
+	SetA(uint8(result))
 
-    hc := IsSubHalfCarry(uint8(left), uint8(right))
+	hc := IsSubHalfCarry(uint8(left), uint8(right))
 
-    SetFlags(result, F_SET_IF, F_SET_1, hc, F_SET_IF, F_8bit)
+	SetFlags(result, F_SET_IF, F_SET_1, hc, F_SET_IF, F_8bit)
 
 	return 1
 }
@@ -49,13 +49,13 @@ func xBA_cp() int {
 // cp   E - compare A-E
 func xBB_cp() int {
 	left := int(GetA())
-    right := int(GetE())
-    result := left - right
-    SetA(uint8(result))
+	right := int(GetE())
+	result := left - right
+	SetA(uint8(result))
 
-    hc := IsSubHalfCarry(uint8(left), uint8(right))
+	hc := IsSubHalfCarry(uint8(left), uint8(right))
 
-    SetFlags(result, F_SET_IF, F_SET_1, hc, F_SET_IF, F_8bit)
+	SetFlags(result, F_SET_IF, F_SET_1, hc, F_SET_IF, F_8bit)
 
 	return 1
 }
@@ -63,13 +63,13 @@ func xBB_cp() int {
 // cp   H - compare A-H
 func xBC_cp() int {
 	left := int(GetA())
-    right := int(GetH())
-    result := left - right
-    SetA(uint8(result))
+	right := int(GetH())
+	result := left - right
+	SetA(uint8(result))
 
-    hc := IsSubHalfCarry(uint8(left), uint8(right))
+	hc := IsSubHalfCarry(uint8(left), uint8(right))
 
-    SetFlags(result, F_SET_IF, F_SET_1, hc, F_SET_IF, F_8bit)
+	SetFlags(result, F_SET_IF, F_SET_1, hc, F_SET_IF, F_8bit)
 
 	return 1
 }
@@ -77,13 +77,13 @@ func xBC_cp() int {
 // cp   L - compare A-L
 func xBD_cp() int {
 	left := int(GetA())
-    right := int(GetL())
-    result := left - right
-    SetA(uint8(result))
+	right := int(GetL())
+	result := left - right
+	SetA(uint8(result))
 
-    hc := IsSubHalfCarry(uint8(left), uint8(right))
+	hc := IsSubHalfCarry(uint8(left), uint8(right))
 
-    SetFlags(result, F_SET_IF, F_SET_1, hc, F_SET_IF, F_8bit)
+	SetFlags(result, F_SET_IF, F_SET_1, hc, F_SET_IF, F_8bit)
 
 	return 1
 }
@@ -91,13 +91,13 @@ func xBD_cp() int {
 // cp   (HL) - compare A-(HL)
 func xBE_cp() int {
 	left := int(GetA())
-    right := int(Get(GetHL()))
-    result := left - right
-    SetA(uint8(result))
+	right := int(Get(GetHL()))
+	result := left - right
+	SetA(uint8(result))
 
-    hc := IsSubHalfCarry(uint8(left), uint8(right))
+	hc := IsSubHalfCarry(uint8(left), uint8(right))
 
-    SetFlags(result, F_SET_IF, F_SET_1, hc, F_SET_IF, F_8bit)
+	SetFlags(result, F_SET_IF, F_SET_1, hc, F_SET_IF, F_8bit)
 
 	return 2
 }
@@ -105,13 +105,13 @@ func xBE_cp() int {
 // cp   A - compare A-A
 func xBF_cp() int {
 	left := int(GetA())
-    right := int(GetA())
-    result := left - right
-    SetA(uint8(result))
+	right := int(GetA())
+	result := left - right
+	SetA(uint8(result))
 
-    hc := IsSubHalfCarry(uint8(left), uint8(right))
+	hc := IsSubHalfCarry(uint8(left), uint8(right))
 
-    SetFlags(result, F_SET_IF, F_SET_1, hc, F_SET_IF, F_8bit)
+	SetFlags(result, F_SET_IF, F_SET_1, hc, F_SET_IF, F_8bit)
 
 	return 1
 }
@@ -119,13 +119,13 @@ func xBF_cp() int {
 // cp   %1 - compare A-%1
 func xFE_cp() int {
 	left := int(GetA())
-    right := int(FetchOperand8())
-    result := left - right
-    SetA(uint8(result))
+	right := int(FetchOperand8())
+	result := left - right
+	SetA(uint8(result))
 
-    hc := IsSubHalfCarry(uint8(left), uint8(right))
+	hc := IsSubHalfCarry(uint8(left), uint8(right))
 
-    SetFlags(result, F_SET_IF, F_SET_1, hc, F_SET_IF, F_8bit)
+	SetFlags(result, F_SET_IF, F_SET_1, hc, F_SET_IF, F_8bit)
 
 	return 2
 }

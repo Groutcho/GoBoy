@@ -7,12 +7,12 @@ import . "memory"
 // inc  A - A = A+1
 func x3C_inc() int {
 	original := GetA()
-    value := original + 1
-    SetA(value)
+	value := original + 1
+	SetA(value)
 
-    hc := IsAddHalfCarry(original, uint8(1))
+	hc := IsAddHalfCarry(original, uint8(1))
 
-    SetFlags(int(value), F_SET_IF, F_SET_0, hc, F_IGNORE, F_8bit)
+	SetFlags(int(value), F_SET_IF, F_SET_0, hc, F_IGNORE, F_8bit)
 
 	return 1
 }
@@ -20,12 +20,12 @@ func x3C_inc() int {
 // inc  B - B = B+1
 func x04_inc() int {
 	original := GetB()
-    value := original + 1
-    SetB(value)
+	value := original + 1
+	SetB(value)
 
-    hc := IsAddHalfCarry(original, uint8(1))
+	hc := IsAddHalfCarry(original, uint8(1))
 
-    SetFlags(int(value), F_SET_IF, F_SET_0, hc, F_IGNORE, F_8bit)
+	SetFlags(int(value), F_SET_IF, F_SET_0, hc, F_IGNORE, F_8bit)
 
 	return 1
 }
@@ -33,12 +33,12 @@ func x04_inc() int {
 // inc  C - C = C+1
 func x0C_inc() int {
 	original := GetC()
-    value := original + 1
-    SetC(value)
+	value := original + 1
+	SetC(value)
 
-    hc := IsAddHalfCarry(original, uint8(1))
+	hc := IsAddHalfCarry(original, uint8(1))
 
-    SetFlags(int(value), F_SET_IF, F_SET_0, hc, F_IGNORE, F_8bit)
+	SetFlags(int(value), F_SET_IF, F_SET_0, hc, F_IGNORE, F_8bit)
 
 	return 1
 }
@@ -46,12 +46,12 @@ func x0C_inc() int {
 // inc  D - D = D+1
 func x14_inc() int {
 	original := GetD()
-    value := original + 1
-    SetD(value)
+	value := original + 1
+	SetD(value)
 
-    hc := IsAddHalfCarry(original, uint8(1))
+	hc := IsAddHalfCarry(original, uint8(1))
 
-    SetFlags(int(value), F_SET_IF, F_SET_0, hc, F_IGNORE, F_8bit)
+	SetFlags(int(value), F_SET_IF, F_SET_0, hc, F_IGNORE, F_8bit)
 
 	return 1
 }
@@ -59,12 +59,12 @@ func x14_inc() int {
 // inc  E - E = E+1
 func x1C_inc() int {
 	original := GetE()
-    value := original + 1
-    SetE(value)
+	value := original + 1
+	SetE(value)
 
-    hc := IsAddHalfCarry(original, uint8(1))
+	hc := IsAddHalfCarry(original, uint8(1))
 
-    SetFlags(int(value), F_SET_IF, F_SET_0, hc, F_IGNORE, F_8bit)
+	SetFlags(int(value), F_SET_IF, F_SET_0, hc, F_IGNORE, F_8bit)
 
 	return 1
 }
@@ -72,12 +72,12 @@ func x1C_inc() int {
 // inc  H - H = H+1
 func x24_inc() int {
 	original := GetH()
-    value := original + 1
-    SetH(value)
+	value := original + 1
+	SetH(value)
 
-    hc := IsAddHalfCarry(original, uint8(1))
+	hc := IsAddHalfCarry(original, uint8(1))
 
-    SetFlags(int(value), F_SET_IF, F_SET_0, hc, F_IGNORE, F_8bit)
+	SetFlags(int(value), F_SET_IF, F_SET_0, hc, F_IGNORE, F_8bit)
 
 	return 1
 }
@@ -85,12 +85,12 @@ func x24_inc() int {
 // inc  L - L = L+1
 func x2C_inc() int {
 	original := GetL()
-    value := original + 1
-    SetL(value)
+	value := original + 1
+	SetL(value)
 
-    hc := IsAddHalfCarry(original, uint8(1))
+	hc := IsAddHalfCarry(original, uint8(1))
 
-    SetFlags(int(value), F_SET_IF, F_SET_0, hc, F_IGNORE, F_8bit)
+	SetFlags(int(value), F_SET_IF, F_SET_0, hc, F_IGNORE, F_8bit)
 
 	return 1
 }
@@ -98,12 +98,12 @@ func x2C_inc() int {
 // inc  (HL) - (HL)=(HL)+1
 func x34_inc() int {
 	original := Get(GetHL())
-    value := original + 1
-    Set(GetHL(), value)
+	value := original + 1
+	Set(GetHL(), value)
 
-    hc := IsAddHalfCarry(original, uint8(1))
+	hc := IsAddHalfCarry(original, uint8(1))
 
-    SetFlags(int(value), F_SET_IF, F_SET_0, hc, F_IGNORE, F_8bit)
+	SetFlags(int(value), F_SET_IF, F_SET_0, hc, F_IGNORE, F_8bit)
 
 	return 3
 }
@@ -111,12 +111,12 @@ func x34_inc() int {
 // inc  BC - BC = BC+1
 func x03_inc() int {
 	original := GetBC()
-    value := original + 1
-    SetBC(value)
+	value := original + 1
+	SetBC(value)
 
-    hc := IsAddHalfCarry(getHighBits(original), uint8(1))
+	hc := IsAddHalfCarry(getHighBits(original), uint8(1))
 
-    SetFlags(int(value), F_SET_IF, F_SET_0, hc, F_IGNORE, F_16bit)
+	SetFlags(int(value), F_SET_IF, F_SET_0, hc, F_IGNORE, F_16bit)
 
 	return 2
 }
@@ -124,12 +124,12 @@ func x03_inc() int {
 // inc  DE - DE = DE+1
 func x13_inc() int {
 	original := GetDE()
-    value := original + 1
-    SetDE(value)
+	value := original + 1
+	SetDE(value)
 
-    hc := IsAddHalfCarry(getHighBits(original), uint8(1))
+	hc := IsAddHalfCarry(getHighBits(original), uint8(1))
 
-    SetFlags(int(value), F_SET_IF, F_SET_0, hc, F_IGNORE, F_16bit)
+	SetFlags(int(value), F_SET_IF, F_SET_0, hc, F_IGNORE, F_16bit)
 
 	return 2
 }
@@ -137,12 +137,12 @@ func x13_inc() int {
 // inc  HL - HL = HL+1
 func x23_inc() int {
 	original := GetHL()
-    value := original + 1
-    SetHL(value)
+	value := original + 1
+	SetHL(value)
 
-    hc := IsAddHalfCarry(getHighBits(original), uint8(1))
+	hc := IsAddHalfCarry(getHighBits(original), uint8(1))
 
-    SetFlags(int(value), F_SET_IF, F_SET_0, hc, F_IGNORE, F_16bit)
+	SetFlags(int(value), F_SET_IF, F_SET_0, hc, F_IGNORE, F_16bit)
 
 	return 2
 }
@@ -150,12 +150,12 @@ func x23_inc() int {
 // inc  SP - SP = SP+1
 func x33_inc() int {
 	original := GetSP()
-    value := original + 1
-    SetSP(value)
+	value := original + 1
+	SetSP(value)
 
-    hc := IsAddHalfCarry(getHighBits(original), uint8(1))
+	hc := IsAddHalfCarry(getHighBits(original), uint8(1))
 
-    SetFlags(int(value), F_SET_IF, F_SET_0, hc, F_IGNORE, F_16bit)
+	SetFlags(int(value), F_SET_IF, F_SET_0, hc, F_IGNORE, F_16bit)
 
 	return 2
 }

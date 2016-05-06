@@ -7,12 +7,12 @@ import . "memory"
 // sub  A, B - A=A-B
 func x90_sub() int {
 	left := GetA()
-    right := GetB()
-    result := int(left) - int(right)
+	right := GetB()
+	result := int(left) - int(right)
 
-    SetA(uint8(result))
-    hcarry := IsSubHalfCarry(left, right)
-    SetFlags(result, F_SET_IF, F_SET_1, hcarry, F_SET_IF, F_8bit)
+	SetA(uint8(result))
+	hcarry := IsSubHalfCarry(left, right)
+	SetFlags(result, F_SET_IF, F_SET_1, hcarry, F_SET_IF, F_8bit)
 
 	return 1
 }
@@ -20,12 +20,12 @@ func x90_sub() int {
 // sub  A, C - A=A-C
 func x91_sub() int {
 	left := GetA()
-    right := GetC()
-    result := int(left) - int(right)
+	right := GetC()
+	result := int(left) - int(right)
 
-    SetA(uint8(result))
-    hcarry := IsSubHalfCarry(left, right)
-    SetFlags(result, F_SET_IF, F_SET_1, hcarry, F_SET_IF, F_8bit)
+	SetA(uint8(result))
+	hcarry := IsSubHalfCarry(left, right)
+	SetFlags(result, F_SET_IF, F_SET_1, hcarry, F_SET_IF, F_8bit)
 
 	return 1
 }
@@ -33,12 +33,12 @@ func x91_sub() int {
 // sub  A, D - A=A-D
 func x92_sub() int {
 	left := GetA()
-    right := GetD()
-    result := int(left) - int(right)
+	right := GetD()
+	result := int(left) - int(right)
 
-    SetA(uint8(result))
-    hcarry := IsSubHalfCarry(left, right)
-    SetFlags(result, F_SET_IF, F_SET_1, hcarry, F_SET_IF, F_8bit)
+	SetA(uint8(result))
+	hcarry := IsSubHalfCarry(left, right)
+	SetFlags(result, F_SET_IF, F_SET_1, hcarry, F_SET_IF, F_8bit)
 
 	return 1
 }
@@ -46,12 +46,12 @@ func x92_sub() int {
 // sub  A, E - A=A-E
 func x93_sub() int {
 	left := GetA()
-    right := GetE()
-    result := int(left) - int(right)
+	right := GetE()
+	result := int(left) - int(right)
 
-    SetA(uint8(result))
-    hcarry := IsSubHalfCarry(left, right)
-    SetFlags(result, F_SET_IF, F_SET_1, hcarry, F_SET_IF, F_8bit)
+	SetA(uint8(result))
+	hcarry := IsSubHalfCarry(left, right)
+	SetFlags(result, F_SET_IF, F_SET_1, hcarry, F_SET_IF, F_8bit)
 
 	return 1
 }
@@ -59,12 +59,12 @@ func x93_sub() int {
 // sub  A, H - A=A-H
 func x94_sub() int {
 	left := GetA()
-    right := GetH()
-    result := int(left) - int(right)
+	right := GetH()
+	result := int(left) - int(right)
 
-    SetA(uint8(result))
-    hcarry := IsSubHalfCarry(left, right)
-    SetFlags(result, F_SET_IF, F_SET_1, hcarry, F_SET_IF, F_8bit)
+	SetA(uint8(result))
+	hcarry := IsSubHalfCarry(left, right)
+	SetFlags(result, F_SET_IF, F_SET_1, hcarry, F_SET_IF, F_8bit)
 
 	return 1
 }
@@ -72,12 +72,12 @@ func x94_sub() int {
 // sub  A, L - A=A-L
 func x95_sub() int {
 	left := GetA()
-    right := GetL()
-    result := int(left) - int(right)
+	right := GetL()
+	result := int(left) - int(right)
 
-    SetA(uint8(result))
-    hcarry := IsSubHalfCarry(left, right)
-    SetFlags(result, F_SET_IF, F_SET_1, hcarry, F_SET_IF, F_8bit)
+	SetA(uint8(result))
+	hcarry := IsSubHalfCarry(left, right)
+	SetFlags(result, F_SET_IF, F_SET_1, hcarry, F_SET_IF, F_8bit)
 
 	return 1
 }
@@ -85,12 +85,12 @@ func x95_sub() int {
 // sub  A, (HL) - A=A-(HL)
 func x96_sub() int {
 	left := GetA()
-    right := Get(GetHL())
-    result := int(left) - int(right)
+	right := Get(GetHL())
+	result := int(left) - int(right)
 
-    SetA(uint8(result))
-    hcarry := IsSubHalfCarry(left, right)
-    SetFlags(result, F_SET_IF, F_SET_1, hcarry, F_SET_IF, F_8bit)
+	SetA(uint8(result))
+	hcarry := IsSubHalfCarry(left, right)
+	SetFlags(result, F_SET_IF, F_SET_1, hcarry, F_SET_IF, F_8bit)
 
 	return 2
 }
@@ -98,12 +98,12 @@ func x96_sub() int {
 // sub  A, A - A=A-A
 func x97_sub() int {
 	left := GetA()
-    right := GetA()
-    result := int(left) - int(right)
+	right := GetA()
+	result := int(left) - int(right)
 
-    SetA(uint8(result))
-    hcarry := IsSubHalfCarry(left, right)
-    SetFlags(result, F_SET_IF, F_SET_1, hcarry, F_SET_IF, F_8bit)
+	SetA(uint8(result))
+	hcarry := IsSubHalfCarry(left, right)
+	SetFlags(result, F_SET_IF, F_SET_1, hcarry, F_SET_IF, F_8bit)
 
 	return 1
 }
@@ -111,12 +111,12 @@ func x97_sub() int {
 // sub  A, %1 - A=A-%1
 func xD6_sub() int {
 	left := GetA()
-    right := FetchOperand8()
-    result := int(left) - int(right)
+	right := FetchOperand8()
+	result := int(left) - int(right)
 
-    SetA(uint8(result))
-    hcarry := IsSubHalfCarry(left, right)
-    SetFlags(result, F_SET_IF, F_SET_1, hcarry, F_SET_IF, F_8bit)
+	SetA(uint8(result))
+	hcarry := IsSubHalfCarry(left, right)
+	SetFlags(result, F_SET_IF, F_SET_1, hcarry, F_SET_IF, F_8bit)
 
 	return 2
 }

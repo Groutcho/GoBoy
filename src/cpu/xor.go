@@ -7,9 +7,9 @@ import . "memory"
 // xor  B - A=A^B
 func xA8_xor() int {
 	result := GetA() ^ GetB()
-    SetA(result)
+	SetA(result)
 
-    SetFlags(int(result), F_SET_IF, F_SET_0, F_SET_0, F_SET_0, F_8bit)
+	SetFlags(int(result), F_SET_IF, F_SET_0, F_SET_0, F_SET_0, F_8bit)
 
 	return 1
 }
@@ -17,9 +17,9 @@ func xA8_xor() int {
 // xor  C - A=A^C
 func xA9_xor() int {
 	result := GetA() ^ GetC()
-    SetA(result)
+	SetA(result)
 
-    SetFlags(int(result), F_SET_IF, F_SET_0, F_SET_0, F_SET_0, F_8bit)
+	SetFlags(int(result), F_SET_IF, F_SET_0, F_SET_0, F_SET_0, F_8bit)
 
 	return 1
 }
@@ -27,9 +27,9 @@ func xA9_xor() int {
 // xor  D - A=A^D
 func xAA_xor() int {
 	result := GetA() ^ GetD()
-    SetA(result)
+	SetA(result)
 
-    SetFlags(int(result), F_SET_IF, F_SET_0, F_SET_0, F_SET_0, F_8bit)
+	SetFlags(int(result), F_SET_IF, F_SET_0, F_SET_0, F_SET_0, F_8bit)
 
 	return 1
 }
@@ -37,9 +37,9 @@ func xAA_xor() int {
 // xor  E - A=A^E
 func xAB_xor() int {
 	result := GetA() ^ GetE()
-    SetA(result)
+	SetA(result)
 
-    SetFlags(int(result), F_SET_IF, F_SET_0, F_SET_0, F_SET_0, F_8bit)
+	SetFlags(int(result), F_SET_IF, F_SET_0, F_SET_0, F_SET_0, F_8bit)
 
 	return 1
 }
@@ -47,9 +47,9 @@ func xAB_xor() int {
 // xor  H - A=A^H
 func xAC_xor() int {
 	result := GetA() ^ GetH()
-    SetA(result)
+	SetA(result)
 
-    SetFlags(int(result), F_SET_IF, F_SET_0, F_SET_0, F_SET_0, F_8bit)
+	SetFlags(int(result), F_SET_IF, F_SET_0, F_SET_0, F_SET_0, F_8bit)
 
 	return 1
 }
@@ -57,9 +57,9 @@ func xAC_xor() int {
 // xor  L - A=A^L
 func xAD_xor() int {
 	result := GetA() ^ GetL()
-    SetA(result)
+	SetA(result)
 
-    SetFlags(int(result), F_SET_IF, F_SET_0, F_SET_0, F_SET_0, F_8bit)
+	SetFlags(int(result), F_SET_IF, F_SET_0, F_SET_0, F_SET_0, F_8bit)
 
 	return 1
 }
@@ -67,9 +67,9 @@ func xAD_xor() int {
 // xor  (HL) - A=A^[HL]
 func xAE_xor() int {
 	result := GetA() ^ Get(GetHL())
-    SetA(result)
+	SetA(result)
 
-    SetFlags(int(result), F_SET_IF, F_SET_0, F_SET_0, F_SET_0, F_8bit)
+	SetFlags(int(result), F_SET_IF, F_SET_0, F_SET_0, F_SET_0, F_8bit)
 
 	return 2
 }
@@ -77,9 +77,9 @@ func xAE_xor() int {
 // xor  A - A=A^A
 func xAF_xor() int {
 	result := GetA() ^ GetA()
-    SetA(result)
+	SetA(result)
 
-    SetFlags(int(result), F_SET_IF, F_SET_0, F_SET_0, F_SET_0, F_8bit)
+	SetFlags(int(result), F_SET_IF, F_SET_0, F_SET_0, F_SET_0, F_8bit)
 
 	return 1
 }
@@ -87,9 +87,9 @@ func xAF_xor() int {
 // xor  %1 - A=A^%1
 func xEE_xor() int {
 	result := GetA() ^ FetchOperand8()
-    SetA(result)
+	SetA(result)
 
-    SetFlags(int(result), F_SET_IF, F_SET_0, F_SET_0, F_SET_0, F_8bit)
+	SetFlags(int(result), F_SET_IF, F_SET_0, F_SET_0, F_SET_0, F_8bit)
 
 	return 2
 }

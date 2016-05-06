@@ -7,12 +7,12 @@ import . "memory"
 // adc  A, B - A=A+B+cy
 func x88_adc() int {
 	left := GetA()
-    right := GetB()
-    result := int(left) + int(right) + GetFlagCyInt()
+	right := GetB()
+	result := int(left) + int(right) + GetFlagCyInt()
 
-    SetA(uint8(result))
-    hcarry := IsAddHalfCarry(left, right)
-    SetFlags(result, F_SET_IF, F_SET_0, hcarry, F_SET_IF, F_8bit)
+	SetA(uint8(result))
+	hcarry := IsAddHalfCarry(left, right)
+	SetFlags(result, F_SET_IF, F_SET_0, hcarry, F_SET_IF, F_8bit)
 
 	return 1
 }
@@ -20,12 +20,12 @@ func x88_adc() int {
 // adc  A, C - A=A+C+cy
 func x89_adc() int {
 	left := GetA()
-    right := GetC()
-    result := int(left) + int(right) + GetFlagCyInt()
+	right := GetC()
+	result := int(left) + int(right) + GetFlagCyInt()
 
-    SetA(uint8(result))
-    hcarry := IsAddHalfCarry(left, right)
-    SetFlags(result, F_SET_IF, F_SET_0, hcarry, F_SET_IF, F_8bit)
+	SetA(uint8(result))
+	hcarry := IsAddHalfCarry(left, right)
+	SetFlags(result, F_SET_IF, F_SET_0, hcarry, F_SET_IF, F_8bit)
 
 	return 1
 }
@@ -33,12 +33,12 @@ func x89_adc() int {
 // adc  A, D - A=A+D+cy
 func x8A_adc() int {
 	left := GetA()
-    right := GetD()
-    result := int(left) + int(right) + GetFlagCyInt()
+	right := GetD()
+	result := int(left) + int(right) + GetFlagCyInt()
 
-    SetA(uint8(result))
-    hcarry := IsAddHalfCarry(left, right)
-    SetFlags(result, F_SET_IF, F_SET_0, hcarry, F_SET_IF, F_8bit)
+	SetA(uint8(result))
+	hcarry := IsAddHalfCarry(left, right)
+	SetFlags(result, F_SET_IF, F_SET_0, hcarry, F_SET_IF, F_8bit)
 
 	return 1
 }
@@ -46,12 +46,12 @@ func x8A_adc() int {
 // adc  A, E - A=A+E+cy
 func x8B_adc() int {
 	left := GetA()
-    right := GetE()
-    result := int(left) + int(right) + GetFlagCyInt()
+	right := GetE()
+	result := int(left) + int(right) + GetFlagCyInt()
 
-    SetA(uint8(result))
-    hcarry := IsAddHalfCarry(left, right)
-    SetFlags(result, F_SET_IF, F_SET_0, hcarry, F_SET_IF, F_8bit)
+	SetA(uint8(result))
+	hcarry := IsAddHalfCarry(left, right)
+	SetFlags(result, F_SET_IF, F_SET_0, hcarry, F_SET_IF, F_8bit)
 
 	return 1
 }
@@ -59,12 +59,12 @@ func x8B_adc() int {
 // adc  A, H - A=A+H+cy
 func x8C_adc() int {
 	left := GetA()
-    right := GetH()
-    result := int(left) + int(right) + GetFlagCyInt()
+	right := GetH()
+	result := int(left) + int(right) + GetFlagCyInt()
 
-    SetA(uint8(result))
-    hcarry := IsAddHalfCarry(left, right)
-    SetFlags(result, F_SET_IF, F_SET_0, hcarry, F_SET_IF, F_8bit)
+	SetA(uint8(result))
+	hcarry := IsAddHalfCarry(left, right)
+	SetFlags(result, F_SET_IF, F_SET_0, hcarry, F_SET_IF, F_8bit)
 
 	return 1
 }
@@ -72,12 +72,12 @@ func x8C_adc() int {
 // adc  A, L - A=A+L+cy
 func x8D_adc() int {
 	left := GetA()
-    right := GetL()
-    result := int(left) + int(right) + GetFlagCyInt()
+	right := GetL()
+	result := int(left) + int(right) + GetFlagCyInt()
 
-    SetA(uint8(result))
-    hcarry := IsAddHalfCarry(left, right)
-    SetFlags(result, F_SET_IF, F_SET_0, hcarry, F_SET_IF, F_8bit)
+	SetA(uint8(result))
+	hcarry := IsAddHalfCarry(left, right)
+	SetFlags(result, F_SET_IF, F_SET_0, hcarry, F_SET_IF, F_8bit)
 
 	return 1
 }
@@ -85,12 +85,12 @@ func x8D_adc() int {
 // adc  A, (HL) - A=A+(HL)+cy
 func x8E_adc() int {
 	left := GetA()
-    right := Get(GetHL())
-    result := int(left) + int(right) + GetFlagCyInt()
+	right := Get(GetHL())
+	result := int(left) + int(right) + GetFlagCyInt()
 
-    SetA(uint8(result))
-    hcarry := IsAddHalfCarry(left, right)
-    SetFlags(result, F_SET_IF, F_SET_0, hcarry, F_SET_IF, F_8bit)
+	SetA(uint8(result))
+	hcarry := IsAddHalfCarry(left, right)
+	SetFlags(result, F_SET_IF, F_SET_0, hcarry, F_SET_IF, F_8bit)
 
 	return 2
 }
@@ -98,12 +98,12 @@ func x8E_adc() int {
 // adc  A, A - A=A+A+cy
 func x8F_adc() int {
 	left := GetA()
-    right := GetA()
-    result := int(left) + int(right) + GetFlagCyInt()
+	right := GetA()
+	result := int(left) + int(right) + GetFlagCyInt()
 
-    SetA(uint8(result))
-    hcarry := IsAddHalfCarry(left, right)
-    SetFlags(result, F_SET_IF, F_SET_0, hcarry, F_SET_IF, F_8bit)
+	SetA(uint8(result))
+	hcarry := IsAddHalfCarry(left, right)
+	SetFlags(result, F_SET_IF, F_SET_0, hcarry, F_SET_IF, F_8bit)
 
 	return 1
 }
@@ -111,12 +111,12 @@ func x8F_adc() int {
 // adc  A, %1 - A=A+%1+cy
 func xCE_adc() int {
 	left := GetA()
-    right := FetchOperand8()
-    result := int(left) + int(right) + GetFlagCyInt()
+	right := FetchOperand8()
+	result := int(left) + int(right) + GetFlagCyInt()
 
-    SetA(uint8(result))
-    hcarry := IsAddHalfCarry(left, right)
-    SetFlags(result, F_SET_IF, F_SET_0, hcarry, F_SET_IF, F_8bit)
+	SetA(uint8(result))
+	hcarry := IsAddHalfCarry(left, right)
+	SetFlags(result, F_SET_IF, F_SET_0, hcarry, F_SET_IF, F_8bit)
 
 	return 2
 }
