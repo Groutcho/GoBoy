@@ -36,19 +36,11 @@ func x00_nop() int {
 }
 
 func xF3_di() int {
-	DisableVBlankInterrupt()
-	DisableLcdStatInterrupt()
-	DisableTimerInterrupt()
-	DisableSerialInterrupt()
-	DisableJoypadInterrupt()
+	DisableAllInterrupts()
 	return 1
 }
 
 func xFB_ei() int {
-	EnableVBlankInterrupt()
-	EnableLcdStatInterrupt()
-	EnableTimerInterrupt()
-	EnableSerialInterrupt()
-	EnableJoypadInterrupt()
+	EnableAllInterrupts()
 	return 1
 }

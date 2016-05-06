@@ -466,28 +466,28 @@ ei                   FB              4    ----     // enable interrupts, IME=1
 
 jp   %2              C3             16    ----     // jump to %2, PC=%2
 jp   HL              E9              4    ----     // jump to HL, PC=HL
-jp   CY, %2          DA          16;12    ----     // conditional jump if CY 
+jp   CY, %2          DA          16;12    ----     // conditional jump if CY
 jp   !CY, %2         D2          16;12    ----     // conditional jump if !CY
-jp   !Z, %2          C2          16;12    ----     // conditional jump if !Z 
-jp   Z, %2           CA          16;12    ----     // conditional jump if Z  
+jp   !Z, %2          C2          16;12    ----     // conditional jump if !Z
+jp   Z, %2           CA          16;12    ----     // conditional jump if Z
 
 jr   PC+%s           18             12    ----     // relative jump to %s (PC=PC+/-7bit)
-jr   CY, PC+%s       38           12;8    ----     // conditional relative jump if CY 
+jr   CY, PC+%s       38           12;8    ----     // conditional relative jump if CY
 jr   !CY, PC+%s      30           12;8    ----     // conditional relative jump if !CY
-jr   !Z, PC+%s       20           12;8    ----     // conditional relative jump if !Z 
-jr   Z, PC+%s        28           12;8    ----     // conditional relative jump if Z 
+jr   !Z, PC+%s       20           12;8    ----     // conditional relative jump if !Z
+jr   Z, PC+%s        28           12;8    ----     // conditional relative jump if Z
 
 call %2              CD             24    ----     // call to %2, SP=SP-2, (SP)=PC, PC=%2
-call CY, %2          DC          24;12    ----     // conditional call if CY 
+call CY, %2          DC          24;12    ----     // conditional call if CY
 call !CY, %2         D4          24;12    ----     // conditional call if !CY
-call !Z, %2          C4          24;12    ----     // conditional call if !Z 
-call Z, %2           CC          24;12    ----     // conditional call if Z  
+call !Z, %2          C4          24;12    ----     // conditional call if !Z
+call Z, %2           CC          24;12    ----     // conditional call if Z
 
 ret                  C9             16    ----     // return, PC=(SP), SP=SP+2
-ret  CY              D8           20;8    ----     // conditional return if CY 
-ret  !CY             D0           20;8    ----     // conditional return if !CY
-ret  !Z              C0           20;8    ----     // conditional return if !Z 
-ret  Z               C8           20;8    ----     // conditional return if Z  
+ret  CY              D8           24;8    ----     // conditional return if CY
+ret  !CY             D0           24;8    ----     // conditional return if !CY
+ret  !Z              C0           24;8    ----     // conditional return if !Z
+ret  Z               C8           24;8    ----     // conditional return if Z
 reti                 D9             16    ----     // return and enable interrupts (IME=1)
 
 rst  00              C7             16    ----     // call to 0x0000

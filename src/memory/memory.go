@@ -116,6 +116,22 @@ func setInterruptRequest(bit uint8, value bool) {
  *         Interrupt enables               *
 ********************************************/
 
+func EnableAllInterrupts() {
+	EnableVBlankInterrupt()
+	EnableLcdStatInterrupt()
+	EnableTimerInterrupt()
+	EnableSerialInterrupt()
+	EnableJoypadInterrupt()
+}
+
+func DisableAllInterrupts() {
+	DisableVBlankInterrupt()
+	DisableLcdStatInterrupt()
+	DisableTimerInterrupt()
+	DisableSerialInterrupt()
+	DisableJoypadInterrupt()
+}
+
 func VBlankInterruptEnabled() bool {
 	return getInterruptEnable(VBLANK)
 }
