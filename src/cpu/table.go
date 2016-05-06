@@ -132,6 +132,14 @@ func init() {
 	dispatch_table[0x0B5] = xB5_or
 	dispatch_table[0x0B6] = xB6_or
 	dispatch_table[0x0B7] = xB7_or
+	dispatch_table[0x0B8] = xB8_cp
+	dispatch_table[0x0B9] = xB9_cp
+	dispatch_table[0x0BA] = xBA_cp
+	dispatch_table[0x0BB] = xBB_cp
+	dispatch_table[0x0BC] = xBC_cp
+	dispatch_table[0x0BD] = xBD_cp
+	dispatch_table[0x0BE] = xBE_cp
+	dispatch_table[0x0BF] = xBF_cp
 	dispatch_table[0x0C0] = xC0_ret
 	dispatch_table[0x0C1] = xC1_pop
 	dispatch_table[0x0C2] = xC2_jp
@@ -180,6 +188,7 @@ func init() {
 	dispatch_table[0x0F8] = xF8_ld
 	dispatch_table[0x0F9] = xF9_ld
 	dispatch_table[0x0FA] = xFA_ld
+	dispatch_table[0x0FE] = xFE_cp
 	dispatch_table[0x0FF] = xFF_rst
 	dispatch_table[0x130] = xCB_30_swap
 	dispatch_table[0x131] = xCB_31_swap

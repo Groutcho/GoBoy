@@ -19,30 +19,20 @@ operand_16bit_re = re.compile(r'%2')
 operand_ref_16bit_re = re.compile(r'\(%2\)')
 operand_8bit_re = re.compile(r'%1')
 operand_uns8bit_re = re.compile(r'%s')
-not_re = re.compile(r'!')
 comment_re = re.compile(r'//.*')
 constant_re = re.compile(r'\d+')
 cond_cycle_re = re.compile(r';')
 equal_re = re.compile(r'=')
 flags_re = re.compile(r'[z01-][01-][h01-][c01-]')
 
-MNEMONIC = 'mnemonic'
 REF_REG = 'register pointer'
 REG16 = '16bit register'
 OPERAND16 = '16bit operand'
 OPERAND16REF = '16bit reference operand'
+OPERANDU8 = '8bit unsigned operand'
 OPERAND8 = '8bit operand'
-EX_OPCODE = 'extended opcode'
-OPCODE = 'opcode'
 REG8 = '8bit register'
 CONSTANT = 'constant'
-FLAGS = 'flags'
-COMMENT = 'comment'
-OPERANDU8 = '8bit unsigned operand'
-FLAG = 'flag'
-BOOL_NOT = 'not'
-CYCLE_COUNT = 'cycles'
-CYCLE_SEP = 'conditional cycles separator'
 ERROR = 'error'
 
 FLAG_MAY_CHANGE = 0
@@ -50,10 +40,48 @@ FLAG_SET_TO_ONE = 1
 FLAG_SET_TO_ZERO = 2
 FLAG_UNCHANGED = 3
 
-write_packages = ('ld', 'add', 'adc', 'bit', 'set', 'res', 'sub', 'sbc', 'rst', 'inc', 'dec', 'swap', 'and', 'or', 'xor')
-write_table = ( 'ld', 'call', 'add', 'adc', 'bit', 'set', 'res',
-                'sub', 'sbc', 'rst', 'pop', 'jp', 'jr', 'inc',
-                'dec', 'swap', 'ldi', 'ldd', 'push', 'ret', 'reti', 'and', 'or', 'xor')
+write_packages = (\
+    'ld',
+    'add',
+    'adc',
+    'bit',
+    'set',
+    'res',
+    'sub',
+    'sbc',
+    'rst',
+    'inc',
+    'dec',
+    'swap',
+    'and',
+    'or',
+    'xor',
+    'cp')
+write_table = ( 'ld',
+    'call',
+    'add',
+    'adc',
+    'bit',
+    'set',
+    'res',
+    'sub',
+    'sbc',
+    'rst',
+    'pop',
+    'jp',
+    'jr',
+    'inc',
+    'dec',
+    'swap',
+    'ldi',
+    'ldd',
+    'push',
+    'ret',
+    'reti',
+    'and',
+    'or',
+    'xor',
+    'cp')
 
 dont_require_memory = ('rst',)
 
@@ -182,20 +210,10 @@ def tokenize(text):
             error = False
             tokens.append(Token(OPERAND8, p, t))
             continue
-        t, i, p = apply(s, flag_re, i)
-        if t:
-            error = False
-            tokens.append(Token(FLAG, p, t))
-            continue
         t, i, p = apply(s, operand_ref_16bit_re, i)
         if t:
             error = False
             tokens.append(Token(OPERAND16REF, p, t.strip('()')))
-            continue
-        t, i, p = apply(s, not_re, i)
-        if t:
-            error = False
-            tokens.append(Token(BOOL_NOT, p, t))
             continue
         t, i, p = apply(s, constant_re, i)
         if t:
@@ -437,6 +455,31 @@ def parse_inc(instr):
     return code.strip()
 
 
+def parse_cp(instr):
+    template = \
+    """
+    left := int(GetA())
+    right := int({right})
+    result := left - right
+    SetA(uint8(result))
+
+    hc := IsSubHalfCarry(uint8(left), uint8(right))
+
+    SetFlags(result, F_SET_IF, F_SET_1, hc, F_SET_IF, F_8bit)
+    """
+
+    op = instr.pseudocode[0]
+
+    if op.code == REG8:
+        right = 'Get%s()' % op.value
+    elif op.code == OPERAND8:
+        right = 'FetchOperand8()'
+    elif op.code == REF_REG:
+        right = 'Get(GetHL())'
+
+    code = template.format(right=right)
+    return code.strip()
+
 def parse_logic(instr):
     template = \
     """
@@ -588,6 +631,8 @@ dispatch = {\
     'and': parse_logic,
     'or': parse_logic,
     'xor': parse_logic,
+    
+    'cp': parse_cp,
 }
 
 custom_impl_table = {\
