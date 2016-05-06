@@ -18,10 +18,6 @@ func TestF1_pop(t* testing.T) {
 	
 	xF1_pop()
 
-	if sp := GetSP(); sp != 0x0022 {
-		t.Errorf("TestF1_pop() failed: expected SP @ 0x0022, got 0x%04X", sp)
-	}
-	if af := GetAF(); af != 0xF8AB {
-		t.Errorf("TestF1_pop() failed: expected AF @ 0xF8AB, got 0x%04X", af)		
-	}
+	testRegister(t, REG_SP, 0x0022)
+	testRegister(t, REG_AF, 0xABF8)
 }
