@@ -8,22 +8,14 @@ from binascii import unhexlify
 
 skip_re = re.compile(r'[ ,]*')
 
-mnemonic_re = re.compile(r'[a-z]{2,4}')
 short_reg_re = re.compile(r'\b(A|B|C|D|E|H|L)\b')
 long_ref_reg_re = re.compile(r'\((AF|BC|DE|HL|SP|PC)\)')
 long_reg_re = re.compile(r'\b(AF|BC|DE|HL|SP|PC)\b')
-flag_re = re.compile(r'\b(CY|Z)\b')
-opcode_re = re.compile(r'[0-9A-F]{2}')
-ex_opcode_re = re.compile(r'CB [0-9A-F]{2}')
 operand_16bit_re = re.compile(r'%2')
 operand_ref_16bit_re = re.compile(r'\(%2\)')
 operand_8bit_re = re.compile(r'%1')
 operand_uns8bit_re = re.compile(r'%s')
-comment_re = re.compile(r'//.*')
 constant_re = re.compile(r'\d+')
-cond_cycle_re = re.compile(r';')
-equal_re = re.compile(r'=')
-flags_re = re.compile(r'[z01-][01-][h01-][c01-]')
 
 REF_REG = 'register pointer'
 REG16 = '16bit register'
@@ -34,11 +26,6 @@ OPERAND8 = '8bit operand'
 REG8 = '8bit register'
 CONSTANT = 'constant'
 ERROR = 'error'
-
-FLAG_MAY_CHANGE = 0
-FLAG_SET_TO_ONE = 1
-FLAG_SET_TO_ZERO = 2
-FLAG_UNCHANGED = 3
 
 write_packages = (\
 	'adc',
@@ -60,6 +47,14 @@ write_packages = (\
 	'sub',
 	'swap',
 	'xor',
+	'rlca',
+	'rla',
+	'rrca',
+	'rra',
+	'rlc',
+	'rl',
+	'rrc',
+	'rr'
 )
 write_table = ( 'ld',
 	'adc',
@@ -89,17 +84,24 @@ write_table = ( 'ld',
 	'sub',
 	'swap',
 	'xor',
+	'rlca',
+	'rla',
+	'rrca',
+	'rra',
+	'rlc',
+	'rl',
+	'rrc',
+	'rr'
 )
 
-dont_require_memory = ('rst',)
+dont_require_memory = ('rst', 'rlca', 'rrca', 'rla', 'rra')
 
 class Instruction(object):
-	def __init__(self, mnemonic, pseudocode, opcode, cycles, flags, comment, line):
+	def __init__(self, mnemonic, pseudocode, opcode, cycles, comment, line):
 		self.mnemonic = mnemonic
 		self.opcode = opcode
 		self.pseudocode = pseudocode
 		self.cycles = cycles
-		self.flags = flags
 		self.comment = comment
 		self.line = line
 
@@ -109,10 +111,9 @@ class Instruction(object):
 		pseudocode = tokenize(line[4:22])
 		opcode = parse_opcode(line[21:26].strip())
 		cycles = parse_cycles(line[33:38])
-		flags = parse_flags(line[42:46])
 		comment = line[51:]
 
-		return Instruction(mnemonic, pseudocode, opcode, cycles, flags, comment, line)
+		return Instruction(mnemonic, pseudocode, opcode, cycles, comment, line)
 
 	def full_opcode(self):
 		oc = unhexlify(self.opcode[0])[0]
@@ -135,21 +136,6 @@ def parse_opcode(s):
 	if len(s) == 5:
 		print(s[-2:])
 		return (s[-2:], True)
-
-
-def parse_flags(s):
-	flags = []
-	for flag in s:
-		if flag == '-':
-			flags.append(FLAG_UNCHANGED)
-		elif flag == '0':
-			flags.append(FLAG_SET_TO_ZERO)
-		elif flag == '1':
-			flags.append(FLAG_SET_TO_ONE)
-		else:
-			flags.append(FLAG_MAY_CHANGE)
-
-	return flags
 
 
 class Token(object):
@@ -234,14 +220,6 @@ def tokenize(text):
 			i+=1
 
 	return tokens
-
-
-def get(tokens, code):
-	for t in tokens:
-		if t.code == code:
-			return t
-
-	return None
 
 
 def parse_cycles(s):
@@ -463,6 +441,70 @@ def parse_inc(instr):
 	return code.strip()
 
 
+def parse_rotate(instr):
+	template_rlc = \
+	"""
+	value := {value}
+	msb := GetBit(value, 7)
+
+	value = value << 1
+	value = SetBit(value, 0, {edge})
+
+	SetFlagCy(msb == 1)
+	SetFlagZf({flagz})
+	SetFlagN(false)
+	SetFlagH(false)
+
+	{target}
+	"""
+
+	template_rrc = \
+	"""
+	value := {value}
+	lsb := GetBit(value, 0)
+
+	value = value >> 1
+	value = SetBit(value, 7, {edge})
+
+	SetFlagCy(lsb == 1)
+	SetFlagZf({flagz})
+	SetFlagN(false)
+	SetFlagH(false)
+
+	{target}
+	"""
+
+	m = instr.mnemonic
+	dest = instr.pseudocode[0]
+	flagz = "value == 0"
+
+	if m in ('rlca', 'rla', 'rrca', 'rra'):
+		value = "GetA()"
+		target = "SetA(value)"
+		flagz = "false"
+	elif dest.code == REG8:
+		value = "Get%s()" % dest.value
+		target = "Set%s(value)" % dest.value
+	else:
+		value = "Get(GetHL())"
+		target = "Set(GetHL(), value)"
+
+	if m in ('rlc', 'rl', 'rlca', 'rla'):
+		if m == 'rlc':
+			edge = 'msb'
+		else:
+			edge = 'uint8(GetFlagCyInt())'
+		code = template_rlc.format(value=value, target=target, edge=edge, flagz=flagz)
+	elif m in ('rrc', 'rr', 'rra', 'rrca'):
+		if m == 'rrc':
+			edge = 'lsb'
+		else:
+			edge = 'uint8(GetFlagCyInt())'
+		code = template_rrc.format(value=value, target=target, edge=edge, flagz=flagz)
+
+	return code.strip()
+
+
 def parse_bitwise(instr):
 	template_sla = \
 	"""
@@ -513,13 +555,6 @@ def parse_bitwise(instr):
 
 	m = instr.mnemonic
 	dest = instr.pseudocode[0]
-	if m in ('srl', 'sra'):
-		op = '>>'
-	elif m == 'sla':
-		op = '<<'
-	else:
-		raise ValueError("invalid mnemonic %s for bitwise operations" % m)
-
 	if m == 'sra':
 		bit1 = 'value |= 0x10'
 		msb = 'msb := value & 0x80'
@@ -565,6 +600,7 @@ def parse_cp(instr):
 
 	code = template.format(right=right)
 	return code.strip()
+
 
 def parse_logic(instr):
 	template = \
@@ -670,21 +706,6 @@ def parse_add(instr):
 	return code.strip()
 
 
-def parse_push(instruction):
-	reg = instruction.pseudocode[1]
-	assert reg.code == REG16
-
-	code = 'Push(Get{}())'.format(reg.value)
-	return code
-
-
-def get_flag(flag):
-	if flag == 'CY':
-		return 'GetFlagCy'
-	elif flag == 'Z':
-		return 'GetFlagZf'
-
-
 def parse_bit(instruction):
 	operand = instruction.pseudocode[1]
 	n_bit = instruction.pseudocode[0].value
@@ -705,7 +726,6 @@ dispatch = {\
 	'swap': parse_swap,
 	'inc': parse_inc,
 	'dec': parse_inc,
-	#'push': parse_push,
 	'res': parse_set,
 	'set': parse_set,
 	'add': parse_add,
@@ -723,6 +743,16 @@ dispatch = {\
 	'sra': parse_bitwise,
 	'sla': parse_bitwise,
 	'srl': parse_bitwise,
+
+	'rlca': parse_rotate,
+	'rla': parse_rotate,
+	'rra': parse_rotate,
+	'rrca': parse_rotate,
+
+	'rlc': parse_rotate,
+	'rl': parse_rotate,
+	'rrc': parse_rotate,
+	'rr': parse_rotate,
 }
 
 custom_impl_table = {\
@@ -828,7 +858,6 @@ def main():
 					print(header, file=f)
 				else:
 					print(header_nomem, file=f)
-
 
 				for instruction in instr_dict[mnemonic]:
 					n = make_func(instruction, f)
