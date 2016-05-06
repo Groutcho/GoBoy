@@ -53,7 +53,7 @@ FLAG_UNCHANGED = 3
 write_packages = ('ld', 'add', 'adc', 'bit', 'set', 'res', 'sub', 'sbc', 'rst', 'inc', 'dec', 'swap')
 write_table = ( 'ld', 'call', 'add', 'adc', 'bit', 'set', 'res',
                 'sub', 'sbc', 'rst', 'pop', 'jp', 'jr', 'inc',
-                'dec', 'swap', 'ldi', 'ldd')
+                'dec', 'swap', 'ldi', 'ldd', 'push')
 
 dont_require_memory = ('rst',)
 
@@ -332,6 +332,70 @@ def custom_impl_F8():
     return code.strip()
 
 
+def custom_impl_E0():
+    """
+    read from io-port %1 (memory FF00+%1)
+    """
+
+    code = \
+    """
+    offset := int(FetchOperand8())
+    addr := 0xFF00 + uint16(offset)
+    value := GetA()
+    Set(addr, value)
+    """
+
+    return code.strip()
+
+
+def custom_impl_F0():
+    """
+    read from io-port %1 (memory FF00+%1)
+    """
+
+    code = \
+    """
+    offset := int(FetchOperand8())
+    addr := 0xFF00 + uint16(offset)
+    value := Get(addr)
+    SetA(value)
+    """
+
+    return code.strip()
+
+
+def custom_impl_E2():
+    """
+    write to io-port C (memory FF00+C
+    """
+
+    code = \
+    """
+    offset := GetC()
+    addr := 0xFF00 + uint16(offset)
+    value := GetA()
+    Set(addr, value)
+    """
+
+    return code.strip()
+
+
+def custom_impl_F2():
+    """
+    read from io-port C (memory FF00+C)
+    """
+
+    code = \
+    """
+    offset := GetC()
+    addr := 0xFF00 + uint16(offset)
+    value := Get(addr)
+    SetA(value)
+    """
+
+    return code.strip()
+
+
 def parse_inc(instr):
     target = instr.pseudocode[0]
 
@@ -488,7 +552,14 @@ dispatch = {\
     'bit': parse_bit,
 }
 
-custom_impl_table = {0xF8: custom_impl_F8}
+custom_impl_table = {\
+    0xF0: custom_impl_F0,
+    0xF8: custom_impl_F8,
+    0xE0: custom_impl_E0,
+    0xE2: custom_impl_E2,
+    0xF2: custom_impl_F2,
+    0xF0: custom_impl_F0,
+    }
 
 
 unsupp = set()

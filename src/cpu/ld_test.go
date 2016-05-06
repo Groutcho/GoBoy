@@ -232,3 +232,12 @@ func TestF8_ld(t* testing.T) {
 		t.Errorf("TestF8_ld() failed: expected HL @ 0x0000, got 0x%04X", hl)
 	}
 }
+
+func TestF2_ld(t* testing.T) {
+	ResetMemory()
+	SetC(0x06)
+	Set(0xFF06, 0x98)
+
+	xF2_ld()
+	testRegister(t, REG_A, 0x98)
+}
