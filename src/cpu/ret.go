@@ -50,7 +50,7 @@ func xD8_ret() int {
 }
 
 func xD9_reti() int {
-	EnableAllInterrupts()
+	SetIME(true)
 	ret()
 	return 4
 }

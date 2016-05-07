@@ -1,6 +1,7 @@
 package cpu
 
 import "testing"
+import . "common"
 
 func TestSetGetAF(t *testing.T) {
 	Reset()

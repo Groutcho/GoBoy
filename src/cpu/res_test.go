@@ -2,6 +2,7 @@ package cpu
 
 import "testing"
 import . "memory"
+import . "common"
 
 // res  3, C - reset bit 3 of register C
 func TestCB_99_res(t* testing.T) {

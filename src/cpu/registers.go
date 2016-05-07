@@ -5,7 +5,7 @@ of the GoBoy emulator.
 package cpu
 
 import (
-
+	. "common"
 )
 
 /*
@@ -63,52 +63,6 @@ func init() {
 		L: 0x00,		
 		SP: 0x0000,
 		PC: 0x0000}
-}
-
-// set the 8 high bits of <target> with <value>.
-func setHighBits(value uint8, target uint16) uint16 {
-	return (target & 0x00FF) | (uint16(value) << 8)
-}
-
-// set the 8 low bits of <target> with <value>.
-func setLowBits(value uint8, target uint16) uint16 {
-	return (target & 0xFF00) | uint16(value)
-}
-
-// return the 8 high bits of <value>.
-func getHighBits(value uint16) uint8 {
-	return uint8((value & 0xFF00) >> 8)
-}
-
-// return the 8 low bits of <value>.
-func getLowBits(value uint16) uint8 {
-	return uint8(value & 0x00FF)
-}
-
-// return the 4 low bits of <value>.
-func getLowNibble(value uint8) uint8 {
-	return uint8(value & 0x0F)
-}
-
-// return the 4 high bits of <value>.
-func getHighNibble(value uint8) uint8 {
-	return uint8((value & 0xF0) >> 4)
-}
-
-func SetBit(value uint8, bit uint8, set uint8) uint8 {
-	if set != 0 {
-		return value | (1 << bit)
-	} else {
-		return value & ^(1 << bit)
-	}
-}
-
-func GetBit(value uint8, bit uint8) uint8 {
-	if value & (1 << bit) == 0 {
-		return 0
-	} else {
-		return 1
-	}
 }
 
 // Set the AF register with the given 16bit value.
@@ -329,8 +283,8 @@ func GetFlagNInt() int {
 
 // return 1 is left + right overflows
 func IsAddHalfCarry(left uint8, right uint8) int {
-	l := int(getLowNibble(left))
-	r := int(getLowNibble(right))
+	l := int(GetLowNibble(left))
+	r := int(GetLowNibble(right))
 
 	if l + r > 0xF {
 		return 1
@@ -341,8 +295,8 @@ func IsAddHalfCarry(left uint8, right uint8) int {
 
 // return 1 is left - right underflows
 func IsSubHalfCarry(left uint8, right uint8) int {
-	l := int(getLowNibble(left))
-	r := int(getLowNibble(right))
+	l := int(GetLowNibble(left))
+	r := int(GetLowNibble(right))
 
 	if l - r < 0x0 {
 		return 1

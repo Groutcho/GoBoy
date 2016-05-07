@@ -3,7 +3,6 @@ package cpu
 
 import . "memory"
 
-
 // adc  A, B - A=A+B+cy
 func x88_adc() int {
 	left := GetA()

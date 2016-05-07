@@ -3,7 +3,6 @@ package cpu
 
 import . "memory"
 
-
 // xor  B - A=A^B
 func xA8_xor() int {
 	result := GetA() ^ GetB()

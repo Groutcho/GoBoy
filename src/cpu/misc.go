@@ -1,6 +1,6 @@
 package cpu
 
-import . "memory"
+import . "common"
 
 func init() {
 	dispatch_table[0x03F] = x3F_ccf
@@ -36,12 +36,12 @@ func x00_nop() int {
 }
 
 func xF3_di() int {
-	DisableAllInterrupts()
+	SetIME(false)
 	return 1
 }
 
 func xFB_ei() int {
-	EnableAllInterrupts()
+	SetIME(true)
 	return 1
 }
 
@@ -69,12 +69,12 @@ func x2F_cpl() int {
 // source: http://z80-heaven.wikidot.com/instructions-set:daa
 func x27_daa() int {
 	a := GetA()
-	if getLowNibble(a) > 0x9 || GetFlagH() {
+	if GetLowNibble(a) > 0x9 || GetFlagH() {
 		SetFlagH(true)
 		a += 0x06
 	}
 
-	if getHighNibble(a) > 0x9 || GetFlagCy() {
+	if GetHighNibble(a) > 0x9 || GetFlagCy() {
 		SetFlagCy(true)
 		a += 0x60
 	}

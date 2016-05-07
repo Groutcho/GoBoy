@@ -3,6 +3,7 @@ package memory
 import (
 	"bytes"
 	"fmt"
+	. "common"
 )
 
 /* the game boy address space is 16bit wide */
@@ -18,16 +19,31 @@ const JOYPAD = 4
 const INTRPT_ENABLE_ADDR = 0xFFFF
 const INTRPT_REQUEST_ADDR = 0xFF0F
 
+var interruptHandlers = make([]uint16, 5, 5)
+
+func init() {
+	interruptHandlers[0] = 0x0040 // VBLANK
+	interruptHandlers[1] = 0x0048 // LCD_STAT
+	interruptHandlers[2] = 0x0050 // TIMER
+	interruptHandlers[3] = 0x0058 // SERIAL
+	interruptHandlers[4] = 0x0060 // JOYPAD
+}
+
 func Get(addr uint16) byte {
 	return RAM[addr]
 }
 
 func Get16(addr uint16) uint16 {
-	return uint16(uint16(RAM[addr]) << 8 | uint16(RAM[addr + 1]))
+	return uint16(uint16(RAM[addr+1]) << 8 | uint16(RAM[addr]))
 }
 
 func Set(addr uint16, value byte) {
 	RAM[addr] = value
+}
+
+func Set16(addr uint16, value uint16) {
+	RAM[addr] = GetLowBits(value)
+	RAM[addr+1] = GetHighBits(value)
 }
 
 func SetRange(from uint16, to uint16, data []byte) {
@@ -88,11 +104,11 @@ func resetRange(start uint16, end uint16) {
 	}
 }
 
-func getInterruptEnable(bit uint8) bool {
+func GetInterruptEnable(bit uint8) bool {
 	return (RAM[INTRPT_ENABLE_ADDR] & (0x01 << bit)) != 0
 }
 
-func setInterruptEnable(bit uint8, value bool) {
+func SetInterruptEnable(bit uint8, value bool) {
 	if value {
 		RAM[INTRPT_ENABLE_ADDR] |= (0x01 << bit)
 	} else {
@@ -100,11 +116,11 @@ func setInterruptEnable(bit uint8, value bool) {
 	}
 }
 
-func getInterruptRequest(bit uint8) bool {
+func GetInterruptRequest(bit uint8) bool {
 	return (RAM[INTRPT_REQUEST_ADDR] & (0x01 << bit)) != 0
 }
 
-func setInterruptRequest(bit uint8, value bool) {
+func SetInterruptRequest(bit uint8, value bool) {
 	if value {
 		RAM[INTRPT_REQUEST_ADDR] |= (0x01 << bit)
 	} else {
@@ -112,146 +128,7 @@ func setInterruptRequest(bit uint8, value bool) {
 	}
 }
 
-/*******************************************
- *         Interrupt enables               *
-********************************************/
-
-func EnableAllInterrupts() {
-	EnableVBlankInterrupt()
-	EnableLcdStatInterrupt()
-	EnableTimerInterrupt()
-	EnableSerialInterrupt()
-	EnableJoypadInterrupt()
-}
-
-func DisableAllInterrupts() {
-	DisableVBlankInterrupt()
-	DisableLcdStatInterrupt()
-	DisableTimerInterrupt()
-	DisableSerialInterrupt()
-	DisableJoypadInterrupt()
-}
-
-func VBlankInterruptEnabled() bool {
-	return getInterruptEnable(VBLANK)
-}
-
-func EnableVBlankInterrupt() {
-	setInterruptEnable(VBLANK, true)
-}
-
-func DisableVBlankInterrupt() {
-	setInterruptEnable(VBLANK, false)
-}
-
-func LcdStatInterruptEnabled() bool {
-	return getInterruptEnable(LCD_STAT)
-}
-
-func EnableLcdStatInterrupt() {
-	setInterruptEnable(LCD_STAT, true)
-}
-
-func DisableLcdStatInterrupt() {
-	setInterruptEnable(LCD_STAT, false)
-}
-
-func TimerInterruptEnabled() bool {
-	return getInterruptEnable(TIMER)
-}
-
-func EnableTimerInterrupt() {
-	setInterruptEnable(TIMER, true)
-}
-
-func DisableTimerInterrupt() {
-	setInterruptEnable(TIMER, false)
-}
-
-func SerialInterruptEnabled() bool {
-	return getInterruptEnable(SERIAL)
-}
-
-func EnableSerialInterrupt() {
-	setInterruptEnable(SERIAL, true)
-}
-
-func DisableSerialInterrupt() {
-	setInterruptEnable(SERIAL, false)
-}
-
-func JoypadInterruptEnabled() bool {
-	return getInterruptEnable(JOYPAD)
-}
-
-func EnableJoypadInterrupt() {
-	setInterruptEnable(JOYPAD, true)
-}
-
-func DisableJoypadInterrupt() {
-	setInterruptEnable(JOYPAD, false)
-}
-
-/*******************************************
- *         Interrupt requests              *
-********************************************/
-
-func RequestVBlankInterrupt() {
-	setInterruptRequest(VBLANK, true)
-}
-
-func RemoveVBlankInterrupt() {
-	setInterruptRequest(VBLANK, false)
-}
-
-func VBlankInterruptRequested() bool {
-	return getInterruptRequest(VBLANK)
-}
-
-func RequestLcdStatInterrupt() {
-	setInterruptRequest(LCD_STAT, true)
-}
-
-func RemoveLcdStatInterrupt() {
-	setInterruptRequest(LCD_STAT, false)
-}
-
-func LcdStatInterruptRequested() bool {
-	return getInterruptRequest(LCD_STAT)
-}
-
-func RequestTimerInterrupt() {
-	setInterruptRequest(TIMER, true)
-}
-
-func RemoveTimerInterrupt() {
-	setInterruptRequest(TIMER, false)
-}
-
-func TimerInterruptRequested() bool {
-	return getInterruptRequest(TIMER)
-}
-
-func RequestSerialInterrupt() {
-	setInterruptRequest(SERIAL, true)
-}
-
-func RemoveSerialInterrupt() {
-	setInterruptRequest(SERIAL, false)
-}
-
-func SerialInterruptRequested() bool {
-	return getInterruptRequest(SERIAL)
-}
-
-func RequestJoypadInterrupt() {
-	setInterruptRequest(JOYPAD, true)
-}
-
-func RemoveJoypadInterrupt() {
-	setInterruptRequest(JOYPAD, false)
-}
-
-func JoypadInterruptRequested() bool {
-	return getInterruptRequest(JOYPAD)
+// return the routine address of the given interrupt handler
+func GetInterruptHandler(interrupt int) uint16 {
+	return Get16(interruptHandlers[interrupt])
 }

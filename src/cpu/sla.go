@@ -3,7 +3,6 @@ package cpu
 
 import . "memory"
 
-
 // sla  B - shift B left arithmetic (b0=0)
 func xCB_20_sla() int {
 	value := GetB()

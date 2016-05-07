@@ -2,6 +2,7 @@ package cpu
 
 import "testing"
 import . "memory"
+import . "common"
 
 func TestCB_DD_set(t* testing.T) {
 	SetL(0x00)

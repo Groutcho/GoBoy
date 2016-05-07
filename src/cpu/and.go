@@ -3,7 +3,6 @@ package cpu
 
 import . "memory"
 
-
 // and  B - A=A & B
 func xA0_and() int {
 	result := GetA() & GetB()

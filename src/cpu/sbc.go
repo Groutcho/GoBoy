@@ -3,7 +3,6 @@ package cpu
 
 import . "memory"
 
-
 // sbc  A, B - A=A-B-cy
 func x98_sbc() int {
 	left := GetA()

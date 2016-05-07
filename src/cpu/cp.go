@@ -3,7 +3,6 @@ package cpu
 
 import . "memory"
 
-
 // cp   B - compare A-B
 func xB8_cp() int {
 	left := int(GetA())

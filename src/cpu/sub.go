@@ -3,7 +3,6 @@ package cpu
 
 import . "memory"
 
-
 // sub  A, B - A=A-B
 func x90_sub() int {
 	left := GetA()

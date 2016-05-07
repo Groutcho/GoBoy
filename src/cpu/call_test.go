@@ -32,19 +32,15 @@ func TestCD_call(t* testing.T) {
 	LoadProgram(program)
 	ExecuteNext()
 
-	if GetPC() != 0xFF15 {
-		t.Errorf("TestxCD_call() failed: expected PC @ 0xFF15, got 0x%04x", GetPC())
-	}
-	if GetSP() != 0x0012 {
-		t.Errorf("TestxCD_call() failed: expected SP @ 0x0012, got 0x%04x", GetSP())
-	}
+	testRegister(t, REG_PC, 0xFF15)
+	testRegister(t, REG_SP, 0x0012)
 
 	t.Logf("SP: %04X", GetSP())
 	t.Logf("addr: %04X", Get16(GetSP()))
 	return_address := Get16(GetSP())
 	t.Log(DumpRange(0x0000, 0x0014))
-	if return_address != 0x0D00 {
-		t.Errorf("TestxCD_call() failed: return address invalid. Expected 0x0D00, got 0x%04x", return_address)
+	if return_address != 0x000D {
+		t.Errorf("TestxCD_call() failed: return address invalid. Expected 0x000D, got 0x%04x", return_address)
 	}
 }
 
@@ -79,19 +75,15 @@ func TestDC_call(t* testing.T) {
 	SetFlagCy(true)
 	ExecuteNext()
 
-	if GetPC() != 0xFF15 {
-		t.Errorf("TestxCD_call() failed: expected PC @ 0xFF15, got 0x%04x", GetPC())
-	}
-	if GetSP() != 0x0012 {
-		t.Errorf("TestxCD_call() failed: expected SP @ 0x0012, got 0x%04x", GetSP())
-	}
+	testRegister(t, REG_PC, 0xFF15)
+	testRegister(t, REG_SP, 0x0012)
 
 	t.Logf("SP: %04X", GetSP())
 	t.Logf("addr: %04X", Get16(GetSP()))
 	return_address := Get16(GetSP())
 	t.Log(DumpRange(0x0000, 0x0014))
-	if return_address != 0x0D00 {
-		t.Errorf("TestxCD_call() failed: return address invalid. Expected 0x0D00, got 0x%04x", return_address)
+	if return_address != 0x000D {
+		t.Errorf("TestxCD_call() failed: return address invalid. Expected 0x000D, got 0x%04x", return_address)
 	}
 
 	SetPC(0x000A)
@@ -99,12 +91,8 @@ func TestDC_call(t* testing.T) {
 	SetFlagCy(false)
 	ExecuteNext()
 
-	if GetPC() != 0x000D {
-		t.Errorf("TestxCD_call() failed: expected PC @ 0x000D, got 0x%04x", GetPC())
-	}
-	if GetSP() != 0x0014 {
-		t.Errorf("TestxCD_call() failed: expected SP @ 0x0014, got 0x%04x", GetSP())
-	}
+	testRegister(t, REG_PC, 0x000D)
+	testRegister(t, REG_SP, 0x0014)
 }
 
 func TestD4_call(t* testing.T) {
@@ -138,19 +126,15 @@ func TestD4_call(t* testing.T) {
 	SetFlagCy(false)
 	ExecuteNext()
 
-	if GetPC() != 0xFF15 {
-		t.Errorf("TestxCD_call() failed: expected PC @ 0xFF15, got 0x%04x", GetPC())
-	}
-	if GetSP() != 0x0012 {
-		t.Errorf("TestxCD_call() failed: expected SP @ 0x0012, got 0x%04x", GetSP())
-	}
+	testRegister(t, REG_PC, 0xFF15)
+	testRegister(t, REG_SP, 0x0012)
 
 	t.Logf("SP: %04X", GetSP())
 	t.Logf("addr: %04X", Get16(GetSP()))
 	return_address := Get16(GetSP())
 	t.Log(DumpRange(0x0000, 0x0014))
-	if return_address != 0x0D00 {
-		t.Errorf("TestxCD_call() failed: return address invalid. Expected 0x0D00, got 0x%04x", return_address)
+	if return_address != 0x000D {
+		t.Errorf("TestxCD_call() failed: return address invalid. Expected 0x000D, got 0x%04x", return_address)
 	}
 
 	SetPC(0x000A)
@@ -158,12 +142,8 @@ func TestD4_call(t* testing.T) {
 	SetFlagCy(true)
 	ExecuteNext()
 
-	if GetPC() != 0x000D {
-		t.Errorf("TestxCD_call() failed: expected PC @ 0x000D, got 0x%04x", GetPC())
-	}
-	if GetSP() != 0x0014 {
-		t.Errorf("TestxCD_call() failed: expected SP @ 0x0014, got 0x%04x", GetSP())
-	}
+	testRegister(t, REG_PC, 0x000D)
+	testRegister(t, REG_SP, 0x0014)
 }
 
 func TestC4_call(t* testing.T) {
@@ -197,19 +177,15 @@ func TestC4_call(t* testing.T) {
 	SetFlagZf(true)
 	ExecuteNext()
 
-	if GetPC() != 0xFF15 {
-		t.Errorf("TestxCD_call() failed: expected PC @ 0xFF15, got 0x%04x", GetPC())
-	}
-	if GetSP() != 0x0012 {
-		t.Errorf("TestxCD_call() failed: expected SP @ 0x0012, got 0x%04x", GetSP())
-	}
+	testRegister(t, REG_PC, 0xFF15)
+	testRegister(t, REG_SP, 0x0012)
 
 	t.Logf("SP: %04X", GetSP())
 	t.Logf("addr: %04X", Get16(GetSP()))
 	return_address := Get16(GetSP())
 	t.Log(DumpRange(0x0000, 0x0014))
-	if return_address != 0x0D00 {
-		t.Errorf("TestxCD_call() failed: return address invalid. Expected 0x0D00, got 0x%04x", return_address)
+	if return_address != 0x000D {
+		t.Errorf("TestxCD_call() failed: return address invalid. Expected 0x000D, got 0x%04x", return_address)
 	}
 
 	SetPC(0x000A)
@@ -217,12 +193,8 @@ func TestC4_call(t* testing.T) {
 	SetFlagZf(false)
 	ExecuteNext()
 
-	if GetPC() != 0x000D {
-		t.Errorf("TestxCD_call() failed: expected PC @ 0x000D, got 0x%04x", GetPC())
-	}
-	if GetSP() != 0x0014 {
-		t.Errorf("TestxCD_call() failed: expected SP @ 0x0014, got 0x%04x", GetSP())
-	}
+	testRegister(t, REG_PC, 0x000D)
+	testRegister(t, REG_SP, 0x0014)
 }
 
 func TestC4CC_call(t* testing.T) {
@@ -256,19 +228,15 @@ func TestC4CC_call(t* testing.T) {
 	SetFlagZf(false)
 	ExecuteNext()
 
-	if GetPC() != 0xFF15 {
-		t.Errorf("TestxCD_call() failed: expected PC @ 0xFF15, got 0x%04x", GetPC())
-	}
-	if GetSP() != 0x0012 {
-		t.Errorf("TestxCD_call() failed: expected SP @ 0x0012, got 0x%04x", GetSP())
-	}
+	testRegister(t, REG_PC, 0xFF15)
+	testRegister(t, REG_SP, 0x0012)
 
 	t.Logf("SP: %04X", GetSP())
 	t.Logf("addr: %04X", Get16(GetSP()))
 	return_address := Get16(GetSP())
 	t.Log(DumpRange(0x0000, 0x0014))
-	if return_address != 0x0D00 {
-		t.Errorf("TestxCD_call() failed: return address invalid. Expected 0x0D00, got 0x%04x", return_address)
+	if return_address != 0x000D {
+		t.Errorf("TestxCD_call() failed: return address invalid. Expected 0x000D, got 0x%04x", return_address)
 	}
 
 	SetPC(0x000A)
@@ -276,10 +244,6 @@ func TestC4CC_call(t* testing.T) {
 	SetFlagZf(true)
 	ExecuteNext()
 
-	if GetPC() != 0x000D {
-		t.Errorf("TestxCD_call() failed: expected PC @ 0x000D, got 0x%04x", GetPC())
-	}
-	if GetSP() != 0x0014 {
-		t.Errorf("TestxCD_call() failed: expected SP @ 0x0014, got 0x%04x", GetSP())
-	}
+	testRegister(t, REG_PC, 0x000D)
+	testRegister(t, REG_SP, 0x0014)
 }

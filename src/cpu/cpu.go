@@ -1,6 +1,7 @@
 package cpu
 
 import . "memory"
+import . "common"
 import t "time"
 
 // The dispatch table is used to redirect a given instruction to its
@@ -8,6 +9,14 @@ import t "time"
 // In the case of extended opcodes (CB XX), the mapping is the actual opcode (XX) + FF.
 // example: the instruction CB F8 will sit at index FF+F8 of the dispatch table.
 var dispatch_table []instrFunc = make([]instrFunc, 512, 512)
+
+func push(value uint16) {
+	DecSP()
+	DecSP()
+
+	Set(GetSP(), GetHighBits(value))
+	Set(GetSP()+1, GetLowBits(value))
+}
 
 // Get the opcode at the current PC, increment PC then return the opcode.
 // If opcode is an extended opcode, i.e CB XX, return FF + XX after
@@ -60,8 +69,8 @@ func Call(addr uint16) {
 	DecSP()
 	DecSP()
 
-	Set(GetSP(), 	 getLowBits(GetPC()))
-	Set(GetSP() + 1, getHighBits(GetPC()))
+	Set(GetSP(), 	 GetLowBits(GetPC()))
+	Set(GetSP() + 1, GetHighBits(GetPC()))
 
 	SetPC(addr)
 }

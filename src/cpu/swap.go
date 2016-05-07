@@ -3,7 +3,6 @@ package cpu
 
 import . "memory"
 
-
 // swap B - exchange B low/hi-nibble
 func xCB_30_swap() int {
 	SetB(Swap(GetB()))

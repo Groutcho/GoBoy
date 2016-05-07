@@ -3,7 +3,6 @@ package cpu
 
 import . "memory"
 
-
 // or   B - A=A | B
 func xB0_or() int {
 	result := GetA() | GetB()

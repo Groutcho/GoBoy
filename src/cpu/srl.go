@@ -3,7 +3,6 @@ package cpu
 
 import . "memory"
 
-
 // srl  B - shift B right logical (b7=0)
 func xCB_38_srl() int {
 	value := GetB()

@@ -29,7 +29,7 @@ func TestD8_ret(t* testing.T) {
 }
 
 func TestD9_reti(t* testing.T) {
-	DisableAllInterrupts()
+	SetIME(false)
 
 	SetSP(0x0005)
 	SetPC(0x0000)
