@@ -38,6 +38,14 @@ func SetBit(value uint8, bit uint8, set uint8) uint8 {
 	}
 }
 
+func IsBitSet(value uint8, bit uint8) bool {
+	value & (1 << bit) == 0 {
+		return false
+	}
+
+	return true
+}
+
 func GetBit(value uint8, bit uint8) uint8 {
 	if value & (1 << bit) == 0 {
 		return 0
