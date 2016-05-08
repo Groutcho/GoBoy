@@ -368,9 +368,9 @@ func TestSetRange(t *testing.T) {
 	// data[0x55] = 0x77
 	// data[0xF0] = 0x79
 
-	SetRange(from, to, data)
+	SetRange(from, data)
 
-	actual := GetRange(from, to)
+	actual := GetRange(from, len(data))
 
 	if actual[0x00] != 0x66 {
 		t.Errorf("TestSetRange() failed: at 0x00, expected 0x66, got 0x%04x", actual[0x50])

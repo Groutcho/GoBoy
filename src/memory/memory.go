@@ -84,27 +84,19 @@ func Set16(addr uint16, value uint16) {
 	RAM[addr+1] = GetHighBits(value)
 }
 
-func SetRange(from uint16, to uint16, data []byte) {
+func SetRange(from uint16, data []byte) {
 	k := 0
-	for i := from; i <= to; i++ {
-		RAM[i] = data[k]
+	for i := 0; i < len(data); i++ {
+		RAM[from+uint16(i)] = data[k]
 		k++
 	}
 }
 
-func GetRange(from uint16, to uint16) []byte {
-	result := make([]byte, to - from + 1)
-	k := 0
-	for i := from; i <= to; i++ {
-		result[k] = RAM[i]
-		k++
-	}
-
-	return result
+func GetRange(from uint16, size uint16) []byte {
+	return RAM[from:from+size]
 }
 
 func DumpRange(from uint16, to uint16) string {
-
 	var buffer bytes.Buffer
 
 	for i := 0; i < len(RAM[from:to + 1]); i++ {

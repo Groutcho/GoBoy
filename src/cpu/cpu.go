@@ -109,7 +109,7 @@ func Start() {
 
 // Load given program at address 0x0000
 func LoadProgram(program []byte) {
-	SetRange(0x0000, uint16(len(program) - 1), program)
+	SetRange(0x0000, program)
 }
 
 func Initialize() {
