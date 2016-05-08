@@ -112,4 +112,8 @@ func LoadProgram(program []byte) {
 	SetRange(0x0000, uint16(len(program) - 1), program)
 }
 
+func Initialize() {
+	Reset()
+}
+
 type instrFunc func() int
