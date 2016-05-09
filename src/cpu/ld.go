@@ -4,6 +4,27 @@ package cpu
 import . "common"
 import . "memory"
 
+// ld   A, %1 - A=%1
+func x3E_ld() int {
+	SetA(FetchOperand8())
+
+	return 2
+}
+
+// ld   A, (HL) - A=(HL)
+func x7E_ld() int {
+	SetA(Get(GetHL()))
+
+	return 2
+}
+
+// ld   A, A - A=A
+func x7F_ld() int {
+	SetA(GetA())
+
+	return 1
+}
+
 // ld   A, B - A=B
 func x78_ld() int {
 	SetA(GetB())
@@ -46,107 +67,9 @@ func x7D_ld() int {
 	return 1
 }
 
-// ld   A, A - A=A
-func x7F_ld() int {
-	SetA(GetA())
-
-	return 1
-}
-
-// ld   B, A - B=A
-func x47_ld() int {
-	SetB(GetA())
-
-	return 1
-}
-
-// ld   C, A - C=A
-func x4F_ld() int {
-	SetC(GetA())
-
-	return 1
-}
-
-// ld   D, A - D=A
-func x57_ld() int {
-	SetD(GetA())
-
-	return 1
-}
-
-// ld   E, A - E=A
-func x5F_ld() int {
-	SetE(GetA())
-
-	return 1
-}
-
-// ld   H, A - H=A
-func x67_ld() int {
-	SetH(GetA())
-
-	return 1
-}
-
-// ld   L, A - L=A
-func x6F_ld() int {
-	SetL(GetA())
-
-	return 1
-}
-
-// ld   A, %1 - A=%1
-func x3E_ld() int {
-	SetA(FetchOperand8())
-
-	return 2
-}
-
 // ld   B, %1 - B=%1
 func x06_ld() int {
 	SetB(FetchOperand8())
-
-	return 2
-}
-
-// ld   C, %1 - C=%1
-func x0E_ld() int {
-	SetC(FetchOperand8())
-
-	return 2
-}
-
-// ld   D, %1 - D=%1
-func x16_ld() int {
-	SetD(FetchOperand8())
-
-	return 2
-}
-
-// ld   E, %1 - E=%1
-func x1E_ld() int {
-	SetE(FetchOperand8())
-
-	return 2
-}
-
-// ld   H, %1 - H=%1
-func x26_ld() int {
-	SetH(FetchOperand8())
-
-	return 2
-}
-
-// ld   L, %1 - L=%1
-func x2E_ld() int {
-	SetL(FetchOperand8())
-
-	return 2
-}
-
-// ld   A, (HL) - A=(HL)
-func x7E_ld() int {
-	SetA(Get(GetHL()))
 
 	return 2
 }
@@ -158,9 +81,121 @@ func x46_ld() int {
 	return 2
 }
 
+// ld   B, A - B=A
+func x47_ld() int {
+	SetB(GetA())
+
+	return 1
+}
+
+// ld   B, B - B=B
+func x40_ld() int {
+	SetB(GetB())
+
+	return 1
+}
+
+// ld   B, C - B=C
+func x41_ld() int {
+	SetB(GetC())
+
+	return 1
+}
+
+// ld   B, D - B=D
+func x42_ld() int {
+	SetB(GetD())
+
+	return 1
+}
+
+// ld   B, E - B=E
+func x43_ld() int {
+	SetB(GetE())
+
+	return 1
+}
+
+// ld   B, H - B=H
+func x44_ld() int {
+	SetB(GetH())
+
+	return 1
+}
+
+// ld   B, L - B=L
+func x45_ld() int {
+	SetB(GetL())
+
+	return 1
+}
+
+// ld   C, %1 - C=%1
+func x0E_ld() int {
+	SetC(FetchOperand8())
+
+	return 2
+}
+
 // ld   C, (HL) - C=(HL)
 func x4E_ld() int {
 	SetC(Get(GetHL()))
+
+	return 2
+}
+
+// ld   C, A - C=A
+func x4F_ld() int {
+	SetC(GetA())
+
+	return 1
+}
+
+// ld   C, B - C=B
+func x48_ld() int {
+	SetC(GetB())
+
+	return 1
+}
+
+// ld   C, C - C=C
+func x49_ld() int {
+	SetC(GetC())
+
+	return 1
+}
+
+// ld   C, D - C=D
+func x4A_ld() int {
+	SetC(GetD())
+
+	return 1
+}
+
+// ld   C, E - C=E
+func x4B_ld() int {
+	SetC(GetE())
+
+	return 1
+}
+
+// ld   C, H - C=H
+func x4C_ld() int {
+	SetC(GetH())
+
+	return 1
+}
+
+// ld   C, L - C=L
+func x4D_ld() int {
+	SetC(GetL())
+
+	return 1
+}
+
+// ld   D, %1 - D=%1
+func x16_ld() int {
+	SetD(FetchOperand8())
 
 	return 2
 }
@@ -172,9 +207,121 @@ func x56_ld() int {
 	return 2
 }
 
+// ld   D, A - D=A
+func x57_ld() int {
+	SetD(GetA())
+
+	return 1
+}
+
+// ld   D, B - D=B
+func x50_ld() int {
+	SetD(GetB())
+
+	return 1
+}
+
+// ld   D, C - D=C
+func x51_ld() int {
+	SetD(GetC())
+
+	return 1
+}
+
+// ld   D, D - D=D
+func x52_ld() int {
+	SetD(GetD())
+
+	return 1
+}
+
+// ld   D, E - D=E
+func x53_ld() int {
+	SetD(GetE())
+
+	return 1
+}
+
+// ld   D, H - D=H
+func x54_ld() int {
+	SetD(GetH())
+
+	return 1
+}
+
+// ld   D, L - D=L
+func x55_ld() int {
+	SetD(GetL())
+
+	return 1
+}
+
+// ld   E, %1 - E=%1
+func x1E_ld() int {
+	SetE(FetchOperand8())
+
+	return 2
+}
+
 // ld   E, (HL) - E=(HL)
 func x5E_ld() int {
 	SetE(Get(GetHL()))
+
+	return 2
+}
+
+// ld   E, A - E=A
+func x5F_ld() int {
+	SetE(GetA())
+
+	return 1
+}
+
+// ld   E, B - E=B
+func x58_ld() int {
+	SetE(GetB())
+
+	return 1
+}
+
+// ld   E, C - E=C
+func x59_ld() int {
+	SetE(GetC())
+
+	return 1
+}
+
+// ld   E, D - E=D
+func x5A_ld() int {
+	SetE(GetD())
+
+	return 1
+}
+
+// ld   E, E - E=E
+func x5B_ld() int {
+	SetE(GetE())
+
+	return 1
+}
+
+// ld   E, H - E=H
+func x5C_ld() int {
+	SetE(GetH())
+
+	return 1
+}
+
+// ld   E, L - E=L
+func x5D_ld() int {
+	SetE(GetL())
+
+	return 1
+}
+
+// ld   H, %1 - H=%1
+func x26_ld() int {
+	SetH(FetchOperand8())
 
 	return 2
 }
@@ -186,11 +333,116 @@ func x66_ld() int {
 	return 2
 }
 
+// ld   H, A - H=A
+func x67_ld() int {
+	SetH(GetA())
+
+	return 1
+}
+
+// ld   H, B - H=B
+func x60_ld() int {
+	SetH(GetB())
+
+	return 1
+}
+
+// ld   H, C - H=C
+func x61_ld() int {
+	SetH(GetC())
+
+	return 1
+}
+
+// ld   H, D - H=D
+func x62_ld() int {
+	SetH(GetD())
+
+	return 1
+}
+
+// ld   H, E - H=E
+func x63_ld() int {
+	SetH(GetE())
+
+	return 1
+}
+
+// ld   H, H - H=H
+func x64_ld() int {
+	SetH(GetH())
+
+	return 1
+}
+
+// ld   H, L - H=L
+func x65_ld() int {
+	SetH(GetL())
+
+	return 1
+}
+
+// ld   L, %1 - L=%1
+func x2E_ld() int {
+	SetL(FetchOperand8())
+
+	return 2
+}
+
 // ld   L, (HL) - L=(HL)
 func x6E_ld() int {
 	SetL(Get(GetHL()))
 
 	return 2
+}
+
+// ld   L, A - L=A
+func x6F_ld() int {
+	SetL(GetA())
+
+	return 1
+}
+
+// ld   L, B - L=B
+func x68_ld() int {
+	SetL(GetB())
+
+	return 1
+}
+
+// ld   L, C - L=C
+func x69_ld() int {
+	SetL(GetC())
+
+	return 1
+}
+
+// ld   L, D - L=D
+func x6A_ld() int {
+	SetL(GetD())
+
+	return 1
+}
+
+// ld   L, E - L=E
+func x6B_ld() int {
+	SetL(GetE())
+
+	return 1
+}
+
+// ld   L, H - L=H
+func x6C_ld() int {
+	SetL(GetH())
+
+	return 1
+}
+
+// ld   L, L - L=L
+func x6D_ld() int {
+	SetL(GetL())
+
+	return 1
 }
 
 // ld   (HL), B - [HL]=B
@@ -357,6 +609,13 @@ func x31_ld() int {
 	SetSP(FetchOperand16())
 
 	return 3
+}
+
+// ld   (%2), SP - [%2]=SP
+func x08_ld() int {
+	Set(FetchOperand16(), GetSP())
+
+	return 6
 }
 
 // ld   SP, HL - SP=HL
