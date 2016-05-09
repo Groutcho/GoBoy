@@ -16,9 +16,7 @@ func TestFetch(t* testing.T) {
 	startingPC := GetPC()
 	currentPC := startingPC
 
-	opcode := uint16(0x50)
-	opcode = Fetch()
-	if opcode != 0x00 {
+	if opcode, _ := Fetch(); opcode != 0x00 {
 		t.Errorf("TestFetch(): at first Fetch(), expected 00, got %02x", opcode)
 	}
 
@@ -26,8 +24,7 @@ func TestFetch(t* testing.T) {
 		t.Errorf("TestFetch(): at first Fetch(), expected PC @ 0x%04x, got 0x%04x", (startingPC + 1), currentPC)
 	}
 
-	opcode = Fetch()
-	if opcode != 0x58 {
+	if opcode, _ := Fetch(); opcode != 0x58 {
 		t.Errorf("TestFetch(): at second Fetch(), expected 58, got %02x", opcode)
 	}
 
@@ -35,8 +32,7 @@ func TestFetch(t* testing.T) {
 		t.Errorf("TestFetch(): at second Fetch(), expected PC @ 0x%04x, got 0x%04x", (startingPC + 2), currentPC)
 	}
 
-	opcode = Fetch()
-	if opcode != 0x197 {
+	if opcode, _ := Fetch(); opcode != 0x197 {
 		t.Errorf("TestFetch(): at last Fetch(), expected extended opcode conversion CB 98 -> 197, got %02x", opcode)
 	}
 
@@ -119,7 +115,7 @@ func TestSimpleProgram01(t* testing.T) {
 	LoadProgram(program)
 	SetFlagZf(false)
 	SetPC(0x0002) // at instruction ld A, 0xF0
-	Run()
+	StartTest(100)
 
 	if de := GetDE(); de != 0xF889 {
 		t.Errorf("TestSimpleProgram01() failed: expected DE @ 0xF889, got 0x%04X", de)
@@ -141,7 +137,7 @@ func TestSimpleProgram02(t* testing.T) {
 	SetFlagH(false)
 	SetA(0x0F)
 	LoadProgram(program)
-	Run()
+	StartTest(100)
 
 	if a := GetA(); a!= 0x10 {
 		t.Errorf("TestSimpleProgram02() failed: expected A @ 0x10, got 0x%02X", a)
@@ -158,5 +154,345 @@ func BenchmarkLdRegistersInstructions(b *testing.B) {
 	for i := 0; i < b.N; i++ {
 		SetPC(0x0000)
 		ExecuteNext()
+	}
+}
+
+func TestInterruptsEnables(t *testing.T) {
+	var vblank 	bool
+	var timer 	bool
+	var lcdStat bool
+	var joypad 	bool
+	var serial	bool
+
+	ResetMemory()
+
+	EnableVBlankInterrupt()
+
+	vblank 	= VBlankInterruptEnabled()
+	timer 	= TimerInterruptEnabled()
+	lcdStat = LcdStatInterruptEnabled()
+	joypad 	= JoypadInterruptEnabled()
+	serial 	= SerialInterruptEnabled()
+
+	if !vblank {
+		t.Error("TestInterrupts() test failed: the V-Blank interrupt should be enabled.")
+	}
+
+	if timer || lcdStat || joypad || serial {
+		t.Error("TestInterrupts() test failed: enabling V-Blank should not toggle other interrupts.")
+	}
+
+	DisableVBlankInterrupt()
+
+	vblank 	= VBlankInterruptEnabled()
+	timer 	= TimerInterruptEnabled()
+	lcdStat = LcdStatInterruptEnabled()
+	joypad 	= JoypadInterruptEnabled()
+	serial 	= SerialInterruptEnabled()
+
+	if vblank {
+		t.Error("TestInterrupts() test failed: the V-Blank interrupt should be disabled.")
+	}
+
+	if timer || lcdStat || joypad || serial {
+		t.Error("TestInterrupts() test failed: disabling V-Blank should not toggle other interrupts.")
+	}
+
+	EnableTimerInterrupt()
+
+	vblank 	= VBlankInterruptEnabled()
+	timer 	= TimerInterruptEnabled()
+	lcdStat = LcdStatInterruptEnabled()
+	joypad 	= JoypadInterruptEnabled()
+	serial 	= SerialInterruptEnabled()
+
+	if !timer {
+		t.Error("TestInterrupts() test failed: the Timer interrupt should be enabled.")
+	}
+
+	if vblank || lcdStat || joypad || serial {
+		t.Error("TestInterrupts() test failed: disabling Timer should not toggle other interrupts.")
+	}
+
+	DisableTimerInterrupt()
+
+	vblank 	= VBlankInterruptEnabled()
+	timer 	= TimerInterruptEnabled()
+	lcdStat = LcdStatInterruptEnabled()
+	joypad 	= JoypadInterruptEnabled()
+	serial 	= SerialInterruptEnabled()
+
+	if timer {
+		t.Error("TestInterrupts() test failed: the Timer interrupt should be disabled.")
+	}
+
+	if vblank || lcdStat || joypad || serial {
+		t.Error("TestInterrupts() test failed: disabling Timer should not toggle other interrupts.")
+	}
+
+	EnableLcdStatInterrupt()
+
+	vblank 	= VBlankInterruptEnabled()
+	timer 	= TimerInterruptEnabled()
+	lcdStat = LcdStatInterruptEnabled()
+	joypad 	= JoypadInterruptEnabled()
+	serial 	= SerialInterruptEnabled()
+
+	if !lcdStat {
+		t.Error("TestInterrupts() test failed: the LCD STAT interrupt should be enabled.")
+	}
+
+	if vblank || timer || joypad || serial {
+		t.Error("TestInterrupts() test failed: disabling LCD STAT should not toggle other interrupts.")
+	}
+
+	DisableLcdStatInterrupt()
+
+	vblank 	= VBlankInterruptEnabled()
+	timer 	= TimerInterruptEnabled()
+	lcdStat = LcdStatInterruptEnabled()
+	joypad 	= JoypadInterruptEnabled()
+	serial 	= SerialInterruptEnabled()
+
+	if lcdStat {
+		t.Error("TestInterrupts() test failed: the LCD STAT interrupt should be disabled.")
+	}
+
+	if vblank || timer || joypad || serial {
+		t.Error("TestInterrupts() test failed: disabling LCD STAT should not toggle other interrupts.")
+	}
+
+	EnableSerialInterrupt()
+
+	vblank 	= VBlankInterruptEnabled()
+	timer 	= TimerInterruptEnabled()
+	lcdStat = LcdStatInterruptEnabled()
+	joypad 	= JoypadInterruptEnabled()
+	serial 	= SerialInterruptEnabled()
+
+	if !serial {
+		t.Error("TestInterrupts() test failed: the Serial interrupt should be enabled.")
+	}
+
+	if vblank || timer || joypad || lcdStat {
+		t.Error("TestInterrupts() test failed: disabling Serial should not toggle other interrupts.")
+	}
+
+	DisableSerialInterrupt()
+
+	vblank 	= VBlankInterruptEnabled()
+	timer 	= TimerInterruptEnabled()
+	lcdStat = LcdStatInterruptEnabled()
+	joypad 	= JoypadInterruptEnabled()
+	serial 	= SerialInterruptEnabled()
+
+	if serial {
+		t.Error("TestInterrupts() test failed: the Serial interrupt should be disabled.")
+	}
+
+	if vblank || timer || joypad || lcdStat {
+		t.Error("TestInterrupts() test failed: disabling Serial should not toggle other interrupts.")
+	}
+
+	EnableJoypadInterrupt()
+
+	vblank 	= VBlankInterruptEnabled()
+	timer 	= TimerInterruptEnabled()
+	lcdStat = LcdStatInterruptEnabled()
+	joypad 	= JoypadInterruptEnabled()
+	serial 	= SerialInterruptEnabled()
+
+	if !joypad {
+		t.Error("TestInterrupts() test failed: the Joypad interrupt should be enabled.")
+	}
+
+	if vblank || timer || serial || lcdStat {
+		t.Error("TestInterrupts() test failed: disabling Joypad should not toggle other interrupts.")
+	}
+
+	DisableJoypadInterrupt()
+
+	vblank 	= VBlankInterruptEnabled()
+	timer 	= TimerInterruptEnabled()
+	lcdStat = LcdStatInterruptEnabled()
+	joypad 	= JoypadInterruptEnabled()
+	serial 	= SerialInterruptEnabled()
+
+	if joypad {
+		t.Error("TestInterrupts() test failed: the Joypad interrupt should be disabled.")
+	}
+
+	if vblank || timer || serial || lcdStat {
+		t.Error("TestInterrupts() test failed: disabling Joypad should not toggle other interrupts.")
+	}
+}
+
+func TestInterruptsRequests(t *testing.T) {
+	var vblank 	bool
+	var timer 	bool
+	var lcdStat bool
+	var joypad 	bool
+	var serial	bool
+
+	ResetMemory()
+
+	RequestVBlankInterrupt()
+
+	vblank 	= VBlankInterruptRequested()
+	timer 	= TimerInterruptRequested()
+	lcdStat = LcdStatInterruptRequested()
+	joypad 	= JoypadInterruptRequested()
+	serial 	= SerialInterruptRequested()
+
+	if !vblank {
+		t.Error("TestInterrupts() test failed: the V-Blank interrupt should be Requested.")
+	}
+
+	if timer || lcdStat || joypad || serial {
+		t.Error("TestInterrupts() test failed: enabling V-Blank should not toggle other interrupts.")
+	}
+
+	RemoveVBlankInterrupt()
+
+	vblank 	= VBlankInterruptRequested()
+	timer 	= TimerInterruptRequested()
+	lcdStat = LcdStatInterruptRequested()
+	joypad 	= JoypadInterruptRequested()
+	serial 	= SerialInterruptRequested()
+
+	if vblank {
+		t.Error("TestInterrupts() test failed: the V-Blank interrupt should be disabled.")
+	}
+
+	if timer || lcdStat || joypad || serial {
+		t.Error("TestInterrupts() test failed: disabling V-Blank should not toggle other interrupts.")
+	}
+
+	RequestTimerInterrupt()
+
+	vblank 	= VBlankInterruptRequested()
+	timer 	= TimerInterruptRequested()
+	lcdStat = LcdStatInterruptRequested()
+	joypad 	= JoypadInterruptRequested()
+	serial 	= SerialInterruptRequested()
+
+	if !timer {
+		t.Error("TestInterrupts() test failed: the Timer interrupt should be Requested.")
+	}
+
+	if vblank || lcdStat || joypad || serial {
+		t.Error("TestInterrupts() test failed: disabling Timer should not toggle other interrupts.")
+	}
+
+	RemoveTimerInterrupt()
+
+	vblank 	= VBlankInterruptRequested()
+	timer 	= TimerInterruptRequested()
+	lcdStat = LcdStatInterruptRequested()
+	joypad 	= JoypadInterruptRequested()
+	serial 	= SerialInterruptRequested()
+
+	if timer {
+		t.Error("TestInterrupts() test failed: the Timer interrupt should be Removed.")
+	}
+
+	if vblank || lcdStat || joypad || serial {
+		t.Error("TestInterrupts() test failed: disabling Timer should not toggle other interrupts.")
+	}
+
+	RequestLcdStatInterrupt()
+
+	vblank 	= VBlankInterruptRequested()
+	timer 	= TimerInterruptRequested()
+	lcdStat = LcdStatInterruptRequested()
+	joypad 	= JoypadInterruptRequested()
+	serial 	= SerialInterruptRequested()
+
+	if !lcdStat {
+		t.Error("TestInterrupts() test failed: the LCD STAT interrupt should be Requested.")
+	}
+
+	if vblank || timer || joypad || serial {
+		t.Error("TestInterrupts() test failed: disabling LCD STAT should not toggle other interrupts.")
+	}
+
+	RemoveLcdStatInterrupt()
+
+	vblank 	= VBlankInterruptRequested()
+	timer 	= TimerInterruptRequested()
+	lcdStat = LcdStatInterruptRequested()
+	joypad 	= JoypadInterruptRequested()
+	serial 	= SerialInterruptRequested()
+
+	if lcdStat {
+		t.Error("TestInterrupts() test failed: the LCD STAT interrupt should be Removed.")
+	}
+
+	if vblank || timer || joypad || serial {
+		t.Error("TestInterrupts() test failed: disabling LCD STAT should not toggle other interrupts.")
+	}
+
+	RequestSerialInterrupt()
+
+	vblank 	= VBlankInterruptRequested()
+	timer 	= TimerInterruptRequested()
+	lcdStat = LcdStatInterruptRequested()
+	joypad 	= JoypadInterruptRequested()
+	serial 	= SerialInterruptRequested()
+
+	if !serial {
+		t.Error("TestInterrupts() test failed: the Serial interrupt should be Requested.")
+	}
+
+	if vblank || timer || joypad || lcdStat {
+		t.Error("TestInterrupts() test failed: disabling Serial should not toggle other interrupts.")
+	}
+
+	RemoveSerialInterrupt()
+
+	vblank 	= VBlankInterruptRequested()
+	timer 	= TimerInterruptRequested()
+	lcdStat = LcdStatInterruptRequested()
+	joypad 	= JoypadInterruptRequested()
+	serial 	= SerialInterruptRequested()
+
+	if serial {
+		t.Error("TestInterrupts() test failed: the Serial interrupt should be Removed.")
+	}
+
+	if vblank || timer || joypad || lcdStat {
+		t.Error("TestInterrupts() test failed: disabling Serial should not toggle other interrupts.")
+	}
+
+	RequestJoypadInterrupt()
+
+	vblank 	= VBlankInterruptRequested()
+	timer 	= TimerInterruptRequested()
+	lcdStat = LcdStatInterruptRequested()
+	joypad 	= JoypadInterruptRequested()
+	serial 	= SerialInterruptRequested()
+
+	if !joypad {
+		t.Error("TestInterrupts() test failed: the Joypad interrupt should be Requested.")
+	}
+
+	if vblank || timer || serial || lcdStat {
+		t.Error("TestInterrupts() test failed: disabling Joypad should not toggle other interrupts.")
+	}
+
+	RemoveJoypadInterrupt()
+
+	vblank 	= VBlankInterruptRequested()
+	timer 	= TimerInterruptRequested()
+	lcdStat = LcdStatInterruptRequested()
+	joypad 	= JoypadInterruptRequested()
+	serial 	= SerialInterruptRequested()
+
+	if joypad {
+		t.Error("TestInterrupts() test failed: the Joypad interrupt should be disabled.")
+	}
+
+	if vblank || timer || serial || lcdStat {
+		t.Error("TestInterrupts() test failed: disabling Joypad should not toggle other interrupts.")
 	}
 }
