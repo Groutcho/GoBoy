@@ -6,6 +6,8 @@ import "memory"
 import "cpu"
 import "os"
 import "io/ioutil"
+// import "log"
+import "fmt"
 
 const NORMAL_SPEED = 1
 
@@ -66,7 +68,7 @@ func testTetris() {
 
     lcd.SetTile(0, lcd.MakeTile(blank), 1)
     lcd.SetTile(1, lcd.MakeTile(block), 1)
-    
+
     // lcd.SetTile(0, lcd.MakeTile(blank), 1)
     // lcd.SetTile(1, lcd.MakeTile(square), 1)
     memory.SetLCDC(0x91)
@@ -76,28 +78,40 @@ func testTetris() {
     // memory.SetLCDC(lcdc)
     // lcd.SetTile(2, lcd.MakeTile(t2))
 
-    x := 10
+    // x := 10
     y := 0
 
-    // for {
-        // lcd.SetBackgroundTile(x, y, 0)
+    go lcd.Run()
+    for {
+        for x := 0; x < 32; x++ {
+            lcd.SetBackgroundTile(x, y, 1)
+        }
+        y++
         // lcd.SetBackgroundTile(x+1, y, 0)
         // lcd.SetBackgroundTile(x+2, y, 0)
         // lcd.SetBackgroundTile(x+1, y+1, 0)
         // y++
-        lcd.SetBackgroundTile(x, y, 1)
-        lcd.SetBackgroundTile(x+1, y, 1)
-        lcd.SetBackgroundTile(x+2, y, 1)
-        lcd.SetBackgroundTile(x+1, y+1, 1)
-    go lcd.Run()
-    t.Sleep(100 * t.Second)
-    // }
+        // lcd.SetBackgroundTile(x, y, 1)
+        // lcd.SetBackgroundTile(x+1, y, 1)
+        // lcd.SetBackgroundTile(x+2, y, 1)
+        // lcd.SetBackgroundTile(x+1, y+1, 1)
+        t.Sleep(100 * t.Millisecond)
+    }
 
     lcd.Stop()
 }
 
+func pollSerial() {
+    for {
+        if memory.Get(0xFF02) == 0x81 {
+            fmt.Printf("%c", memory.Get(0xFF01))
+        }
+        t.Sleep(1 * t.Microsecond)
+    }
+}
+
 func main() {
-    testTetris()
+    // testTetris()
 
     memory.ResetMemory()
     lcd.Initialize()
@@ -105,17 +119,9 @@ func main() {
 
     loadRom(os.Args[1])
 
-    lcdRefresh := 1000
-
-    for {
-        cpu.Update(NORMAL_SPEED)
-        if lcdRefresh == 0 {
-            lcd.Update()
-            lcdRefresh = 1000
-        }
-
-        lcdRefresh--
-    }
+    go lcd.Run()
+    // go pollSerial()
+    cpu.Run()
 
     lcd.Stop()
 }
