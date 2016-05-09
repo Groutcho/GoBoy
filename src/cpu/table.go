@@ -45,6 +45,7 @@ func init() {
 	dispatch_table[0x02C] = x2C_inc
 	dispatch_table[0x02D] = x2D_dec
 	dispatch_table[0x02E] = x2E_ld
+	dispatch_table[0x02F] = x2F_cpl
 	dispatch_table[0x030] = x30_jr
 	dispatch_table[0x031] = x31_ld
 	dispatch_table[0x032] = x32_ldd
@@ -60,11 +61,17 @@ func init() {
 	dispatch_table[0x03D] = x3D_dec
 	dispatch_table[0x03E] = x3E_ld
 	dispatch_table[0x046] = x46_ld
+	dispatch_table[0x047] = x47_ld
 	dispatch_table[0x04E] = x4E_ld
+	dispatch_table[0x04F] = x4F_ld
 	dispatch_table[0x056] = x56_ld
+	dispatch_table[0x057] = x57_ld
 	dispatch_table[0x05E] = x5E_ld
+	dispatch_table[0x05F] = x5F_ld
 	dispatch_table[0x066] = x66_ld
+	dispatch_table[0x067] = x67_ld
 	dispatch_table[0x06E] = x6E_ld
+	dispatch_table[0x06F] = x6F_ld
 	dispatch_table[0x070] = x70_ld
 	dispatch_table[0x071] = x71_ld
 	dispatch_table[0x072] = x72_ld

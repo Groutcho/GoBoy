@@ -53,6 +53,48 @@ func x7F_ld() int {
 	return 1
 }
 
+// ld   B, A - B=A
+func x47_ld() int {
+	SetB(GetA())
+
+	return 1
+}
+
+// ld   C, A - C=A
+func x4F_ld() int {
+	SetC(GetA())
+
+	return 1
+}
+
+// ld   D, A - D=A
+func x57_ld() int {
+	SetD(GetA())
+
+	return 1
+}
+
+// ld   E, A - E=A
+func x5F_ld() int {
+	SetE(GetA())
+
+	return 1
+}
+
+// ld   H, A - H=A
+func x67_ld() int {
+	SetH(GetA())
+
+	return 1
+}
+
+// ld   L, A - L=A
+func x6F_ld() int {
+	SetL(GetA())
+
+	return 1
+}
+
 // ld   A, %1 - A=%1
 func x3E_ld() int {
 	SetA(FetchOperand8())

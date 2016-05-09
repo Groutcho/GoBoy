@@ -6,6 +6,13 @@ ld   A, H            7C              4    ----     // A=H
 ld   A, L            7D              4    ----     // A=L
 ld   A, A            7F              4    ----     // A=A
 
+ld   B, A            47              4    ----     // B=A
+ld   C, A            4F              4    ----     // C=A
+ld   D, A            57              4    ----     // D=A
+ld   E, A            5F              4    ----     // E=A
+ld   H, A            67              4    ----     // H=A
+ld   L, A            6F              4    ----     // L=A
+
 ld   A, %1           3E              8    ----     // A=%1
 ld   B, %1           06              8    ----     // B=%1
 ld   C, %1           0E              8    ----     // C=%1
