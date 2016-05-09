@@ -11,13 +11,13 @@ func TestInterrupt(t* testing.T) {
 
 	SetIME(false)
 	RequestJoypadInterrupt()
-	testRegister(t, REG_PC, 0x5555)
+	CheckRegister(t, REG_PC, 0x5555)
 	
 	SetIME(true)
 	RequestJoypadInterrupt()
-	testRegister(t, REG_PC, 0x5555)
+	CheckRegister(t, REG_PC, 0x5555)
 
 	EnableJoypadInterrupt()
 	RequestJoypadInterrupt()
-	testRegister(t, REG_PC, 0x1234)
+	CheckRegister(t, REG_PC, 0x1234)
 }

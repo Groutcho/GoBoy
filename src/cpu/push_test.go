@@ -10,7 +10,7 @@ func TestC5_push(t* testing.T) {
 
 	xC5_push()
 
-	testRegister(t, REG_SP, 0x08)
+	CheckRegister(t, REG_SP, 0x08)
 	testAddress(t, GetSP(), 0x34)
 	testAddress(t, GetSP() + 1, 0x12)
 }
@@ -31,6 +31,6 @@ func TestF5_push(t* testing.T) {
 	testFlags(t, false, false, false, false)
 	xF1_pop()
 
-	testRegister(t, REG_A, 0x78)
+	CheckRegister(t, REG_A, 0x78)
 	testFlags(t, true, true, true, true)
 }

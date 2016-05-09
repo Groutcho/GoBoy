@@ -14,6 +14,6 @@ func Test22_ldi(t* testing.T) {
 		t.Errorf("Test22_ldi() failed: expected [HL-1] = 0x89, got 0x%02X", hl)
 	}
 
-	testRegister(t, REG_HL, 0x878A)
-	testRegister(t, REG_A, 0x89)
+	CheckRegister(t, REG_HL, 0x878A)
+	CheckRegister(t, REG_A, 0x89)
 }

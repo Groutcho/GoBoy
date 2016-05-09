@@ -3,22 +3,20 @@ package cpu
 import "testing"
 import . "memory"
 
-var (
-	REG_A = 0
-	REG_F = 1
-	REG_AF = 2
-	REG_B = 3
-	REG_C = 4
-	REG_BC = 5
-	REG_D = 6
-	REG_E = 7
-	REG_DE = 8
-	REG_H = 9
-	REG_L = 10
-	REG_HL = 11
-	REG_SP = 12
-	REG_PC = 13
-)
+const REG_A = 0
+const REG_F = 1
+const REG_AF = 2
+const REG_B = 3
+const REG_C = 4
+const REG_BC = 5
+const REG_D = 6
+const REG_E = 7
+const REG_DE = 8
+const REG_H = 9
+const REG_L = 10
+const REG_HL = 11
+const REG_SP = 12
+const REG_PC = 13
 
 func testFlags(t* testing.T, Z bool, N bool, H bool, C bool) {
 	if GetFlagZf() != Z {
@@ -54,7 +52,7 @@ func testFlags(t* testing.T, Z bool, N bool, H bool, C bool) {
 	}
 }
 
-func testRegister(t* testing.T, registerCode int, expected int) {
+func CheckRegister(t* testing.T, registerCode int, expected int) {
 
 	name := ""
 	actual := 0

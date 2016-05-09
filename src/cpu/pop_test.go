@@ -18,6 +18,6 @@ func TestF1_pop(t* testing.T) {
 	
 	xF1_pop()
 
-	testRegister(t, REG_SP, 0x0022)
-	testRegister(t, REG_AF, 0xABF8)
+	CheckRegister(t, REG_SP, 0x0022)
+	CheckRegister(t, REG_AF, 0xABF8)
 }

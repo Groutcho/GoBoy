@@ -7,7 +7,7 @@ import . "memory"
 func TestB_31_swap(t* testing.T) {
 	SetC(0xA9)
 	xCB_31_swap()
-	testRegister(t, REG_C, 0x9A)
+	CheckRegister(t, REG_C, 0x9A)
 }
 
 // swap [HL]

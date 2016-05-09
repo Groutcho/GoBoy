@@ -239,5 +239,5 @@ func TestF2_ld(t* testing.T) {
 	Set(0xFF06, 0x98)
 
 	xF2_ld()
-	testRegister(t, REG_A, 0x98)
+	CheckRegister(t, REG_A, 0x98)
 }

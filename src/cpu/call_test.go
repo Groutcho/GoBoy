@@ -32,8 +32,8 @@ func TestCD_call(t* testing.T) {
 	LoadProgram(program)
 	ExecuteNext()
 
-	testRegister(t, REG_PC, 0xFF15)
-	testRegister(t, REG_SP, 0x0012)
+	CheckRegister(t, REG_PC, 0xFF15)
+	CheckRegister(t, REG_SP, 0x0012)
 
 	t.Logf("SP: %04X", GetSP())
 	t.Logf("addr: %04X", Get16(GetSP()))
@@ -75,8 +75,8 @@ func TestDC_call(t* testing.T) {
 	SetFlagCy(true)
 	ExecuteNext()
 
-	testRegister(t, REG_PC, 0xFF15)
-	testRegister(t, REG_SP, 0x0012)
+	CheckRegister(t, REG_PC, 0xFF15)
+	CheckRegister(t, REG_SP, 0x0012)
 
 	t.Logf("SP: %04X", GetSP())
 	t.Logf("addr: %04X", Get16(GetSP()))
@@ -91,8 +91,8 @@ func TestDC_call(t* testing.T) {
 	SetFlagCy(false)
 	ExecuteNext()
 
-	testRegister(t, REG_PC, 0x000D)
-	testRegister(t, REG_SP, 0x0014)
+	CheckRegister(t, REG_PC, 0x000D)
+	CheckRegister(t, REG_SP, 0x0014)
 }
 
 func TestD4_call(t* testing.T) {
@@ -126,8 +126,8 @@ func TestD4_call(t* testing.T) {
 	SetFlagCy(false)
 	ExecuteNext()
 
-	testRegister(t, REG_PC, 0xFF15)
-	testRegister(t, REG_SP, 0x0012)
+	CheckRegister(t, REG_PC, 0xFF15)
+	CheckRegister(t, REG_SP, 0x0012)
 
 	t.Logf("SP: %04X", GetSP())
 	t.Logf("addr: %04X", Get16(GetSP()))
@@ -142,8 +142,8 @@ func TestD4_call(t* testing.T) {
 	SetFlagCy(true)
 	ExecuteNext()
 
-	testRegister(t, REG_PC, 0x000D)
-	testRegister(t, REG_SP, 0x0014)
+	CheckRegister(t, REG_PC, 0x000D)
+	CheckRegister(t, REG_SP, 0x0014)
 }
 
 func TestC4_call(t* testing.T) {
@@ -177,8 +177,8 @@ func TestC4_call(t* testing.T) {
 	SetFlagZf(true)
 	ExecuteNext()
 
-	testRegister(t, REG_PC, 0xFF15)
-	testRegister(t, REG_SP, 0x0012)
+	CheckRegister(t, REG_PC, 0xFF15)
+	CheckRegister(t, REG_SP, 0x0012)
 
 	t.Logf("SP: %04X", GetSP())
 	t.Logf("addr: %04X", Get16(GetSP()))
@@ -193,8 +193,8 @@ func TestC4_call(t* testing.T) {
 	SetFlagZf(false)
 	ExecuteNext()
 
-	testRegister(t, REG_PC, 0x000D)
-	testRegister(t, REG_SP, 0x0014)
+	CheckRegister(t, REG_PC, 0x000D)
+	CheckRegister(t, REG_SP, 0x0014)
 }
 
 func TestC4CC_call(t* testing.T) {
@@ -228,8 +228,8 @@ func TestC4CC_call(t* testing.T) {
 	SetFlagZf(false)
 	ExecuteNext()
 
-	testRegister(t, REG_PC, 0xFF15)
-	testRegister(t, REG_SP, 0x0012)
+	CheckRegister(t, REG_PC, 0xFF15)
+	CheckRegister(t, REG_SP, 0x0012)
 
 	t.Logf("SP: %04X", GetSP())
 	t.Logf("addr: %04X", Get16(GetSP()))
@@ -244,6 +244,6 @@ func TestC4CC_call(t* testing.T) {
 	SetFlagZf(true)
 	ExecuteNext()
 
-	testRegister(t, REG_PC, 0x000D)
-	testRegister(t, REG_SP, 0x0014)
+	CheckRegister(t, REG_PC, 0x000D)
+	CheckRegister(t, REG_SP, 0x0014)
 }

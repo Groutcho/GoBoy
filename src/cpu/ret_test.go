@@ -10,7 +10,7 @@ func TestC9_ret(t* testing.T) {
 
 	xC9_ret()
 
-	testRegister(t, REG_PC, 0x1234)
+	CheckRegister(t, REG_PC, 0x1234)
 }
 
 func TestD8_ret(t* testing.T) {
@@ -21,11 +21,11 @@ func TestD8_ret(t* testing.T) {
 
 	SetFlagCy(false)
 	xD8_ret()
-	testRegister(t, REG_PC, 0x0000)
+	CheckRegister(t, REG_PC, 0x0000)
 
 	SetFlagCy(true)
 	xD8_ret()
-	testRegister(t, REG_PC, 0x1234)
+	CheckRegister(t, REG_PC, 0x1234)
 }
 
 func TestD9_reti(t* testing.T) {
@@ -37,7 +37,7 @@ func TestD9_reti(t* testing.T) {
 	Set(0x0006, 0x12)
 
 	xD8_ret()
-	testRegister(t, REG_PC, 0x1234)
+	CheckRegister(t, REG_PC, 0x1234)
 
 	if 	VBlankInterruptEnabled() &&
 		LcdStatInterruptEnabled() &&
