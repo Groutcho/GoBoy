@@ -129,7 +129,7 @@ func Update(timescale int) int {
 }
 
 // Starts the execution of the program at any point
-func Start() {
+func Run() {
 	for {
 		Update(1)
 	}

@@ -119,7 +119,7 @@ func TestSimpleProgram01(t* testing.T) {
 	LoadProgram(program)
 	SetFlagZf(false)
 	SetPC(0x0002) // at instruction ld A, 0xF0
-	Start()
+	Run()
 
 	if de := GetDE(); de != 0xF889 {
 		t.Errorf("TestSimpleProgram01() failed: expected DE @ 0xF889, got 0x%04X", de)
@@ -141,7 +141,7 @@ func TestSimpleProgram02(t* testing.T) {
 	SetFlagH(false)
 	SetA(0x0F)
 	LoadProgram(program)
-	Start()
+	Run()
 
 	if a := GetA(); a!= 0x10 {
 		t.Errorf("TestSimpleProgram02() failed: expected A @ 0x10, got 0x%02X", a)
