@@ -411,6 +411,13 @@ func SetLY(value byte) {
 	RAM[LY_ADDR] = value
 }
 
+func IncLY() {
+	RAM[LY_ADDR]++
+	if RAM[LY_ADDR] == 154 {
+		RAM[LY_ADDR] = 0
+	}
+}
+
 func GetLYC() byte {
 	return RAM[LYC_ADDR]
 }

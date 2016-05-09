@@ -3,6 +3,7 @@ package lcd
 import . "common"
 import "github.com/veandco/go-sdl2/sdl"
 import mem "memory"
+import t "time"
 
 import _ "log"
 
@@ -98,6 +99,35 @@ func DrawBackground(bgAddress uint16, tileAddr uint16) {
 	}
 }
 
+
+func DrawBackgroundLine(bgAddress uint16, tileAddr uint16) {
+	ly := mem.GetLY()
+	var y int32 = int32(ly) / 8
+
+	// V-blank, do nothing.
+	// if ly > 143 {
+	// 	return
+	// }
+
+	// draw a single tile line (8px height)
+	for x := 0; x < 32; x++ {
+		addr := bgAddress + uint16(int(y) * 32 + x)
+		tile := GetTile(mem.Get(addr), tileAddr)
+		DrawTile(tile, int32(x*8), y*8)
+	}
+
+	// we draw eight pixel lines at a time
+	mem.IncLY()
+	mem.IncLY()
+	mem.IncLY()
+	mem.IncLY()
+
+	mem.IncLY()
+	mem.IncLY()
+	mem.IncLY()
+	mem.IncLY()
+}
+
 func SetTile(index int, tile []byte, mode int) {
 	base := uint16(0x8000)
 	if mode == 1 {
@@ -141,16 +171,27 @@ func DrawWindow() {
 	// TODO
 }
 
+func Run() {
+	for {
+		Update()
+		t.Sleep(10 * t.Millisecond)
+	}
+}
+
+func Redraw() {
+
+}
+
 func Update() {
 	lcdc := mem.GetLCDC()
 
 	if IsBitSet(lcdc, LCD_ACTIVE) {
 		bgAddr := GetBackgroundTileMap()
-		wdwAddr := GetWindowTileMap()
+		// wdwAddr := GetWindowTileMap()
 		tileAddr := GetTileDataTable()
 
 		if IsBitSet(lcdc, BG_WDW_ACTIVE) {
-			DrawBackground(bgAddr, tileAddr)
+			DrawBackgroundLine(bgAddr, tileAddr)
 			if IsBitSet(lcdc, WDW_ACTIVE) {
 				DrawWindow()
 			}
