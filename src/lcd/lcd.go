@@ -4,8 +4,9 @@ import . "common"
 import "github.com/veandco/go-sdl2/sdl"
 import mem "memory"
 import t "time"
+import "cpu"
 
-import _ "log"
+// import "log"
 
 const WHITE uint32 = 0xFFFFFFFF
 const DARK_GREY uint32 = 0x44444444
@@ -99,35 +100,6 @@ func DrawBackground(bgAddress uint16, tileAddr uint16) {
 	}
 }
 
-
-func DrawBackgroundLine(bgAddress uint16, tileAddr uint16) {
-	ly := mem.GetLY()
-	var y int32 = int32(ly) / 8
-
-	// V-blank, do nothing.
-	// if ly > 143 {
-	// 	return
-	// }
-
-	// draw a single tile line (8px height)
-	for x := 0; x < 32; x++ {
-		addr := bgAddress + uint16(int(y) * 32 + x)
-		tile := GetTile(mem.Get(addr), tileAddr)
-		DrawTile(tile, int32(x*8), y*8)
-	}
-
-	// we draw eight pixel lines at a time
-	mem.IncLY()
-	mem.IncLY()
-	mem.IncLY()
-	mem.IncLY()
-
-	mem.IncLY()
-	mem.IncLY()
-	mem.IncLY()
-	mem.IncLY()
-}
-
 func SetTile(index int, tile []byte, mode int) {
 	base := uint16(0x8000)
 	if mode == 1 {
@@ -173,13 +145,26 @@ func DrawWindow() {
 
 func Run() {
 	for {
-		Update()
-		t.Sleep(10 * t.Millisecond)
+		Redraw()
 	}
 }
 
+// Draw a single frame (144 lines + 10 "lines" of V-Blank (approx 1.1 ms))
 func Redraw() {
+	Update()
 
+	mem.SetLY(0x00)
+
+	for i := 0; i < 154; i++ {
+		// Draw a single scanline
+		mem.IncLY()
+		if mem.GetLY() == 144 {
+			cpu.RequestVBlankInterrupt()
+		}
+		t.Sleep(108 * t.Microsecond)
+	}
+
+	window.UpdateSurface()
 }
 
 func Update() {
@@ -191,16 +176,15 @@ func Update() {
 		tileAddr := GetTileDataTable()
 
 		if IsBitSet(lcdc, BG_WDW_ACTIVE) {
-			DrawBackgroundLine(bgAddr, tileAddr)
+			DrawBackground(bgAddr, tileAddr)
 			if IsBitSet(lcdc, WDW_ACTIVE) {
 				DrawWindow()
 			}
 		}
 	}
-	window.UpdateSurface()
 }
 
 func Stop() {
-	sdl.Quit()
 	window.Destroy()
+	sdl.Quit()
 }
