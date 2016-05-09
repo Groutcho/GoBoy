@@ -5,6 +5,7 @@ import . "common"
 import t "time"
 import "log"
 import "os"
+import "io/ioutil"
 
 // The dispatch table is used to redirect a given instruction to its
 // implementation by having a direct mapping between the opcode and the array index.
@@ -94,13 +95,16 @@ func ExecuteNext() int {
 
 	defer func() {
 		if x := recover(); x != nil {
-			log.Printf("Fatal instruction: 0x%04X", GetPC() - uint16(inc))
+			log.Printf("[0x%04X] %02X (%s)", GetPC() - uint16(inc), opcode, x)
+			log.Printf("Dumping memory...")
+			dump := GetRange(0x0000, 0xFFFF)
+			ioutil.WriteFile("dump.bin", dump, 0644)
 			os.Exit(1)
 		}
 	}()
 
 	opcode, inc = Fetch()
-	log.Printf("[0x%04X] %02X", GetPC() - uint16(inc), opcode)
+	// log.Printf("[0x%04X] %02X", GetPC() - uint16(inc), opcode)
 
 	if opcode == 0x76 { // halt
 		// TODO
