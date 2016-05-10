@@ -8,6 +8,7 @@ import "os"
 import "io/ioutil"
 // import "log"
 import "fmt"
+import . "common"
 
 const NORMAL_SPEED = 1
 
@@ -46,15 +47,15 @@ func testTetris() {
      "31111113" +
      "33333333"
 
-    // square := ""  +
-    //  "33333333" +
-    //  "3......3" +
-    //  "3.2222.3" +
-    //  "3.2222.3" +
-    //  "3.2222.3" +
-    //  "3.2222.3" +
-    //  "3......3" +
-    //  "33333333"
+    square := ""  +
+     "33333333" +
+     "3......3" +
+     "3.2222.3" +
+     "3.2222.3" +
+     "3.2222.3" +
+     "3.2222.3" +
+     "3......3" +
+     "33333333"
 
      // mire := ""  +
      //  "....3333" +
@@ -68,37 +69,44 @@ func testTetris() {
 
     lcd.SetTile(0, lcd.MakeTile(blank), 1)
     lcd.SetTile(1, lcd.MakeTile(block), 1)
+    lcd.SetTile(2, lcd.MakeTile(square), 1)
 
-    // lcd.SetTile(0, lcd.MakeTile(blank), 1)
-    // lcd.SetTile(1, lcd.MakeTile(square), 1)
-    memory.SetLCDC(0x91)
-    // lcdc := memory.GetLCDC()
-    // lcdc = SetBit(lcdc, 4, 1)
-    // lcdc = SetBit(lcdc, 7, 1)
-    // memory.SetLCDC(lcdc)
-    // lcd.SetTile(2, lcd.MakeTile(t2))
-
-    // x := 10
-    y := 0
-
-    go lcd.Run()
-    for {
-        for x := 0; x < 32; x++ {
-            lcd.SetBackgroundTile(x, y, 1)
-        }
-        y++
-        // lcd.SetBackgroundTile(x+1, y, 0)
-        // lcd.SetBackgroundTile(x+2, y, 0)
-        // lcd.SetBackgroundTile(x+1, y+1, 0)
-        // y++
-        // lcd.SetBackgroundTile(x, y, 1)
-        // lcd.SetBackgroundTile(x+1, y, 1)
-        // lcd.SetBackgroundTile(x+2, y, 1)
-        // lcd.SetBackgroundTile(x+1, y+1, 1)
-        t.Sleep(100 * t.Millisecond)
+    for i := 0; i < 32; i++ {
+        lcd.SetWindowTile(i, 0, 2)
+        lcd.SetWindowTile(i, 1, 2)
+        lcd.SetWindowTile(i, 2, 2)
     }
 
+    for i := 0; i < 32; i++ {
+        lcd.SetBackgroundTile(i, 15, 1)
+        lcd.SetBackgroundTile(i, 16, 1)
+        lcd.SetBackgroundTile(i, 17, 1)
+    }
+
+
+    memory.SetLCDC(0x91)
+    lcdc := memory.GetLCDC()
+    memory.SetLCDC(SetBit(lcdc, 7, 1))
+
+    lcd.Run()
+    // fall()
+
+
     lcd.Stop()
+}
+
+func fall() {
+    y := 0
+
+    for {
+        if memory.GetLY() > 144 {
+            // for x := 0; x < 32; x++ {
+            lcd.SetBackgroundTile(5, y, 1)
+            // }
+            y++
+        }
+       t.Sleep(10 * t.Microsecond)
+    }
 }
 
 func pollSerial() {

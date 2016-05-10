@@ -6,19 +6,17 @@ import mem "memory"
 import t "time"
 import "cpu"
 
-// import "log"
-
-const WHITE uint32 = 0xFFFFFFFF
-const DARK_GREY uint32 = 0x44444444
-const LIGHT_GREY uint32 = 0xAAAAAAAA
-const BLACK uint32 = 0x00000000
-const LCD_WIDTH = 256
-const LCD_HEIGHT = 256
+const WHITE uint8 = 0xFF
+const DARK_GREY uint8 = 0x44
+const LIGHT_GREY uint8 = 0xAA
+const BLACK uint8 = 0x00
+const LCD_WIDTH = 160
+const LCD_HEIGHT = 144
 
 var window *sdl.Window
-var surface *sdl.Surface
+var renderer *sdl.Renderer
 
-var palette = new([4]uint32)
+var palette = new([4]uint8)
 
 const LCD_ACTIVE = 7
 const WDW_ACTIVE = 5
@@ -35,30 +33,25 @@ func init() {
 }
 
 func fillScreen(color uint32) {
-	rect := sdl.Rect{0, 0, int32(LCD_WIDTH), int32(LCD_HEIGHT)}
-	surface.FillRect(&rect, color)
+	rect := sdl.Rect{0, 0, LCD_WIDTH, LCD_HEIGHT}
+	renderer.SetDrawColor(255, 255, 255, 255) // r, g, b, a uint8)
+	renderer.FillRect(&rect)
+	renderer.Present()
 }
 
-func SetPixel(x, y int32, color uint32) {
-	rect := sdl.Rect{x, y, 1, 1}
-	surface.FillRect(&rect, color)
+func SetPixel(x, y int, color uint8) {
+	renderer.SetDrawColor(color, color, color, 255) // r, g, b, a uint8)
+	renderer.DrawPoint(x, y)
+	// renderer.Present()
 }
 
-func GetTileColor(tile []byte, x, y int) uint32 {
+func GetTileColor(tile []byte, x, y int) uint8 {
 	B := x / 4 + y * 2
 	h := 7 - (x % 4) * 2
 	l := h - 1
 
 	color := 2 * GetBit(tile[B], uint8(h)) + GetBit(tile[B], uint8(l))
 	return palette[color]
-}
-
-func DrawTile(tile []byte, x, y int32) {
-	for xx := 0; xx < 8; xx++ {
-		for yy := 0; yy < 8; yy++ {
-			SetPixel(x + int32(xx), y + int32(yy), GetTileColor(tile, xx, yy))
-		}
-	}
 }
 
 func Initialize() {
@@ -72,32 +65,17 @@ func Initialize() {
 	    panic(err)
 	}
 
-	surface, err = window.GetSurface()
+	renderer, err = sdl.CreateRenderer(window, -1, 0)
 	if err != nil {
 	    panic(err)
 	}
 
-    fillScreen(WHITE)
+    fillScreen(0xFFFFFFFF)
 }
 
 func GetTile(index uint8, base uint16) []byte {
 	addr := uint16(base + uint16(index) * 16)
 	return mem.GetRange(addr, 16)
-}
-
-func DrawBackground(bgAddress uint16, tileAddr uint16) {
-	var x int32 = 0
-	var y int32 = 0
-	for addr := bgAddress; addr < (bgAddress + 1024); addr++ {
-		tile := GetTile(mem.Get(addr), tileAddr)
-		DrawTile(tile, x*8, y*8)
-
-		x++
-		if x > 31 {
-			x = 0
-			y++
-		}
-	}
 }
 
 func SetTile(index int, tile []byte, mode int) {
@@ -110,7 +88,21 @@ func SetTile(index int, tile []byte, mode int) {
 }
 
 func SetBackgroundTile(x, y, index int) {
-	mem.Set(uint16(0x9800 + y * 32 + x), uint8(index))
+	addr := uint16(0x9800)
+	if IsBitSet(mem.GetLCDC(), BG_MAP) {
+		addr = uint16(0x9C00)
+	}
+
+	mem.Set(addr + uint16(y * 32 + x), uint8(index))
+}
+
+func SetWindowTile(x, y, index int) {
+	addr := uint16(0x9800)
+	if IsBitSet(mem.GetLCDC(), WDW_MAP) {
+		addr = uint16(0x9C00)
+	}
+
+	mem.Set(addr + uint16(y * 32 + x), uint8(index))
 }
 
 func GetBackgroundTileMap() uint16 {
@@ -139,48 +131,85 @@ func GetTileDataTable() uint16 {
 	return tdt
 }
 
-func DrawWindow() {
-	// TODO
-}
-
 func Run() {
 	for {
 		Redraw()
 	}
 }
 
+func DrawWindowLine(y int, wdwAddr, tileAddr uint16) {
+	x := int(mem.GetWX())
+	yy := y + int(mem.GetWY())
+
+	for i := 0; i < LCD_WIDTH; i++ {
+		pix := GetBgPixel(x, yy, wdwAddr, tileAddr)
+		SetPixel(x, y, pix)
+		x++
+	}
+}
+
+// Draw a single line of background
+func DrawBgLine(y int, bgAddr, tileAddr uint16) {
+	x := int(mem.GetSCX())
+	yy := y + int(mem.GetSCY())
+
+	for i := 0; i < LCD_WIDTH; i++ {
+		pix := GetBgPixel(x % 256, yy % 256, bgAddr, tileAddr)
+		SetPixel(x, y, pix)
+		x++
+	}
+}
+
+// Return the color of the background pixel at coordinates x, y
+func GetBgPixel(x, y int, bgAddr, tileAddr uint16) uint8 {
+	// Get the tile corresponding to this coordinate
+	tx := x / 8
+	ty := y / 8
+
+	tIndexOffset := ty * 32 + tx
+	tIndex := mem.Get(bgAddr + uint16(tIndexOffset))
+
+	tile := GetTile(tIndex, tileAddr)
+
+	// Get the pixel x,y in the tile itself
+	px := x % 8
+	py := y % 8
+
+	return GetTileColor(tile, int(px), int(py))
+}
+
 // Draw a single frame (144 lines + 10 "lines" of V-Blank (approx 1.1 ms))
 func Redraw() {
-	Update()
+	lcdc := mem.GetLCDC()
+
+	if !IsBitSet(lcdc, LCD_ACTIVE) {
+		return
+	}
+
+	bgAddr := GetBackgroundTileMap()
+	wdwAddr := GetWindowTileMap()
+	tileAddr := GetTileDataTable()
+
+	drawBgWindow :=	IsBitSet(lcdc, BG_WDW_ACTIVE)
+	drawWindow := IsBitSet(lcdc, WDW_ACTIVE)
 
 	mem.SetLY(0x00)
 
-	for i := 0; i < 154; i++ {
-		// Draw a single scanline
-		mem.IncLY()
-		if mem.GetLY() == 144 {
+	for y := 0; y < 154; y++ {
+		if y < LCD_HEIGHT {
+			if drawBgWindow {
+				DrawBgLine(int(y), bgAddr, tileAddr)
+				if drawWindow {
+					DrawWindowLine(int(y), wdwAddr, tileAddr)
+				}
+			}
+		} else if y == LCD_HEIGHT {
+			renderer.Present()
 			cpu.RequestVBlankInterrupt()
 		}
+
 		t.Sleep(108 * t.Microsecond)
-	}
-
-	window.UpdateSurface()
-}
-
-func Update() {
-	lcdc := mem.GetLCDC()
-
-	if IsBitSet(lcdc, LCD_ACTIVE) {
-		bgAddr := GetBackgroundTileMap()
-		// wdwAddr := GetWindowTileMap()
-		tileAddr := GetTileDataTable()
-
-		if IsBitSet(lcdc, BG_WDW_ACTIVE) {
-			DrawBackground(bgAddr, tileAddr)
-			if IsBitSet(lcdc, WDW_ACTIVE) {
-				DrawWindow()
-			}
-		}
+		mem.IncLY()
 	}
 }
 
