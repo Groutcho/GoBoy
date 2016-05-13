@@ -2,61 +2,64 @@ package memory
 
 import (
 	"bytes"
-	"fmt"
 	. "common"
+	"fmt"
+)
+
+/* Interrupt bit indices */
+const (
+	VBLANK   = 0
+	LCD_STAT = 1
+	TIMER    = 2
+	SERIAL   = 3
+	JOYPAD   = 4
+)
+
+const (
+	P1_ADDR             = 0xFF00
+	SB_ADDR             = 0xFF01
+	SC_ADDR             = 0xFF02
+	DIV_ADDR            = 0xFF04
+	TIMA_ADDR           = 0xFF05
+	TMA_ADDR            = 0xFF06
+	TAC_ADDR            = 0xFF07
+	NR10_ADDR           = 0xFF10
+	NR11_ADDR           = 0xFF11
+	NR12_ADDR           = 0xFF12
+	NR13_ADDR           = 0xFF13
+	NR14_ADDR           = 0xFF14
+	NR21_ADDR           = 0xFF16
+	NR22_ADDR           = 0xFF17
+	NR23_ADDR           = 0xFF18
+	NR24_ADDR           = 0xFF19
+	NR30_ADDR           = 0xFF1A
+	NR31_ADDR           = 0xFF1B
+	NR33_ADDR           = 0xFF1D
+	NR34_ADDR           = 0xFF1E
+	NR41_ADDR           = 0xFF20
+	NR42_ADDR           = 0xFF21
+	NR50_ADDR           = 0xFF24
+	NR51_ADDR           = 0xFF25
+	NR52_ADDR           = 0xFF26
+	WAV_ADDR            = 0xFF30
+	LCDC_ADDR           = 0xFF40
+	STAT_ADDR           = 0xFF41
+	SCY_ADDR            = 0xFF42
+	SCX_ADDR            = 0xFF43
+	LY_ADDR             = 0xFF44
+	LYC_ADDR            = 0xFF45
+	DMA_ADDR            = 0xFF46
+	BGP_ADDR            = 0xFF47
+	OBP0_ADDR           = 0xFF48
+	OBP1_ADDR           = 0xFF49
+	WY_ADDR             = 0xFF4A
+	WX_ADDR             = 0xFF4B
+	INTRPT_ENABLE_ADDR  = 0xFFFF
+	INTRPT_REQUEST_ADDR = 0xFF0F
 )
 
 /* the game boy address space is 16bit wide */
 var RAM = new([65536]byte)
-
-/* Interrupt bit indices */
-const VBLANK = 0
-const LCD_STAT = 1
-const TIMER = 2
-const SERIAL = 3
-const JOYPAD = 4
-
-const   P1_ADDR = 0xFF00
-const   SB_ADDR = 0xFF01
-const   SC_ADDR = 0xFF02
-const  DIV_ADDR = 0xFF04
-const TIMA_ADDR = 0xFF05
-const  TMA_ADDR = 0xFF06
-const  TAC_ADDR = 0xFF07
-const NR10_ADDR = 0xFF10
-const NR11_ADDR = 0xFF11
-const NR12_ADDR = 0xFF12
-const NR13_ADDR = 0xFF13
-const NR14_ADDR = 0xFF14
-const NR21_ADDR = 0xFF16
-const NR22_ADDR = 0xFF17
-const NR23_ADDR = 0xFF18
-const NR24_ADDR = 0xFF19
-const NR30_ADDR = 0xFF1A
-const NR31_ADDR = 0xFF1B
-const NR33_ADDR = 0xFF1D
-const NR34_ADDR = 0xFF1E
-const NR41_ADDR = 0xFF20
-const NR42_ADDR = 0xFF21
-const NR50_ADDR = 0xFF24
-const NR51_ADDR = 0xFF25
-const NR52_ADDR = 0xFF26
-const  WAV_ADDR = 0xFF30
-const LCDC_ADDR = 0xFF40
-const STAT_ADDR = 0xFF41
-const  SCY_ADDR = 0xFF42
-const  SCX_ADDR = 0xFF43
-const   LY_ADDR = 0xFF44
-const  LYC_ADDR = 0xFF45
-const  DMA_ADDR = 0xFF46
-const  BGP_ADDR = 0xFF47
-const OBP0_ADDR = 0xFF48
-const OBP1_ADDR = 0xFF49
-const   WY_ADDR = 0xFF4A
-const   WX_ADDR = 0xFF4B
-const INTRPT_ENABLE_ADDR = 0xFFFF
-const INTRPT_REQUEST_ADDR = 0xFF0F
-
 var interruptHandlers = make([]uint16, 5, 5)
 
 func init() {
@@ -72,7 +75,7 @@ func Get(addr uint16) byte {
 }
 
 func Get16(addr uint16) uint16 {
-	return uint16(uint16(RAM[addr+1]) << 8 | uint16(RAM[addr]))
+	return uint16(uint16(RAM[addr+1])<<8 | uint16(RAM[addr]))
 }
 
 func Set(addr uint16, value byte) {
@@ -92,14 +95,19 @@ func SetRange(from uint16, data []byte) {
 	}
 }
 
+// return a slice of the complete RAM
+func GetMemoryMap() []byte {
+	return RAM[:]
+}
+
 func GetRange(from uint16, size uint16) []byte {
-	return RAM[from:from+size]
+	return RAM[from : from+size]
 }
 
 func DumpRange(from uint16, to uint16) string {
 	var buffer bytes.Buffer
 
-	for i := 0; i < len(RAM[from:to + 1]); i++ {
+	for i := 0; i < len(RAM[from:to+1]); i++ {
 		if RAM[i] == 0x00 {
 			buffer.WriteString("__ ")
 		} else {
@@ -391,6 +399,10 @@ func GetSCY() byte {
 	return RAM[SCY_ADDR]
 }
 
+func IncSCY() {
+	RAM[SCY_ADDR]++
+}
+
 func SetSCY(value byte) {
 	RAM[SCY_ADDR] = value
 }
@@ -401,6 +413,10 @@ func GetSCX() byte {
 
 func SetSCX(value byte) {
 	RAM[SCX_ADDR] = value
+}
+
+func IncSCX() {
+	RAM[SCX_ADDR]++
 }
 
 func GetLY() byte {
