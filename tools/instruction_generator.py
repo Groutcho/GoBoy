@@ -337,6 +337,19 @@ def custom_impl_F8():
 	return code.strip()
 
 
+def custom_impl_08():
+		"""
+		ld   %2, SP
+		"""
+
+		code = \
+		"""
+		Set16(FetchOperand16(), GetSP())
+		"""
+
+		return code.strip()
+
+
 def custom_impl_E0():
 	"""
 	read from io-port %1 (memory FF00+%1)
@@ -760,6 +773,7 @@ custom_impl_table = {\
 	0xF0: custom_impl_F0,
 	0xF8: custom_impl_F8,
 	0xE0: custom_impl_E0,
+	0x08: custom_impl_08,
 	0xE2: custom_impl_E2,
 	0xF2: custom_impl_F2,
 	0xF0: custom_impl_F0,

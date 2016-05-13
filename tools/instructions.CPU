@@ -86,6 +86,7 @@ ld   BC, %2          01             12    ----     // BC=%2
 ld   DE, %2          11             12    ----     // DE=%2
 ld   HL, %2          21             12    ----     // HL=%2
 ld   SP, %2          31             12    ----     // SP=%2
+ld   (%2), SP        08             12    ----     // [%2]=SP
 ld   SP, HL          F9              8    ----     // SP=HL
 ld   HL, SP+%s       F8             12    00hc     // *HL = SP +/- %s ;%s is 8bit signed number
 

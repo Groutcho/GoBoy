@@ -76,8 +76,8 @@ func Call(addr uint16) {
 	DecSP()
 	DecSP()
 
-	Set(GetSP(), 	 GetLowBits(GetPC()))
-	Set(GetSP() + 1, GetHighBits(GetPC()))
+	Set(GetSP(), GetLowBits(GetPC()))
+	Set(GetSP()+1, GetHighBits(GetPC()))
 
 	SetPC(addr)
 }
@@ -95,7 +95,7 @@ func ExecuteNext() int {
 
 	defer func() {
 		if x := recover(); x != nil {
-			log.Printf("[0x%04X] %02X (%s)", GetPC() - uint16(inc), opcode, x)
+			log.Printf("[0x%04X] %02X (%s)", GetPC()-uint16(inc), opcode, x)
 			log.Printf("Dumping memory...")
 			dump := GetRange(0x0000, 0xFFFF)
 			ioutil.WriteFile("dump.bin", dump, 0644)
@@ -104,7 +104,7 @@ func ExecuteNext() int {
 	}()
 
 	opcode, inc = Fetch()
-	// log.Printf("[0x%04X] %02X", GetPC() - uint16(inc), opcode)
+	log.Printf("[0x%04X] %02X", GetPC()-uint16(inc), opcode)
 
 	if opcode == 0x76 { // halt
 		// TODO
@@ -125,7 +125,7 @@ func Update(timescale int) int {
 	// execute the next instruction and get its execution time, in microseconds
 	wait_microsec := ExecuteNext()
 	if wait_microsec > 0 {
-		t.Sleep(t.Duration(wait_microsec * timescale) * t.Microsecond)
+		t.Sleep(t.Duration(wait_microsec*timescale) * t.Microsecond)
 		return 0
 	} else {
 		return -1

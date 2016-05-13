@@ -9,6 +9,7 @@ func init() {
 	dispatch_table[0x005] = x05_dec
 	dispatch_table[0x006] = x06_ld
 	dispatch_table[0x007] = x07_rlca
+	dispatch_table[0x008] = x08_ld
 	dispatch_table[0x009] = x09_add
 	dispatch_table[0x00A] = x0A_ld
 	dispatch_table[0x00B] = x0B_dec

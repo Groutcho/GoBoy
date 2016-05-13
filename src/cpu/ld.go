@@ -611,6 +611,13 @@ func x31_ld() int {
 	return 3
 }
 
+// ld   (%2), SP - [%2]=SP
+func x08_ld() int {
+	Set16(FetchOperand16(), GetSP())
+
+	return 3
+}
+
 // ld   SP, HL - SP=HL
 func xF9_ld() int {
 	SetSP(GetHL())
