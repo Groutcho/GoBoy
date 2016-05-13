@@ -79,7 +79,7 @@ write_table = ( 'ld',
 	'rst',
 	'sbc',
 	'set',
-	'sla'
+	'sla',
 	'sra',
 	'srl',
 	'sub',
@@ -817,6 +817,7 @@ def make_dispatch_table(instructions:dict):
 
 		for instr in sorted(instructions, key=lambda x: x.full_opcode()):
 			if instr.mnemonic in write_table:
+				print("{:02X}".format(instr.full_opcode()))
 				print('\tdispatch_table[0x{:03X}] = {}'.format(instr.full_opcode(), instr.func_name()), file=f)
 
 		print('}', file=f)
