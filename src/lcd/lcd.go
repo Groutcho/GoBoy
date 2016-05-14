@@ -21,16 +21,23 @@ const (
 	LCD_HEIGHT        = 144
 	SCANLINES         = 153
 
-	SCY_ADDR = 0xFF42
-	SCX_ADDR = 0xFF43
+	SCY_ADDR     = 0xFF42
+	SCX_ADDR     = 0xFF43
+	OAM_ADDR     = 0xFE00
+	OAM_ADDR_END = 0xFE9F
+	WY_ADDR      = 0xFF4A
+	WX_ADDR      = 0xFF4B
 
 	LCD_ACTIVE    = 7
-	WDW_ACTIVE    = 5
 	WDW_MAP       = 6
+	WDW_ACTIVE    = 5
 	TDT           = 4
 	BG_MAP        = 3
+	SPRITE_SIZE   = 2
+	SPRITE_ACTIVE = 1
 	BG_WDW_ACTIVE = 0
-	SCALE         = 2
+
+	SCALE = 2
 )
 
 var (
@@ -41,9 +48,7 @@ var (
 
 	palette = new([4]uint32)
 
-	mmap       []byte = nil
-	fillBuffer        = 0
-	showBuffer        = 1
+	mmap []byte = nil
 )
 
 func init() {
@@ -102,11 +107,7 @@ func Stop() {
 	sdl.Quit()
 }
 
-func SetTile(index int, tile []byte, mode int) {
-	base := uint16(0x8000)
-	if mode == 1 {
-		base = uint16(0x8800)
-	}
+func SetTile(index int, tile []byte, base uint16) {
 	offset := uint16(len(tile)) * uint16(index)
 	mem.SetRange(base+offset, tile)
 }
@@ -127,6 +128,20 @@ func SetWindowTile(x, y, index int) {
 	}
 
 	mem.Set(addr+uint16(y*32+x), uint8(index))
+}
+
+// Create a sprite at index x (FFE0 + x), of coordinates x, y,
+// using pattern <pattern> and with flags <flags>
+func SetSprite(index uint16, x, y, pattern, flags uint8) {
+	if index > 0x9F {
+		panic("trying to set a sprite outside of OAM range.")
+	}
+
+	base := OAM_ADDR + index*4
+	mmap[base] = flags
+	mmap[base+1] = pattern
+	mmap[base+2] = y
+	mmap[base+3] = x
 }
 
 func setBufferPixel(x, y, color int, pixels unsafe.Pointer, pitch int) {
@@ -152,11 +167,46 @@ func getWindowTileMap() uint16 {
 }
 
 func getTileDataTable() uint16 {
-	tdt := uint16(0x8000)
+	tdt := uint16(0x8800)
 	if IsBitSet(mem.GetLCDC(), TDT) {
-		tdt = uint16(0x8800)
+		tdt = uint16(0x8000)
 	}
 	return tdt
+}
+
+func getSpriteColor(x, y int) int {
+	var col int
+	for s := OAM_ADDR; s <= OAM_ADDR_END; s += 4 {
+		// get the sprite coordinates
+		sx := int(mmap[s+3])
+		sy := int(mmap[s+2])
+
+		pattern := int(mmap[s+1])
+		flags := uint8(mmap[s])
+
+		flipX := IsBitSet(flags, 5)
+		flipY := IsBitSet(flags, 6)
+		fx := x - sx + 8
+		fy := y - sy + 8
+
+		if flipX {
+			fx = 7 - fx
+		}
+		if flipY {
+			fy = 7 - fy
+		}
+
+		if x >= sx-8 && x < sx && y >= sy-8 && y < sy {
+			col = getSpritePixel(fx, fy, pattern)
+			if col != 0 {
+				// break early so that the first sprite found has priority
+				// Normally, priority determination is a bit more complex, but
+				// for now, it will do.
+				break
+			}
+		}
+	}
+	return col
 }
 
 func drawWindowLine(y int, mapAddr, tileAddr uint16, pixels unsafe.Pointer, pitch int) {
@@ -176,13 +226,30 @@ func drawBackgroundLine(y int, mapAddr, tileAddr uint16, pixels unsafe.Pointer, 
 	yy := y + int(mmap[SCY_ADDR])
 
 	for i := 0; i < LCD_WIDTH; i++ {
-		pix := getTilePixel(x%256, yy%256, mapAddr, tileAddr)
-		setBufferPixel(x, y, pix, pixels, pitch)
+		col := getTilePixel(x%256, yy%256, mapAddr, tileAddr)
+		setBufferPixel(x, y, col, pixels, pitch)
 		x++
 	}
 }
 
-// Return the color of the background pixel at coordinates x, y
+// return the color of the pixel x, y for the sprite <index>
+func getSpritePixel(x, y, pattern int) int {
+	if x < 0 || y < 0 {
+		return 0
+	}
+	return getPixel(uint16(0x8000+pattern*16), x, y)
+}
+
+func getPixel(tileAddr uint16, x, y int) int {
+	addr := tileAddr + uint16(x/4+y*2)
+	h := 7 - (x%4)*2
+	l := h - 1
+	b := mmap[addr]
+	color := 2*GetBit(b, uint8(h)) + GetBit(b, uint8(l))
+	return int(color)
+}
+
+// Return the color of the pixel at coordinates x, y
 func getTilePixel(x, y int, bgAddr, tileAddr uint16) int {
 	// Get the tile corresponding to this coordinate
 	tx := x / 8
@@ -197,14 +264,51 @@ func getTilePixel(x, y int, bgAddr, tileAddr uint16) int {
 	py := y % 8
 
 	// get the tile address in the tile data table
-	addr := tileAddr + uint16(tIndex*16) + uint16(px>>2+py<<1)
+	addr := tileAddr + uint16(tIndex*16)
 
-	h := 7 - (px%4)*2
-	l := h - 1
-	b := mmap[addr]
+	return getPixel(addr, px, py)
+}
 
-	color := 2*GetBit(b, uint8(h)) + GetBit(b, uint8(l))
-	return int(color)
+func clearScreen() {
+	for i := 0; i < len(pixels); i++ {
+		pixels[i] = 255
+	}
+}
+
+func drawScanline(y int, lcdc uint8, pixels unsafe.Pointer, pitch int) {
+	var tilecol, spritecol int
+
+	bgAddr := getBackgroundTileMap()
+	wdwAddr := getWindowTileMap()
+	tileAddr := getTileDataTable()
+
+	scx := int(mmap[SCX_ADDR])
+	scy := int(mmap[SCY_ADDR])
+
+	wx := int(mmap[WX_ADDR])
+	wy := int(mmap[WY_ADDR])
+
+	drawBgAndWindow := IsBitSet(lcdc, BG_WDW_ACTIVE)
+	drawWindow := IsBitSet(lcdc, WDW_ACTIVE)
+	drawSprites := IsBitSet(lcdc, SPRITE_ACTIVE)
+
+	for x := 0; x < LCD_WIDTH; x++ {
+		if drawSprites {
+			spritecol = getSpriteColor(x, y)
+		}
+		if drawBgAndWindow {
+			tilecol = getTilePixel((scx+x)%256, (scy+y)%256, bgAddr, tileAddr)
+
+			if drawWindow && x >= wx && x <= wx+LCD_WIDTH && y >= wy && y <= wy+LCD_HEIGHT {
+				tilecol = getTilePixel(x, y, wdwAddr, tileAddr)
+			}
+		}
+		if spritecol > tilecol {
+			setBufferPixel(x, y, spritecol, pixels, pitch)
+		} else {
+			setBufferPixel(x, y, tilecol, pixels, pitch)
+		}
+	}
 }
 
 // Draw a single frame (144 lines + 10 "lines" of V-Blank (approx 1.1 ms))
@@ -222,12 +326,7 @@ func redraw() {
 		panic(err)
 	}
 
-	bgAddr := getBackgroundTileMap()
-	wdwAddr := getWindowTileMap()
-	tileAddr := getTileDataTable()
-
-	drawBgWindow := IsBitSet(lcdc, BG_WDW_ACTIVE)
-	drawWindow := IsBitSet(lcdc, WDW_ACTIVE)
+	clearScreen()
 
 	mem.SetLY(0x00)
 
@@ -237,22 +336,17 @@ func redraw() {
 
 	for y := 0; y < SCANLINES; y++ {
 		if y < LCD_HEIGHT {
-			if drawBgWindow {
-				drawBackgroundLine(y, bgAddr, tileAddr, pixPtr, pitch)
-				if drawWindow {
-					drawWindowLine(y, wdwAddr, tileAddr, pixPtr, pitch)
-				}
-			}
+			drawScanline(y, lcdc, pixPtr, pitch)
 		} else if y == LCD_HEIGHT {
 			cpu.RequestVBlankInterrupt()
 		}
 		mem.IncLY()
 	}
 
-	<-tick.C
 	screenTex.Update(nil, pixPtr, pitch)
 	screenTex.Unlock()
 	renderer.Clear()
 	renderer.Copy(screenTex, nil, nil)
 	renderer.Present()
+	<-tick.C
 }
