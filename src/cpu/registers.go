@@ -29,38 +29,38 @@ The Stack Pointer (SP) and Program Counter (PC) cannot be
 accessed outside their 16bit range.
 */
 type Registers struct {
-	A uint8
-	F uint8
-	B uint8
-	C uint8
-	D uint8
-	E uint8
-	H uint8
-	L uint8
+	A  uint8
+	F  uint8
+	B  uint8
+	C  uint8
+	D  uint8
+	E  uint8
+	H  uint8
+	L  uint8
 	SP uint16 /* stack pointer */
 	PC uint16 /* program counter */
 }
 
 var registers Registers
 var (
-	F_SET_0 = 0
-	F_SET_1 = 1
+	F_SET_0  = 0
+	F_SET_1  = 1
 	F_SET_IF = 2
 	F_IGNORE = 3
-	F_8bit = 4
-	F_16bit = 5
+	F_8bit   = 4
+	F_16bit  = 5
 )
 
 func init() {
 	registers = Registers{
-		A: 0x00,
-		B: 0x00,
-		C: 0x00,
-		D: 0x00,
-		E: 0x00,
-		F: 0x00,
-		H: 0x00,
-		L: 0x00,		
+		A:  0x00,
+		B:  0x00,
+		C:  0x00,
+		D:  0x00,
+		E:  0x00,
+		F:  0x00,
+		H:  0x00,
+		L:  0x00,
 		SP: 0x0000,
 		PC: 0x0000}
 }
@@ -231,7 +231,7 @@ func GetL() uint8 {
 
 // Return the value of the Zero flag.
 func GetFlagZf() bool {
-	return (registers.F & 0x80) != 0
+	return (registers.F & 0x80) == 0x80
 }
 
 // Return the value of the N (Add/Sub) flag.
@@ -286,7 +286,7 @@ func IsAddHalfCarry(left uint8, right uint8) int {
 	l := int(GetLowNibble(left))
 	r := int(GetLowNibble(right))
 
-	if l + r > 0xF {
+	if l+r > 0xF {
 		return 1
 	} else {
 		return 0
@@ -298,7 +298,7 @@ func IsSubHalfCarry(left uint8, right uint8) int {
 	l := int(GetLowNibble(left))
 	r := int(GetLowNibble(right))
 
-	if l - r < 0x0 {
+	if l-r < 0x0 {
 		return 1
 	} else {
 		return 0
@@ -507,7 +507,7 @@ func DecL() {
 }
 
 func Swap(value uint8) uint8 {
-	return uint8(value << 4 | value >> 4)
+	return uint8(value<<4 | value>>4)
 }
 
 // Reset all registers to 0x0000.

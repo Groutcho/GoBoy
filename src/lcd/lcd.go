@@ -60,7 +60,8 @@ var (
 
 	palette = new([4]uint32)
 
-	mmap []byte = nil
+	mmap     []byte = nil
+	CONTINUE        = true
 )
 
 func init() {
@@ -109,9 +110,20 @@ func RunProfile() {
 }
 
 func Run() {
+	CONTINUE = true
 	for {
-		redraw()
+		if CONTINUE {
+			redraw()
+		}
 	}
+}
+
+func Pause() {
+	CONTINUE = false
+}
+
+func Continue() {
+	CONTINUE = true
 }
 
 func Stop() {
@@ -321,7 +333,7 @@ func drawScanline(y int, lcdc uint8, pixels unsafe.Pointer, pitch int) {
 	drawWindow := IsBitSet(lcdc, WDW_ACTIVE)
 	drawSprites := IsBitSet(lcdc, SPRITE_ACTIVE)
 
-	hblank := time.NewTicker(time.Microsecond * 6)
+	hblank := time.NewTicker(time.Microsecond * 90)
 
 	for x := 0; x < LCD_WIDTH; x++ {
 		if drawSprites {
@@ -364,6 +376,7 @@ func redraw() {
 	mem.SetLY(0x00)
 
 	vblank := time.NewTicker(time.Millisecond * 16)
+	scanline := time.NewTicker(time.Microsecond * 109)
 	defer vblank.Stop()
 
 	for y := 0; y < SCANLINES; y++ {
@@ -374,6 +387,7 @@ func redraw() {
 			cpu.RequestVBlankInterrupt()
 		}
 		mem.IncLY()
+		<-scanline.C
 	}
 
 	screenTex.Update(nil, pixPtr, pitch)

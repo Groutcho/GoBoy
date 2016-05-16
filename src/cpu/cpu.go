@@ -1,11 +1,14 @@
 package cpu
 
-import . "memory"
-import . "common"
-import t "time"
-import "log"
-import "os"
-import "io/ioutil"
+import (
+	. "common"
+	"fmt"
+	"io/ioutil"
+	"log"
+	. "memory"
+	"os"
+	"time"
+)
 
 // The dispatch table is used to redirect a given instruction to its
 // implementation by having a direct mapping between the opcode and the array index.
@@ -14,6 +17,8 @@ import "io/ioutil"
 var dispatch_table []instrFunc = make([]instrFunc, 512, 512)
 
 var exitOnStop = false
+var CONTINUE = true
+var breakpoints []uint16 = make([]uint16, 16, 16)
 
 func push(value uint16) {
 	DecSP()
@@ -82,8 +87,22 @@ func Call(addr uint16) {
 	SetPC(addr)
 }
 
+func Step() {
+	ExecuteNext()
+}
+
 func DumpRegisters() {
-	log.Printf("A: 0x%02X  F: 0x%02X\n", GetA(), GetF())
+	fmt.Printf("A: 0x%02X  F: 0x%02X\n", GetA(), GetF())
+	fmt.Printf("B: 0x%02X  C: 0x%02X\n", GetB(), GetC())
+	fmt.Printf("D: 0x%02X  E: 0x%02X\n", GetD(), GetE())
+	fmt.Printf("H: 0x%02X  L: 0x%02X\n", GetH(), GetL())
+	fmt.Printf("SP: 0x%04X\n", GetSP())
+	fmt.Printf("PC: 0x%04X\n", GetPC())
+}
+
+func SetBreakpoint(addr uint16) {
+	breakpoints = append(breakpoints, addr)
+	fmt.Printf("added breakpoint at 0x%04X\n", addr)
 }
 
 // execute the next instruction and return the number of cycles taken
@@ -92,6 +111,15 @@ func DumpRegisters() {
 func ExecuteNext() int {
 	var opcode = uint16(0)
 	var inc = 0
+
+	pc := GetPC()
+	for i := 0; i < len(breakpoints); i++ {
+		if pc != 0 && breakpoints[i] == pc {
+			fmt.Printf("breakpoint reached: 0x%04X\n", pc)
+			CONTINUE = false
+			return 0
+		}
+	}
 
 	defer func() {
 		if x := recover(); x != nil {
@@ -104,7 +132,7 @@ func ExecuteNext() int {
 	}()
 
 	opcode, inc = Fetch()
-	log.Printf("[0x%04X] %02X", GetPC()-uint16(inc), opcode)
+	// fmt.Printf("[0x%04X] %02X\n", GetPC()-uint16(inc), opcode)
 
 	if opcode == 0x76 { // halt
 		// TODO
@@ -121,11 +149,11 @@ func ExecuteNext() int {
 	return dispatch_table[opcode]()
 }
 
-func Update(timescale int) int {
+func Update() int {
 	// execute the next instruction and get its execution time, in microseconds
 	wait_microsec := ExecuteNext()
 	if wait_microsec > 0 {
-		t.Sleep(t.Duration(wait_microsec*timescale) * t.Microsecond)
+		// t.Sleep(t.Duration(wait_microsec) * t.Microsecond)
 		return 0
 	} else {
 		return -1
@@ -134,18 +162,35 @@ func Update(timescale int) int {
 
 // Starts the execution of the program at any point
 func Run() {
+	clock := time.NewTicker(time.Microsecond * 1)
+	defer clock.Stop()
+
+	CONTINUE = true
 	for {
-		Update(1)
+		if CONTINUE {
+			cycles := ExecuteNext()
+			for i := 0; i < cycles; i++ {
+				<-clock.C
+			}
+		}
 	}
 }
 
+func Pause() {
+	CONTINUE = false
+}
+
+func Continue() {
+	CONTINUE = true
+}
+
 // Starts the execution of the program in test mode, executing at most
-// maxInstructions at normal speed.
+// maxInstructions.
 func StartTest(maxInstructions int) {
 	ExitOnStop(true)
 	ret := 0
 	for i := 0; i < maxInstructions; i++ {
-		ret = Update(1)
+		ret = Update()
 		if ret == -1 {
 			return
 		}
