@@ -4,6 +4,7 @@ import (
 	"bytes"
 	. "common"
 	"fmt"
+	"time"
 )
 
 /* Interrupt bit indices */
@@ -79,6 +80,9 @@ func Get16(addr uint16) uint16 {
 }
 
 func Set(addr uint16, value byte) {
+	if addr == DMA_ADDR {
+		startDMATransfer(uint16(value) * 0x100)
+	}
 	RAM[addr] = value
 }
 
@@ -485,4 +489,17 @@ func GetWX() byte {
 
 func SetWX(value byte) {
 	RAM[WX_ADDR] = value
+}
+
+// initialize a DMA transfer of 40 * 28 bit from address <addr> to OAM (0xFE00)
+func startDMATransfer(addr uint16) {
+	tick := time.NewTicker(time.Microsecond * 160)
+	var j uint16
+
+	for i := 0; i < 40; i++ {
+		j = uint16(i)
+		RAM[0xFE00+j] = RAM[addr+j]
+	}
+
+	<-tick.C
 }

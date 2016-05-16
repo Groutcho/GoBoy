@@ -34,3 +34,17 @@ func TestSetRange(t *testing.T) {
 		t.Errorf("TestSetRange() failed: at 0x00, expected 0x66, got 0x%04x", actual[0x50])
 	}
 }
+
+func TestDMATransfer(t *testing.T) {
+	for i := 0; i < 40; i++ {
+		RAM[0x100+i] = 0x88
+	}
+
+	Set(0xFF46, 0x01)
+
+	for i := 0; i < 40; i++ {
+		if RAM[0xFE00+i] != 0x88 {
+			t.Error("DMA transfer failed.")
+		}
+	}
+}
