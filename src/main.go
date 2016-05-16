@@ -1,17 +1,24 @@
 package main
 
-import "lcd"
-import t "time"
-import "memory"
-import "cpu"
-import "os"
-import "io/ioutil"
-
-// import "log"
-import "fmt"
-import . "common"
+import (
+	. "common"
+	"console"
+	"cpu"
+	"fmt"
+	"io/ioutil"
+	"lcd"
+	"memory"
+	"os"
+	"os/signal"
+	"syscall"
+	"time"
+)
 
 const NORMAL_SPEED = 1
+
+var (
+	sigs chan os.Signal
+)
 
 func loadRom(filename string) {
 	rom, err := ioutil.ReadFile(filename)
@@ -169,7 +176,7 @@ func testTetris() {
 }
 
 func moveSprites() {
-	tick := t.NewTicker(t.Millisecond * 50)
+	tick := time.NewTicker(time.Millisecond * 50)
 	for {
 		<-tick.C
 		x := memory.Get(0xFE03)
@@ -178,7 +185,7 @@ func moveSprites() {
 }
 
 func fall() {
-	tick := t.NewTicker(t.Millisecond * 100)
+	tick := time.NewTicker(time.Millisecond * 100)
 	for {
 		<-tick.C
 		memory.IncSCY()
@@ -190,13 +197,25 @@ func pollSerial() {
 		if memory.Get(0xFF02) == 0x81 {
 			fmt.Printf("%c", memory.Get(0xFF01))
 		}
-		t.Sleep(1 * t.Microsecond)
+		time.Sleep(1 * time.Microsecond)
+	}
+}
+
+func signalHandler() {
+	for {
+		<-sigs
+		console.Prompt()
 	}
 }
 
 func main() {
-	testTetris()
-	return
+	// testTetris()
+	// return
+
+	sigs = make(chan os.Signal, 1)
+	signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM)
+
+	go signalHandler()
 
 	memory.ResetMemory()
 	lcd.Initialize()
@@ -204,8 +223,11 @@ func main() {
 
 	loadRom(os.Args[1])
 
+	cpu.SetPC(0x0000)
+
 	go lcd.Run()
 	// go pollSerial()
+	console.Prompt()
 	cpu.Run()
 
 	lcd.Stop()
