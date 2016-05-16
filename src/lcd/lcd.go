@@ -27,6 +27,13 @@ const (
 	OAM_ADDR_END = 0xFE9F
 	WY_ADDR      = 0xFF4A
 	WX_ADDR      = 0xFF4B
+	STAT_ADDR    = 0xFF41
+
+	STAT_LYC     = 6
+	STAT_MODE_10 = 5
+	STAT_MODE_01 = 4
+	STAT_MODE_00 = 3
+	STAT_COIN    = 2
 
 	LCD_ACTIVE    = 7
 	WDW_MAP       = 6
@@ -36,6 +43,11 @@ const (
 	SPRITE_SIZE   = 2
 	SPRITE_ACTIVE = 1
 	BG_WDW_ACTIVE = 0
+
+	MODE_0_HBLANK        = 0
+	MODE_1_VBLANK        = 1
+	MODE_2_OAM_USED      = 2
+	MODE_3_OAM_VRAM_USED = 3
 
 	SCALE = 2
 )
@@ -57,6 +69,7 @@ func init() {
 	palette[2] = DARK_GREY
 	palette[3] = BLACK
 
+	// To reduce overhead, lcd code can directly manipulate RAM.
 	mmap = mem.GetMemoryMap()
 }
 
@@ -214,7 +227,7 @@ func drawWindowLine(y int, mapAddr, tileAddr uint16, pixels unsafe.Pointer, pitc
 	yy := y + int(mem.GetWY())
 
 	for i := 0; i < LCD_WIDTH; i++ {
-		pix := getTilePixel(x, yy, mapAddr, tileAddr)
+		pix := getTileColor(x, yy, mapAddr, tileAddr)
 		setBufferPixel(x, y, pix, pixels, pitch)
 		x++
 	}
@@ -226,7 +239,7 @@ func drawBackgroundLine(y int, mapAddr, tileAddr uint16, pixels unsafe.Pointer, 
 	yy := y + int(mmap[SCY_ADDR])
 
 	for i := 0; i < LCD_WIDTH; i++ {
-		col := getTilePixel(x%256, yy%256, mapAddr, tileAddr)
+		col := getTileColor(x%256, yy%256, mapAddr, tileAddr)
 		setBufferPixel(x, y, col, pixels, pitch)
 		x++
 	}
@@ -250,7 +263,7 @@ func getPixel(tileAddr uint16, x, y int) int {
 }
 
 // Return the color of the pixel at coordinates x, y
-func getTilePixel(x, y int, bgAddr, tileAddr uint16) int {
+func getTileColor(x, y int, bgAddr, tileAddr uint16) int {
 	// Get the tile corresponding to this coordinate
 	tx := x / 8
 	ty := y / 8
@@ -275,6 +288,22 @@ func clearScreen() {
 	}
 }
 
+func setLcdMode(mode int) {
+	if mode == MODE_1_VBLANK {
+		SetBit(mmap[STAT_ADDR], 1, 0)
+		SetBit(mmap[STAT_ADDR], 0, 1)
+	} else if mode == MODE_0_HBLANK {
+		SetBit(mmap[STAT_ADDR], 1, 0)
+		SetBit(mmap[STAT_ADDR], 0, 0)
+	} else if mode == MODE_2_OAM_USED {
+		SetBit(mmap[STAT_ADDR], 1, 1)
+		SetBit(mmap[STAT_ADDR], 0, 0)
+	} else if mode == MODE_3_OAM_VRAM_USED {
+		SetBit(mmap[STAT_ADDR], 1, 1)
+		SetBit(mmap[STAT_ADDR], 0, 1)
+	}
+}
+
 func drawScanline(y int, lcdc uint8, pixels unsafe.Pointer, pitch int) {
 	var tilecol, spritecol int
 
@@ -292,15 +321,17 @@ func drawScanline(y int, lcdc uint8, pixels unsafe.Pointer, pitch int) {
 	drawWindow := IsBitSet(lcdc, WDW_ACTIVE)
 	drawSprites := IsBitSet(lcdc, SPRITE_ACTIVE)
 
+	hblank := time.NewTicker(time.Microsecond * 6)
+
 	for x := 0; x < LCD_WIDTH; x++ {
 		if drawSprites {
 			spritecol = getSpriteColor(x, y)
 		}
 		if drawBgAndWindow {
-			tilecol = getTilePixel((scx+x)%256, (scy+y)%256, bgAddr, tileAddr)
+			tilecol = getTileColor((scx+x)%256, (scy+y)%256, bgAddr, tileAddr)
 
 			if drawWindow && x >= wx && x <= wx+LCD_WIDTH && y >= wy && y <= wy+LCD_HEIGHT {
-				tilecol = getTilePixel(x, y, wdwAddr, tileAddr)
+				tilecol = getTileColor(x, y, wdwAddr, tileAddr)
 			}
 		}
 		if spritecol > tilecol {
@@ -309,6 +340,8 @@ func drawScanline(y int, lcdc uint8, pixels unsafe.Pointer, pitch int) {
 			setBufferPixel(x, y, tilecol, pixels, pitch)
 		}
 	}
+	setLcdMode(MODE_0_HBLANK)
+	<-hblank.C
 }
 
 // Draw a single frame (144 lines + 10 "lines" of V-Blank (approx 1.1 ms))
@@ -330,14 +363,14 @@ func redraw() {
 
 	mem.SetLY(0x00)
 
-	// 108 microseconds is the duration of a scanline draw
-	tick := time.NewTicker(time.Millisecond * 16)
-	defer tick.Stop()
+	vblank := time.NewTicker(time.Millisecond * 16)
+	defer vblank.Stop()
 
 	for y := 0; y < SCANLINES; y++ {
 		if y < LCD_HEIGHT {
 			drawScanline(y, lcdc, pixPtr, pitch)
 		} else if y == LCD_HEIGHT {
+			setLcdMode(MODE_1_VBLANK)
 			cpu.RequestVBlankInterrupt()
 		}
 		mem.IncLY()
@@ -348,5 +381,5 @@ func redraw() {
 	renderer.Clear()
 	renderer.Copy(screenTex, nil, nil)
 	renderer.Present()
-	<-tick.C
+	<-vblank.C
 }
