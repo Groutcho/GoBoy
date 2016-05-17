@@ -49,7 +49,7 @@ const (
 	MODE_2_OAM_USED      = 2
 	MODE_3_OAM_VRAM_USED = 3
 
-	SCALE = 2
+	SCALE = 3
 )
 
 var (
@@ -265,12 +265,11 @@ func getSpritePixel(x, y, pattern int) int {
 	return getPixel(uint16(0x8000+pattern*16), x, y)
 }
 
+// return the color of the pixel of the tile at address tileAddr and of
+// coordinates x, y
 func getPixel(tileAddr uint16, x, y int) int {
-	addr := tileAddr + uint16(x/4+y*2)
-	h := 7 - (x%4)*2
-	l := h - 1
-	b := mmap[addr]
-	color := 2*GetBit(b, uint8(h)) + GetBit(b, uint8(l))
+	addr := tileAddr + uint16(y*2)
+	color := 2*GetBit(mmap[addr], uint8(7-x)) + GetBit(mmap[addr+1], uint8(7-x))
 	return int(color)
 }
 

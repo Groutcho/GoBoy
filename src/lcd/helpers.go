@@ -17,12 +17,14 @@ import . "common"
 func MakeTile(input string) []byte {
 	result := make([]byte, 16, 16)
 
-	for i := 0; i < 64; i++ {
-		B := int(i / 4)
-		b := uint8(7 - ((i % 4) * 2))
-		h, l := helperGetPixel(input[i])
-		result[B] = SetBit(result[B], b, h)
-		result[B] = SetBit(result[B], b-1, l)
+	for x := 0; x < 8; x++ {
+		for y := 0; y < 8; y++ {
+			h, l := helperGetPixel(input[y*8+x])
+			i := y * 2
+			b := uint8(7 - x)
+			result[i] = SetBit(result[i], b, h)
+			result[i+1] = SetBit(result[i+1], b, l)
+		}
 	}
 
 	return result
