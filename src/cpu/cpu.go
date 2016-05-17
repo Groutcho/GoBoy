@@ -19,6 +19,8 @@ var dispatch_table []instrFunc = make([]instrFunc, 512, 512)
 var exitOnStop = false
 var CONTINUE = true
 var breakpoints []uint16 = make([]uint16, 16, 16)
+var instructionsCount int = 0
+var startTime time.Time
 
 func push(value uint16) {
 	DecSP()
@@ -98,6 +100,8 @@ func DumpRegisters() {
 	fmt.Printf("H: 0x%02X  L: 0x%02X\n", GetH(), GetL())
 	fmt.Printf("SP: 0x%04X\n", GetSP())
 	fmt.Printf("PC: 0x%04X\n", GetPC())
+	fmt.Printf("#instructions: %09d\n", instructionsCount)
+	fmt.Printf("time: %04ds", time.Since(startTime)/1000000000)
 }
 
 func SetBreakpoint(addr uint16) {
@@ -132,7 +136,7 @@ func ExecuteNext() int {
 	}()
 
 	opcode, inc = Fetch()
-	// fmt.Printf("[0x%04X] %02X\n", GetPC()-uint16(inc), opcode)
+	fmt.Printf("[0x%04X] %02X\n", GetPC()-uint16(inc), opcode)
 
 	if opcode == 0x76 { // halt
 		// TODO
@@ -146,6 +150,7 @@ func ExecuteNext() int {
 		return 1
 	}
 
+	instructionsCount++
 	return dispatch_table[opcode]()
 }
 
@@ -162,16 +167,14 @@ func Update() int {
 
 // Starts the execution of the program at any point
 func Run() {
-	clock := time.NewTicker(time.Microsecond * 1)
-	defer clock.Stop()
+	var cycles int
+	startTime = time.Now()
 
 	CONTINUE = true
 	for {
 		if CONTINUE {
-			cycles := ExecuteNext()
-			for i := 0; i < cycles; i++ {
-				<-clock.C
-			}
+			// 1 cycle is around 1 µs
+			cycles += ExecuteNext()
 		}
 	}
 }

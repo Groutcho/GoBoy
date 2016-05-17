@@ -231,7 +231,7 @@ func GetL() uint8 {
 
 // Return the value of the Zero flag.
 func GetFlagZf() bool {
-	return (registers.F & 0x80) == 0x80
+	return (registers.F & 0x80) != 0
 }
 
 // Return the value of the N (Add/Sub) flag.
