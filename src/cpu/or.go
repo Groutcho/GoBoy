@@ -63,16 +63,6 @@ func xB5_or() int {
 	return 1
 }
 
-// or   A - A=A | A
-func xB7_or() int {
-	result := GetA() | GetA()
-	SetA(result)
-
-	SetFlags(int(result), F_SET_IF, F_SET_0, F_SET_0, F_SET_0, F_8bit)
-
-	return 1
-}
-
 // or   (HL) - A=A | (HL)
 func xB6_or() int {
 	result := GetA() | Get(GetHL())
@@ -81,6 +71,16 @@ func xB6_or() int {
 	SetFlags(int(result), F_SET_IF, F_SET_0, F_SET_0, F_SET_0, F_8bit)
 
 	return 2
+}
+
+// or   A - A=A | A
+func xB7_or() int {
+	result := GetA() | GetA()
+	SetA(result)
+
+	SetFlags(int(result), F_SET_IF, F_SET_0, F_SET_0, F_SET_0, F_8bit)
+
+	return 1
 }
 
 // or   %1 - A=A | %1

@@ -229,7 +229,6 @@ func init() {
 	dispatch_table[0x0EF] = xEF_rst
 	dispatch_table[0x0F0] = xF0_ld
 	dispatch_table[0x0F1] = xF1_pop
-	dispatch_table[0x0F2] = xF2_ld
 	dispatch_table[0x0F5] = xF5_push
 	dispatch_table[0x0F6] = xF6_or
 	dispatch_table[0x0F7] = xF7_rst

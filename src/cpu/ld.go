@@ -4,67 +4,18 @@ package cpu
 import . "common"
 import . "memory"
 
-// ld   A, %1 - A=%1
-func x3E_ld() int {
-	SetA(FetchOperand8())
+// ld   BC, %2 - BC=%2
+func x01_ld() int {
+	SetBC(FetchOperand16())
+
+	return 3
+}
+
+// ld   (BC), A - [BC]=A
+func x02_ld() int {
+	Set(GetBC(), GetA())
 
 	return 2
-}
-
-// ld   A, (HL) - A=(HL)
-func x7E_ld() int {
-	SetA(Get(GetHL()))
-
-	return 2
-}
-
-// ld   A, A - A=A
-func x7F_ld() int {
-	SetA(GetA())
-
-	return 1
-}
-
-// ld   A, B - A=B
-func x78_ld() int {
-	SetA(GetB())
-
-	return 1
-}
-
-// ld   A, C - A=C
-func x79_ld() int {
-	SetA(GetC())
-
-	return 1
-}
-
-// ld   A, D - A=D
-func x7A_ld() int {
-	SetA(GetD())
-
-	return 1
-}
-
-// ld   A, E - A=E
-func x7B_ld() int {
-	SetA(GetE())
-
-	return 1
-}
-
-// ld   A, H - A=H
-func x7C_ld() int {
-	SetA(GetH())
-
-	return 1
-}
-
-// ld   A, L - A=L
-func x7D_ld() int {
-	SetA(GetL())
-
-	return 1
 }
 
 // ld   B, %1 - B=%1
@@ -74,18 +25,102 @@ func x06_ld() int {
 	return 2
 }
 
-// ld   B, (HL) - B=(HL)
-func x46_ld() int {
-	SetB(Get(GetHL()))
+// ld   (%2), SP - [%2]=SP
+func x08_ld() int {
+	Set16(FetchOperand16(), GetSP())
+
+	return 3
+}
+
+// ld   A, (BC) - A=[BC]
+func x0A_ld() int {
+	SetA(Get(GetBC()))
 
 	return 2
 }
 
-// ld   B, A - B=A
-func x47_ld() int {
-	SetB(GetA())
+// ld   C, %1 - C=%1
+func x0E_ld() int {
+	SetC(FetchOperand8())
 
-	return 1
+	return 2
+}
+
+// ld   DE, %2 - DE=%2
+func x11_ld() int {
+	SetDE(FetchOperand16())
+
+	return 3
+}
+
+// ld   (DE), A - [DE]=A
+func x12_ld() int {
+	Set(GetDE(), GetA())
+
+	return 2
+}
+
+// ld   D, %1 - D=%1
+func x16_ld() int {
+	SetD(FetchOperand8())
+
+	return 2
+}
+
+// ld   A, (DE) - A=[DE]
+func x1A_ld() int {
+	SetA(Get(GetDE()))
+
+	return 2
+}
+
+// ld   E, %1 - E=%1
+func x1E_ld() int {
+	SetE(FetchOperand8())
+
+	return 2
+}
+
+// ld   HL, %2 - HL=%2
+func x21_ld() int {
+	SetHL(FetchOperand16())
+
+	return 3
+}
+
+// ld   H, %1 - H=%1
+func x26_ld() int {
+	SetH(FetchOperand8())
+
+	return 2
+}
+
+// ld   L, %1 - L=%1
+func x2E_ld() int {
+	SetL(FetchOperand8())
+
+	return 2
+}
+
+// ld   SP, %2 - SP=%2
+func x31_ld() int {
+	SetSP(FetchOperand16())
+
+	return 3
+}
+
+// ld   (HL), %1 - [HL]=[NN]
+func x36_ld() int {
+	Set(GetHL(), FetchOperand8())
+
+	return 3
+}
+
+// ld   A, %1 - A=%1
+func x3E_ld() int {
+	SetA(FetchOperand8())
+
+	return 2
 }
 
 // ld   B, B - B=B
@@ -130,23 +165,16 @@ func x45_ld() int {
 	return 1
 }
 
-// ld   C, %1 - C=%1
-func x0E_ld() int {
-	SetC(FetchOperand8())
+// ld   B, (HL) - B=(HL)
+func x46_ld() int {
+	SetB(Get(GetHL()))
 
 	return 2
 }
 
-// ld   C, (HL) - C=(HL)
-func x4E_ld() int {
-	SetC(Get(GetHL()))
-
-	return 2
-}
-
-// ld   C, A - C=A
-func x4F_ld() int {
-	SetC(GetA())
+// ld   B, A - B=A
+func x47_ld() int {
+	SetB(GetA())
 
 	return 1
 }
@@ -193,23 +221,16 @@ func x4D_ld() int {
 	return 1
 }
 
-// ld   D, %1 - D=%1
-func x16_ld() int {
-	SetD(FetchOperand8())
+// ld   C, (HL) - C=(HL)
+func x4E_ld() int {
+	SetC(Get(GetHL()))
 
 	return 2
 }
 
-// ld   D, (HL) - D=(HL)
-func x56_ld() int {
-	SetD(Get(GetHL()))
-
-	return 2
-}
-
-// ld   D, A - D=A
-func x57_ld() int {
-	SetD(GetA())
+// ld   C, A - C=A
+func x4F_ld() int {
+	SetC(GetA())
 
 	return 1
 }
@@ -256,23 +277,16 @@ func x55_ld() int {
 	return 1
 }
 
-// ld   E, %1 - E=%1
-func x1E_ld() int {
-	SetE(FetchOperand8())
+// ld   D, (HL) - D=(HL)
+func x56_ld() int {
+	SetD(Get(GetHL()))
 
 	return 2
 }
 
-// ld   E, (HL) - E=(HL)
-func x5E_ld() int {
-	SetE(Get(GetHL()))
-
-	return 2
-}
-
-// ld   E, A - E=A
-func x5F_ld() int {
-	SetE(GetA())
+// ld   D, A - D=A
+func x57_ld() int {
+	SetD(GetA())
 
 	return 1
 }
@@ -319,23 +333,16 @@ func x5D_ld() int {
 	return 1
 }
 
-// ld   H, %1 - H=%1
-func x26_ld() int {
-	SetH(FetchOperand8())
+// ld   E, (HL) - E=(HL)
+func x5E_ld() int {
+	SetE(Get(GetHL()))
 
 	return 2
 }
 
-// ld   H, (HL) - H=(HL)
-func x66_ld() int {
-	SetH(Get(GetHL()))
-
-	return 2
-}
-
-// ld   H, A - H=A
-func x67_ld() int {
-	SetH(GetA())
+// ld   E, A - E=A
+func x5F_ld() int {
+	SetE(GetA())
 
 	return 1
 }
@@ -382,23 +389,16 @@ func x65_ld() int {
 	return 1
 }
 
-// ld   L, %1 - L=%1
-func x2E_ld() int {
-	SetL(FetchOperand8())
+// ld   H, (HL) - H=(HL)
+func x66_ld() int {
+	SetH(Get(GetHL()))
 
 	return 2
 }
 
-// ld   L, (HL) - L=(HL)
-func x6E_ld() int {
-	SetL(Get(GetHL()))
-
-	return 2
-}
-
-// ld   L, A - L=A
-func x6F_ld() int {
-	SetL(GetA())
+// ld   H, A - H=A
+func x67_ld() int {
+	SetH(GetA())
 
 	return 1
 }
@@ -441,6 +441,20 @@ func x6C_ld() int {
 // ld   L, L - L=L
 func x6D_ld() int {
 	SetL(GetL())
+
+	return 1
+}
+
+// ld   L, (HL) - L=(HL)
+func x6E_ld() int {
+	SetL(Get(GetHL()))
+
+	return 2
+}
+
+// ld   L, A - L=A
+func x6F_ld() int {
+	SetL(GetA())
 
 	return 1
 }
@@ -494,44 +508,78 @@ func x77_ld() int {
 	return 2
 }
 
-// ld   (HL), %1 - [HL]=[NN]
-func x36_ld() int {
-	Set(GetHL(), FetchOperand8())
+// ld   A, B - A=B
+func x78_ld() int {
+	SetA(GetB())
+
+	return 1
+}
+
+// ld   A, C - A=C
+func x79_ld() int {
+	SetA(GetC())
+
+	return 1
+}
+
+// ld   A, D - A=D
+func x7A_ld() int {
+	SetA(GetD())
+
+	return 1
+}
+
+// ld   A, E - A=E
+func x7B_ld() int {
+	SetA(GetE())
+
+	return 1
+}
+
+// ld   A, H - A=H
+func x7C_ld() int {
+	SetA(GetH())
+
+	return 1
+}
+
+// ld   A, L - A=L
+func x7D_ld() int {
+	SetA(GetL())
+
+	return 1
+}
+
+// ld   A, (HL) - A=(HL)
+func x7E_ld() int {
+	SetA(Get(GetHL()))
+
+	return 2
+}
+
+// ld   A, A - A=A
+func x7F_ld() int {
+	SetA(GetA())
+
+	return 1
+}
+
+// ld   (FF00+%1), A - *write to io-port %1 (memory FF00+%1)
+func xE0_ld() int {
+	offset := int(FetchOperand8())
+	addr := 0xFF00 + uint16(offset)
+	value := GetA()
+	Set(addr, value)
 
 	return 3
 }
 
-// ld   A, (BC) - A=[BC]
-func x0A_ld() int {
-	SetA(Get(GetBC()))
-
-	return 2
-}
-
-// ld   A, (DE) - A=[DE]
-func x1A_ld() int {
-	SetA(Get(GetDE()))
-
-	return 2
-}
-
-// ld   A, (%2) - A=[NN]
-func xFA_ld() int {
-	SetA(Get(FetchOperand16()))
-
-	return 4
-}
-
-// ld   (BC), A - [BC]=A
-func x02_ld() int {
-	Set(GetBC(), GetA())
-
-	return 2
-}
-
-// ld   (DE), A - [DE]=A
-func x12_ld() int {
-	Set(GetDE(), GetA())
+// ld   (FF00+C), A - *write to io-port C (memory FF00+C)
+func xE2_ld() int {
+	offset := GetC()
+	addr := 0xFF00 + uint16(offset)
+	value := GetA()
+	Set(addr, value)
 
 	return 2
 }
@@ -553,78 +601,6 @@ func xF0_ld() int {
 	return 3
 }
 
-// ld   (FF00+%1), A - *write to io-port %1 (memory FF00+%1)
-func xE0_ld() int {
-	offset := int(FetchOperand8())
-	addr := 0xFF00 + uint16(offset)
-	value := GetA()
-	Set(addr, value)
-
-	return 3
-}
-
-// ld   A, (FF00+C) - *read from io-port C (memory FF00+C)
-func xF2_ld() int {
-	offset := GetC()
-	addr := 0xFF00 + uint16(offset)
-	value := Get(addr)
-	SetA(value)
-
-	return 2
-}
-
-// ld   (FF00+C), A - *write to io-port C (memory FF00+C)
-func xE2_ld() int {
-	offset := GetC()
-	addr := 0xFF00 + uint16(offset)
-	value := GetA()
-	Set(addr, value)
-
-	return 2
-}
-
-// ld   BC, %2 - BC=%2
-func x01_ld() int {
-	SetBC(FetchOperand16())
-
-	return 3
-}
-
-// ld   DE, %2 - DE=%2
-func x11_ld() int {
-	SetDE(FetchOperand16())
-
-	return 3
-}
-
-// ld   HL, %2 - HL=%2
-func x21_ld() int {
-	SetHL(FetchOperand16())
-
-	return 3
-}
-
-// ld   SP, %2 - SP=%2
-func x31_ld() int {
-	SetSP(FetchOperand16())
-
-	return 3
-}
-
-// ld   (%2), SP - [%2]=SP
-func x08_ld() int {
-	Set16(FetchOperand16(), GetSP())
-
-	return 3
-}
-
-// ld   SP, HL - SP=HL
-func xF9_ld() int {
-	SetSP(GetHL())
-
-	return 2
-}
-
 // ld   HL, SP+%s - *HL = SP +/- %s ;%s is 8bit signed number
 func xF8_ld() int {
 	operand := int(FetchOperand8s())
@@ -643,5 +619,19 @@ func xF8_ld() int {
 	SetFlags(result, F_SET_0, F_SET_0, hc, F_SET_IF, F_16bit)
 
 	return 3
+}
+
+// ld   SP, HL - SP=HL
+func xF9_ld() int {
+	SetSP(GetHL())
+
+	return 2
+}
+
+// ld   A, (%2) - A=[NN]
+func xFA_ld() int {
+	SetA(Get(FetchOperand16()))
+
+	return 4
 }
 

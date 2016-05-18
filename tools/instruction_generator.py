@@ -862,7 +862,7 @@ def parse_file(filename):
 	lst = []
 	with open(filename) as cpu:
 		for line in cpu.readlines():
-			if line.strip():
+			if line.strip() and line[0] != '#':
 				instruction = Instruction.parse(line)
 				if instruction.mnemonic not in result:
 					result[instruction.mnemonic] = []

@@ -4,6 +4,58 @@ package cpu
 import . "common"
 import . "memory"
 
+// add  HL, BC - HL = HL+BC
+func x09_add() int {
+	left := GetHL()
+	right := GetBC()
+	result := int(left) + int(right)
+
+	SetHL(uint16(result))
+	hcarry := IsAddHalfCarry(GetHighBits(left), GetHighBits(right))
+	SetFlags(result, F_IGNORE, F_SET_0, hcarry, F_SET_IF, F_16bit)
+
+	return 2
+}
+
+// add  HL, DE - HL = HL+DE
+func x19_add() int {
+	left := GetHL()
+	right := GetDE()
+	result := int(left) + int(right)
+
+	SetHL(uint16(result))
+	hcarry := IsAddHalfCarry(GetHighBits(left), GetHighBits(right))
+	SetFlags(result, F_IGNORE, F_SET_0, hcarry, F_SET_IF, F_16bit)
+
+	return 2
+}
+
+// add  HL, HL - HL = HL+HL
+func x29_add() int {
+	left := GetHL()
+	right := GetHL()
+	result := int(left) + int(right)
+
+	SetHL(uint16(result))
+	hcarry := IsAddHalfCarry(GetHighBits(left), GetHighBits(right))
+	SetFlags(result, F_IGNORE, F_SET_0, hcarry, F_SET_IF, F_16bit)
+
+	return 2
+}
+
+// add  HL, SP - HL = HL+SP
+func x39_add() int {
+	left := GetHL()
+	right := GetSP()
+	result := int(left) + int(right)
+
+	SetHL(uint16(result))
+	hcarry := IsAddHalfCarry(GetHighBits(left), GetHighBits(right))
+	SetFlags(result, F_IGNORE, F_SET_0, hcarry, F_SET_IF, F_16bit)
+
+	return 2
+}
+
 // add  A, B - A=A+B
 func x80_add() int {
 	left := GetA()
@@ -117,58 +169,6 @@ func xC6_add() int {
 	SetA(uint8(result))
 	hcarry := IsAddHalfCarry(left, right)
 	SetFlags(result, F_SET_IF, F_SET_0, hcarry, F_SET_IF, F_8bit)
-
-	return 2
-}
-
-// add  HL, BC - HL = HL+BC
-func x09_add() int {
-	left := GetHL()
-	right := GetBC()
-	result := int(left) + int(right)
-
-	SetHL(uint16(result))
-	hcarry := IsAddHalfCarry(GetHighBits(left), GetHighBits(right))
-	SetFlags(result, F_IGNORE, F_SET_0, hcarry, F_SET_IF, F_16bit)
-
-	return 2
-}
-
-// add  HL, DE - HL = HL+DE
-func x19_add() int {
-	left := GetHL()
-	right := GetDE()
-	result := int(left) + int(right)
-
-	SetHL(uint16(result))
-	hcarry := IsAddHalfCarry(GetHighBits(left), GetHighBits(right))
-	SetFlags(result, F_IGNORE, F_SET_0, hcarry, F_SET_IF, F_16bit)
-
-	return 2
-}
-
-// add  HL, HL - HL = HL+HL
-func x29_add() int {
-	left := GetHL()
-	right := GetHL()
-	result := int(left) + int(right)
-
-	SetHL(uint16(result))
-	hcarry := IsAddHalfCarry(GetHighBits(left), GetHighBits(right))
-	SetFlags(result, F_IGNORE, F_SET_0, hcarry, F_SET_IF, F_16bit)
-
-	return 2
-}
-
-// add  HL, SP - HL = HL+SP
-func x39_add() int {
-	left := GetHL()
-	right := GetSP()
-	result := int(left) + int(right)
-
-	SetHL(uint16(result))
-	hcarry := IsAddHalfCarry(GetHighBits(left), GetHighBits(right))
-	SetFlags(result, F_IGNORE, F_SET_0, hcarry, F_SET_IF, F_16bit)
 
 	return 2
 }
