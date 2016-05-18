@@ -14,13 +14,21 @@ import (
 // implementation by having a direct mapping between the opcode and the array index.
 // In the case of extended opcodes (CB XX), the mapping is the actual opcode (XX) + FF.
 // example: the instruction CB F8 will sit at index FF+F8 of the dispatch table.
-var dispatch_table []instrFunc = make([]instrFunc, 512, 512)
+var (
+	dispatch_table []instrFunc = make([]instrFunc, 512, 512)
 
-var exitOnStop = false
-var CONTINUE = true
-var breakpoints []uint16 = make([]uint16, 16, 16)
-var instructionsCount int = 0
-var startTime time.Time
+	exitOnStop = false
+	CONTINUE   = true
+
+	instructionsCount int
+	startTime         time.Time
+	cycleCount        uint64
+	elapsed           time.Duration
+
+	breakpoints []uint16 = make([]uint16, 16, 16)
+
+	rom []byte
+)
 
 func push(value uint16) {
 	DecSP()
@@ -101,7 +109,8 @@ func DumpRegisters() {
 	fmt.Printf("SP: 0x%04X\n", GetSP())
 	fmt.Printf("PC: 0x%04X\n", GetPC())
 	fmt.Printf("#instructions: %09d\n", instructionsCount)
-	fmt.Printf("time: %04ds", time.Since(startTime)/1000000000)
+	fmt.Printf("time: %vs\n", elapsed)
+	fmt.Printf("frequency: %fMhz", float64(cycleCount)/elapsed.Seconds()/1000000)
 }
 
 func SetBreakpoint(addr uint16) {
@@ -136,7 +145,7 @@ func ExecuteNext() int {
 	}()
 
 	opcode, inc = Fetch()
-	fmt.Printf("[0x%04X] %02X\n", GetPC()-uint16(inc), opcode)
+	// fmt.Printf("[0x%04X] %02X\n", GetPC()-uint16(inc), opcode)
 
 	if opcode == 0x76 { // halt
 		// TODO
@@ -169,18 +178,26 @@ func Update() int {
 func Run() {
 	var cycles int
 	startTime = time.Now()
+	tick := time.NewTicker(time.Millisecond * 2)
 
 	CONTINUE = true
 	for {
 		if CONTINUE {
 			// 1 cycle is around 1 µs
-			cycles += ExecuteNext()
+			c := ExecuteNext()
+			cycles += c
+			cycleCount += uint64(c * 4)
+			if cycles >= 2099 {
+				cycles = 0
+				<-tick.C
+			}
 		}
 	}
 }
 
 func Pause() {
 	CONTINUE = false
+	elapsed = time.Since(startTime)
 }
 
 func Continue() {
@@ -210,6 +227,15 @@ func ExitOnStop(exit bool) {
 // Load given program at address 0x0000
 func LoadProgram(program []byte) {
 	SetRange(0x0000, program)
+}
+
+func LoadRom(rom []byte) {
+	rom = rom
+	if len(rom) > 0x10000 {
+		LoadProgram(rom[:0x10000])
+	} else {
+		LoadProgram(rom)
+	}
 }
 
 func Initialize() {
