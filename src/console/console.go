@@ -19,19 +19,30 @@ func Prompt() {
 
 	for {
 		fmt.Print("\n(gb) ")
-		cmd := waitCommand()
+		args := waitCommand()
 
-		if cmd[0] == "reg" {
+		cmd := args[0]
+
+		switch cmd {
+		case "reg":
 			cpu.DumpRegisters()
-		} else if cmd[0] == "continue" {
+		case "continue":
 			fmt.Print("executing...\n")
 			return
-		} else if cmd[0] == "quit" {
+		case "quit":
 			os.Exit(0)
-		} else if cmd[0] == "s" {
+		case "s":
 			cpu.Step()
-		} else if cmd[0] == "brk" {
-			addr, err := strconv.ParseInt(cmd[1], 0, 16)
+		case "tdt":
+			lcd.PrintTileInformation(args[1:])
+		case "cpy":
+			lcd.CopyTileMap()
+		case "lcd":
+			lcd.PrintVideoInformation()
+		case "btm":
+			lcd.PrintBackgroundTileMap()
+		case "brk":
+			addr, err := strconv.ParseInt(args[1], 0, 16)
 			if err != nil {
 				panic(err)
 			}

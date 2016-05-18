@@ -5,9 +5,11 @@ import (
 	"cpu"
 	"github.com/veandco/go-sdl2/sdl"
 	// "log"
+	"fmt"
 	mem "memory"
 	"os"
 	"runtime/pprof"
+	"strconv"
 	"time"
 	"unsafe"
 )
@@ -44,12 +46,27 @@ const (
 	SPRITE_ACTIVE = 1
 	BG_WDW_ACTIVE = 0
 
+	TILEMAP_0 uint16 = 0x9800
+	TILEMAP_1 uint16 = 0x9C00
+	TDT_0     uint16 = 0x8800
+	TDT_1     uint16 = 0x8000
+
 	MODE_0_HBLANK        = 0
 	MODE_1_VBLANK        = 1
 	MODE_2_OAM_USED      = 2
 	MODE_3_OAM_VRAM_USED = 3
 
-	SCALE = 3
+	SCALE = 2
+
+	cross = "" +
+		"33.....3" +
+		".33...3." +
+		"..33.3.." +
+		"...33..." +
+		"..3.33.." +
+		".3...33." +
+		"3.....33" +
+		"........"
 )
 
 var (
@@ -97,6 +114,13 @@ func Initialize() {
 
 	renderer.SetDrawColor(255, 255, 255, 255)
 	renderer.Clear()
+
+	tile := MakeTile(cross)
+
+	for i := 0; i < 256; i++ {
+		SetTile(i, tile, 0x8000)
+		// SetTile(i, tile, 0x8800)
+	}
 }
 
 func RunProfile() {
@@ -138,18 +162,18 @@ func SetTile(index int, tile []byte, base uint16) {
 }
 
 func SetBackgroundTile(x, y, index int) {
-	addr := uint16(0x9800)
+	addr := uint16(TILEMAP_0)
 	if IsBitSet(mem.GetLCDC(), BG_MAP) {
-		addr = uint16(0x9C00)
+		addr = uint16(TILEMAP_1)
 	}
 
 	mem.Set(addr+uint16(y*32+x), uint8(index))
 }
 
 func SetWindowTile(x, y, index int) {
-	addr := uint16(0x9800)
+	addr := uint16(TILEMAP_0)
 	if IsBitSet(mem.GetLCDC(), WDW_MAP) {
-		addr = uint16(0x9C00)
+		addr = uint16(TILEMAP_1)
 	}
 
 	mem.Set(addr+uint16(y*32+x), uint8(index))
@@ -169,32 +193,143 @@ func SetSprite(index uint16, x, y, pattern, flags uint8) {
 	mmap[base+3] = x
 }
 
+func PrintBackgroundTileMap() {
+	btm := uint16(TILEMAP_0)
+	fmt.Printf("0x%04X\n", btm)
+	for y := 0; y < 32; y++ {
+		for x := 0; x < 32; x++ {
+			offset := y*32 + x
+			fmt.Printf("%03d ", mmap[btm+uint16(offset)])
+		}
+		fmt.Print("\n")
+	}
+
+	fmt.Print("\n")
+
+	btm = uint16(TILEMAP_1)
+	fmt.Printf("0x%04X\n", btm)
+	for y := 0; y < 32; y++ {
+		for x := 0; x < 32; x++ {
+			offset := y*32 + x
+			fmt.Printf("%03d ", mmap[btm+uint16(offset)])
+		}
+		fmt.Print("\n")
+	}
+}
+
+func PrintVideoInformation() {
+	lcdc := mem.GetLCDC()
+
+	fmt.Print("LCDC: ")
+	for i := 7; i >= 0; i-- {
+		fmt.Printf("%1d ", GetBit(lcdc, uint8(i)))
+	}
+	fmt.Printf("\nSCX: %03d\n", mmap[SCX_ADDR])
+	fmt.Printf("SCY: %03d\n", mmap[SCY_ADDR])
+	fmt.Printf("BTM: 0x%04X\n", getBackgroundTileMap())
+	fmt.Printf("WTM: 0x%04X\n", getWindowTileMap())
+	fmt.Printf("TDT: 0x%04X\n", getTileDataTable())
+	if IsBitSet(lcdc, WDW_ACTIVE) {
+		fmt.Print("Window: yes")
+	} else {
+		fmt.Print("Window: no")
+	}
+}
+
+func CopyTileMap() {
+	for i := 0; i <= 0xFFF; i++ {
+		offs := uint16(i)
+		mmap[TILEMAP_1+offs] = mmap[TILEMAP_0+offs]
+	}
+}
+
+func PrintTileInformation(args []string) {
+	tile_idx, err := strconv.ParseInt(args[0], 0, 10)
+	if err != nil {
+		fmt.Print("expected tile number XXX")
+		return
+	}
+	addr := uint16(TDT_1)
+	fmt.Printf("TDT is at 0x%04X\n", addr)
+
+	for i := 0; i < 16; i++ {
+		fmt.Printf("0x%02X", mmap[addr+uint16(i)])
+	}
+
+	fmt.Print("\n")
+
+	for y := 0; y < 8; y++ {
+		for x := 0; x < 8; x++ {
+			col := getPixel(uint16(addr+uint16(tile_idx*16)), x, y)
+			switch col {
+			case 3:
+				fmt.Print("  ")
+			case 2:
+				fmt.Print("░░")
+			case 1:
+				fmt.Print("▒▒")
+			case 0:
+				fmt.Print("▓▓")
+			}
+
+		}
+		fmt.Print("\n")
+	}
+
+	addr = uint16(TDT_0)
+	fmt.Printf("TDT is at 0x%04X\n", addr)
+
+	for i := 0; i < 16; i++ {
+		fmt.Printf("0x%02X", mmap[addr+uint16(i)])
+	}
+
+	fmt.Print("\n")
+
+	for y := 0; y < 8; y++ {
+		for x := 0; x < 8; x++ {
+			col := getPixel(uint16(addr+uint16(tile_idx*16)), x, y)
+			switch col {
+			case 3:
+				fmt.Print("  ")
+			case 2:
+				fmt.Print("░░")
+			case 1:
+				fmt.Print("▒▒")
+			case 0:
+				fmt.Print("▓▓")
+			}
+
+		}
+		fmt.Print("\n")
+	}
+}
+
 func setBufferPixel(x, y, color int, pixels unsafe.Pointer, pitch int) {
 	(*[LCD_WIDTH * LCD_HEIGHT]uint32)(pixels)[y*(pitch/4)+x] = palette[color]
 }
 
 func getBackgroundTileMap() uint16 {
-	addr := uint16(0x9800)
+	addr := uint16(TILEMAP_0)
 	if IsBitSet(mem.GetLCDC(), BG_MAP) {
-		addr = uint16(0x9C00)
+		addr = uint16(TILEMAP_1)
 	}
 
 	return addr
 }
 
 func getWindowTileMap() uint16 {
-	addr := uint16(0x9800)
+	addr := uint16(TILEMAP_0)
 	if IsBitSet(mem.GetLCDC(), WDW_MAP) {
-		addr = uint16(0x9C00)
+		addr = uint16(TILEMAP_1)
 	}
 
 	return addr
 }
 
 func getTileDataTable() uint16 {
-	tdt := uint16(0x8800)
+	tdt := uint16(TDT_0)
 	if IsBitSet(mem.GetLCDC(), TDT) {
-		tdt = uint16(0x8000)
+		tdt = uint16(TDT_1)
 	}
 	return tdt
 }
@@ -234,42 +369,19 @@ func getSpriteColor(x, y int) int {
 	return col
 }
 
-func drawWindowLine(y int, mapAddr, tileAddr uint16, pixels unsafe.Pointer, pitch int) {
-	x := int(mem.GetWX())
-	yy := y + int(mem.GetWY())
-
-	for i := 0; i < LCD_WIDTH; i++ {
-		pix := getTileColor(x, yy, mapAddr, tileAddr)
-		setBufferPixel(x, y, pix, pixels, pitch)
-		x++
-	}
-}
-
-// Draw a single line of background
-func drawBackgroundLine(y int, mapAddr, tileAddr uint16, pixels unsafe.Pointer, pitch int) {
-	x := int(mmap[SCX_ADDR])
-	yy := y + int(mmap[SCY_ADDR])
-
-	for i := 0; i < LCD_WIDTH; i++ {
-		col := getTileColor(x%256, yy%256, mapAddr, tileAddr)
-		setBufferPixel(x, y, col, pixels, pitch)
-		x++
-	}
-}
-
 // return the color of the pixel x, y for the sprite <index>
 func getSpritePixel(x, y, pattern int) int {
 	if x < 0 || y < 0 {
 		return 0
 	}
-	return getPixel(uint16(0x8000+pattern*16), x, y)
+	return getPixel(TDT_1+uint16(pattern*16), x, y)
 }
 
 // return the color of the pixel of the tile at address tileAddr and of
 // coordinates x, y
 func getPixel(tileAddr uint16, x, y int) int {
 	addr := tileAddr + uint16(y*2)
-	color := 2*GetBit(mmap[addr], uint8(7-x)) + GetBit(mmap[addr+1], uint8(7-x))
+	color := GetBit(mmap[addr], uint8(7-x)) + 2*GetBit(mmap[addr+1], uint8(7-x))
 	return int(color)
 }
 
@@ -322,8 +434,8 @@ func drawScanline(y int, lcdc uint8, pixels unsafe.Pointer, pitch int) {
 	wdwAddr := getWindowTileMap()
 	tileAddr := getTileDataTable()
 
-	scx := int(mmap[SCX_ADDR])
-	scy := int(mmap[SCY_ADDR])
+	// scx := int(mmap[SCX_ADDR])
+	// scy := int(mmap[SCY_ADDR])
 
 	wx := int(mmap[WX_ADDR])
 	wy := int(mmap[WY_ADDR])
@@ -339,7 +451,8 @@ func drawScanline(y int, lcdc uint8, pixels unsafe.Pointer, pitch int) {
 			spritecol = getSpriteColor(x, y)
 		}
 		if drawBgAndWindow {
-			tilecol = getTileColor((scx+x)%256, (scy+y)%256, bgAddr, tileAddr)
+			// tilecol = getTileColor((scx+x)%256, (scy+y)%256, bgAddr, tileAddr)
+			tilecol = getTileColor(x, y, bgAddr, tileAddr)
 
 			if drawWindow && x >= wx && x <= wx+LCD_WIDTH && y >= wy && y <= wy+LCD_HEIGHT {
 				tilecol = getTileColor(x, y, wdwAddr, tileAddr)
