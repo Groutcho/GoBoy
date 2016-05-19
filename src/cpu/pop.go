@@ -24,20 +24,20 @@ func xC1_pop() int {
 
 // DE=(SP),  SP=SP+2
 func xD1_pop() int {
-	SetE(Get(GetSP()))
-	IncSP()
-	SetD(Get(GetSP()))
-	IncSP()
+	E = Get(SP)
+	SP++
+	D = Get(SP)
+	SP++
 
 	return 3
 }
 
 // HL=(SP),  SP=SP+2
 func xE1_pop() int {
-	SetL(Get(GetSP()))
-	IncSP()
-	SetH(Get(GetSP()))
-	IncSP()
+	L = Get(SP)
+	SP++
+	H = Get(SP)
+	SP++
 
 	return 3
 }
