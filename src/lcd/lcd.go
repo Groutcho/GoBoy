@@ -56,17 +56,19 @@ const (
 	MODE_2_OAM_USED      = 2
 	MODE_3_OAM_VRAM_USED = 3
 
+	SIZEOF_TILE = 16
+
 	SCALE = 2
 
 	cross = "" +
-		"33.....3" +
-		".33...3." +
-		"..33.3.." +
+		"33111113" +
+		".331113." +
+		"..3313.." +
 		"...33..." +
-		"..3.33.." +
-		".3...33." +
-		"3.....33" +
-		"........"
+		"..3233.." +
+		".322233." +
+		"32222233" +
+		"22222222"
 )
 
 var (
@@ -114,13 +116,6 @@ func Initialize() {
 
 	renderer.SetDrawColor(255, 255, 255, 255)
 	renderer.Clear()
-
-	tile := MakeTile(cross)
-
-	for i := 0; i < 256; i++ {
-		SetTile(i, tile, 0x8000)
-		// SetTile(i, tile, 0x8800)
-	}
 }
 
 func RunProfile() {
@@ -134,10 +129,14 @@ func RunProfile() {
 }
 
 func Run() {
+	vblank := time.NewTicker(time.Millisecond * 16)
+	defer vblank.Stop()
+
 	CONTINUE = true
 	for {
 		if CONTINUE {
 			redraw()
+			<-vblank.C
 		}
 	}
 }
@@ -250,7 +249,8 @@ func PrintTileInformation(args []string) {
 		return
 	}
 	addr := uint16(TDT_1)
-	fmt.Printf("TDT is at 0x%04X\n", addr)
+	tileAddr := uint16(addr + uint16(tile_idx*16))
+	fmt.Printf("TDT is at 0x%04X -> 0x%04X\n", addr, tileAddr)
 
 	for i := 0; i < 16; i++ {
 		fmt.Printf("0x%02X", mmap[addr+uint16(i)])
@@ -260,7 +260,7 @@ func PrintTileInformation(args []string) {
 
 	for y := 0; y < 8; y++ {
 		for x := 0; x < 8; x++ {
-			col := getPixel(uint16(addr+uint16(tile_idx*16)), x, y)
+			col := getPixel(tileAddr, x, y)
 			switch col {
 			case 3:
 				fmt.Print("  ")
@@ -374,14 +374,16 @@ func getSpritePixel(x, y, pattern int) int {
 	if x < 0 || y < 0 {
 		return 0
 	}
-	return getPixel(TDT_1+uint16(pattern*16), x, y)
+	return getPixel(TDT_1+uint16(pattern*SIZEOF_TILE), x, y)
 }
 
 // return the color of the pixel of the tile at address tileAddr and of
 // coordinates x, y
 func getPixel(tileAddr uint16, x, y int) int {
 	addr := tileAddr + uint16(y*2)
-	color := GetBit(mmap[addr], uint8(7-x)) + 2*GetBit(mmap[addr+1], uint8(7-x))
+	h := 2 * GetBit(mmap[addr+1], uint8(7-x))
+	l := GetBit(mmap[addr], uint8(7-x))
+	color := l + h
 	return int(color)
 }
 
@@ -400,15 +402,9 @@ func getTileColor(x, y int, bgAddr, tileAddr uint16) int {
 	py := y % 8
 
 	// get the tile address in the tile data table
-	addr := tileAddr + uint16(tIndex*16)
+	addr := tileAddr + uint16(tIndex)*SIZEOF_TILE
 
 	return getPixel(addr, px, py)
-}
-
-func clearScreen() {
-	for i := 0; i < len(pixels); i++ {
-		pixels[i] = 255
-	}
 }
 
 func setLcdMode(mode int) {
@@ -434,8 +430,8 @@ func drawScanline(y int, lcdc uint8, pixels unsafe.Pointer, pitch int) {
 	wdwAddr := getWindowTileMap()
 	tileAddr := getTileDataTable()
 
-	// scx := int(mmap[SCX_ADDR])
-	// scy := int(mmap[SCY_ADDR])
+	scx := int(mmap[SCX_ADDR])
+	scy := int(mmap[SCY_ADDR])
 
 	wx := int(mmap[WX_ADDR])
 	wy := int(mmap[WY_ADDR])
@@ -444,15 +440,12 @@ func drawScanline(y int, lcdc uint8, pixels unsafe.Pointer, pitch int) {
 	drawWindow := IsBitSet(lcdc, WDW_ACTIVE)
 	drawSprites := IsBitSet(lcdc, SPRITE_ACTIVE)
 
-	hblank := time.NewTicker(time.Microsecond * 90)
-
 	for x := 0; x < LCD_WIDTH; x++ {
 		if drawSprites {
 			spritecol = getSpriteColor(x, y)
 		}
 		if drawBgAndWindow {
-			// tilecol = getTileColor((scx+x)%256, (scy+y)%256, bgAddr, tileAddr)
-			tilecol = getTileColor(x, y, bgAddr, tileAddr)
+			tilecol = getTileColor((scx+x)%256, (scy+y)%256, bgAddr, tileAddr)
 
 			if drawWindow && x >= wx && x <= wx+LCD_WIDTH && y >= wy && y <= wy+LCD_HEIGHT {
 				tilecol = getTileColor(x, y, wdwAddr, tileAddr)
@@ -465,7 +458,6 @@ func drawScanline(y int, lcdc uint8, pixels unsafe.Pointer, pitch int) {
 		}
 	}
 	setLcdMode(MODE_0_HBLANK)
-	<-hblank.C
 }
 
 // Draw a single frame (144 lines + 10 "lines" of V-Blank (approx 1.1 ms))
@@ -483,12 +475,9 @@ func redraw() {
 		panic(err)
 	}
 
-	clearScreen()
-
 	mem.SetLY(0x00)
 
 	vblank := time.NewTicker(time.Millisecond * 16)
-	scanline := time.NewTicker(time.Microsecond * 109)
 	defer vblank.Stop()
 
 	for y := 0; y < SCANLINES; y++ {
@@ -499,13 +488,15 @@ func redraw() {
 			cpu.RequestVBlankInterrupt()
 		}
 		mem.IncLY()
-		<-scanline.C
 	}
 
+	presentImage(pixPtr, pitch)
+}
+
+func presentImage(pixPtr unsafe.Pointer, pitch int) {
 	screenTex.Update(nil, pixPtr, pitch)
 	screenTex.Unlock()
 	renderer.Clear()
 	renderer.Copy(screenTex, nil, nil)
 	renderer.Present()
-	<-vblank.C
 }
