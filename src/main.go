@@ -66,14 +66,14 @@ const (
 		"...3333."
 
 	cross = "" +
-		"33.....3" +
-		".33...3." +
-		"..33.3.." +
+		"33111113" +
+		".331113." +
+		"..3313.." +
 		"...33..." +
-		"..3.33.." +
-		".3...33." +
-		"3.....33" +
-		"........"
+		"..3233.." +
+		".322233." +
+		"32222233" +
+		"22222222"
 
 	block = "" +
 		"33333333" +
@@ -109,6 +109,9 @@ func pollSerial() {
 }
 
 func signalHandler() {
+	sigs = make(chan os.Signal, 1)
+	signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM)
+
 	for {
 		<-sigs
 		console.Prompt()
@@ -186,30 +189,45 @@ func showCrosses() {
 	time.Sleep(time.Second * 2)
 }
 
+func showScatter() {
+	for i := 0; i < 32; i++ {
+		for j := 0; j < 32; j++ {
+			if i%2 == 1 {
+				lcd.SetBackgroundTile(i, j, 2)
+			} else if i%3 == 1 {
+				lcd.SetBackgroundTile(i, j, 4)
+			} else if i%4 == 1 {
+				lcd.SetBackgroundTile(i, j, 5)
+			}
+		}
+	}
+}
+
 func runTests() {
 	lcd.SetTile(0, lcd.MakeTile(white), 0x8000)
 	lcd.SetTile(1, lcd.MakeTile(lgrey), 0x8000)
 	lcd.SetTile(2, lcd.MakeTile(dgrey), 0x8000)
 	lcd.SetTile(3, lcd.MakeTile(black), 0x8000)
 	lcd.SetTile(4, lcd.MakeTile(cross), 0x8000)
+	lcd.SetTile(5, lcd.MakeTile(block), 0x8000)
 
 	go lcd.Run()
-	time.Sleep(time.Second * 2)
+	time.Sleep(time.Second * 1)
 
 	showColors()
 	showCheckerboard()
 	showCrosses()
+	showScatter()
 
 	time.Sleep(time.Second * 5)
 }
 
 func run() {
-	sigs = make(chan os.Signal, 1)
-	signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM)
-	go signalHandler()
-
 	loadRom(os.Args[1])
+
+	go signalHandler()
 	go lcd.Run()
+
 	cpu.Run()
 
 	lcd.Stop()
@@ -220,5 +238,5 @@ func main() {
 	cpu.Initialize()
 	lcd.Initialize()
 
-	runTests()
+	run()
 }
