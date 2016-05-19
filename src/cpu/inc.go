@@ -138,7 +138,7 @@ func x33_inc() int {
 func x34_inc() int {
 	original := Get(GetHL())
 	value := original + 1
-	Set(GetHL(), value)
+	Write(GetHL(), value)
 
 	hc := IsAddHalfCarry(original, uint8(1))
 

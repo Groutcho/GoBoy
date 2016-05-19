@@ -3,7 +3,7 @@ package cpu
 import "testing"
 import . "memory"
 
-func TestFetch(t* testing.T) {
+func TestFetch(t *testing.T) {
 	arr := make([]byte, 4)
 	arr[0] = 0x00
 	arr[1] = 0x58
@@ -61,7 +61,7 @@ func op3() int {
 	return 1
 }
 
-func TestExecuteNext(t* testing.T) {
+func TestExecuteNext(t *testing.T) {
 	SetPC(0x0000)
 
 	arr := make([]byte, 4)
@@ -100,15 +100,15 @@ func TestExecuteNext(t* testing.T) {
 }
 
 // Test a conditional jump that should return to 0x0000 (0x0001 after incrementing PC)
-func TestSimpleProgram01(t* testing.T) {
-	program := []byte {
-		0x10, 0x00, 	 // stop
-		0x3E, 0xF0, 	 // ld A, 0xF0
-		0x06, 0x02, 	 // ld B, 0x02
-		0x80, 			 // add A, B
-		0x11, 0x89, 0xF8,// ld DE 0xF889
-		0xD6, 0xF2,		 // sub A, 0xF2 (should give zero)
-		0xCA, 0x00, 0x00,// jump to 0x0000 if zero flag
+func TestSimpleProgram01(t *testing.T) {
+	program := []byte{
+		0x10, 0x00, // stop
+		0x3E, 0xF0, // ld A, 0xF0
+		0x06, 0x02, // ld B, 0x02
+		0x80,             // add A, B
+		0x11, 0x89, 0xF8, // ld DE 0xF889
+		0xD6, 0xF2, // sub A, 0xF2 (should give zero)
+		0xCA, 0x00, 0x00, // jump to 0x0000 if zero flag
 		0x10, 0x00,
 	}
 
@@ -127,10 +127,10 @@ func TestSimpleProgram01(t* testing.T) {
 }
 
 // Test an overflowing increment
-func TestSimpleProgram02(t* testing.T) {
-	program := []byte {
-		0x3C,		 	// inc A
-		0x10, 0x00,		// stop
+func TestSimpleProgram02(t *testing.T) {
+	program := []byte{
+		0x3C,       // inc A
+		0x10, 0x00, // stop
 	}
 
 	SetPC(0x0000)
@@ -139,7 +139,7 @@ func TestSimpleProgram02(t* testing.T) {
 	LoadProgram(program)
 	StartTest(100)
 
-	if a := GetA(); a!= 0x10 {
+	if a := GetA(); a != 0x10 {
 		t.Errorf("TestSimpleProgram02() failed: expected A @ 0x10, got 0x%02X", a)
 	}
 	if !GetFlagH() {
@@ -149,7 +149,7 @@ func TestSimpleProgram02(t* testing.T) {
 
 // measure the duration of a ld instruction
 func BenchmarkLdRegistersInstructions(b *testing.B) {
-	Set(0x0000, 0x78) // ld A, B
+	Write(0x0000, 0x78) // ld A, B
 
 	for i := 0; i < b.N; i++ {
 		SetPC(0x0000)
@@ -158,21 +158,21 @@ func BenchmarkLdRegistersInstructions(b *testing.B) {
 }
 
 func TestInterruptsEnables(t *testing.T) {
-	var vblank 	bool
-	var timer 	bool
+	var vblank bool
+	var timer bool
 	var lcdStat bool
-	var joypad 	bool
-	var serial	bool
+	var joypad bool
+	var serial bool
 
 	ResetMemory()
 
 	EnableVBlankInterrupt()
 
-	vblank 	= VBlankInterruptEnabled()
-	timer 	= TimerInterruptEnabled()
+	vblank = VBlankInterruptEnabled()
+	timer = TimerInterruptEnabled()
 	lcdStat = LcdStatInterruptEnabled()
-	joypad 	= JoypadInterruptEnabled()
-	serial 	= SerialInterruptEnabled()
+	joypad = JoypadInterruptEnabled()
+	serial = SerialInterruptEnabled()
 
 	if !vblank {
 		t.Error("TestInterrupts() test failed: the V-Blank interrupt should be enabled.")
@@ -184,11 +184,11 @@ func TestInterruptsEnables(t *testing.T) {
 
 	DisableVBlankInterrupt()
 
-	vblank 	= VBlankInterruptEnabled()
-	timer 	= TimerInterruptEnabled()
+	vblank = VBlankInterruptEnabled()
+	timer = TimerInterruptEnabled()
 	lcdStat = LcdStatInterruptEnabled()
-	joypad 	= JoypadInterruptEnabled()
-	serial 	= SerialInterruptEnabled()
+	joypad = JoypadInterruptEnabled()
+	serial = SerialInterruptEnabled()
 
 	if vblank {
 		t.Error("TestInterrupts() test failed: the V-Blank interrupt should be disabled.")
@@ -200,11 +200,11 @@ func TestInterruptsEnables(t *testing.T) {
 
 	EnableTimerInterrupt()
 
-	vblank 	= VBlankInterruptEnabled()
-	timer 	= TimerInterruptEnabled()
+	vblank = VBlankInterruptEnabled()
+	timer = TimerInterruptEnabled()
 	lcdStat = LcdStatInterruptEnabled()
-	joypad 	= JoypadInterruptEnabled()
-	serial 	= SerialInterruptEnabled()
+	joypad = JoypadInterruptEnabled()
+	serial = SerialInterruptEnabled()
 
 	if !timer {
 		t.Error("TestInterrupts() test failed: the Timer interrupt should be enabled.")
@@ -216,11 +216,11 @@ func TestInterruptsEnables(t *testing.T) {
 
 	DisableTimerInterrupt()
 
-	vblank 	= VBlankInterruptEnabled()
-	timer 	= TimerInterruptEnabled()
+	vblank = VBlankInterruptEnabled()
+	timer = TimerInterruptEnabled()
 	lcdStat = LcdStatInterruptEnabled()
-	joypad 	= JoypadInterruptEnabled()
-	serial 	= SerialInterruptEnabled()
+	joypad = JoypadInterruptEnabled()
+	serial = SerialInterruptEnabled()
 
 	if timer {
 		t.Error("TestInterrupts() test failed: the Timer interrupt should be disabled.")
@@ -232,11 +232,11 @@ func TestInterruptsEnables(t *testing.T) {
 
 	EnableLcdStatInterrupt()
 
-	vblank 	= VBlankInterruptEnabled()
-	timer 	= TimerInterruptEnabled()
+	vblank = VBlankInterruptEnabled()
+	timer = TimerInterruptEnabled()
 	lcdStat = LcdStatInterruptEnabled()
-	joypad 	= JoypadInterruptEnabled()
-	serial 	= SerialInterruptEnabled()
+	joypad = JoypadInterruptEnabled()
+	serial = SerialInterruptEnabled()
 
 	if !lcdStat {
 		t.Error("TestInterrupts() test failed: the LCD STAT interrupt should be enabled.")
@@ -248,11 +248,11 @@ func TestInterruptsEnables(t *testing.T) {
 
 	DisableLcdStatInterrupt()
 
-	vblank 	= VBlankInterruptEnabled()
-	timer 	= TimerInterruptEnabled()
+	vblank = VBlankInterruptEnabled()
+	timer = TimerInterruptEnabled()
 	lcdStat = LcdStatInterruptEnabled()
-	joypad 	= JoypadInterruptEnabled()
-	serial 	= SerialInterruptEnabled()
+	joypad = JoypadInterruptEnabled()
+	serial = SerialInterruptEnabled()
 
 	if lcdStat {
 		t.Error("TestInterrupts() test failed: the LCD STAT interrupt should be disabled.")
@@ -264,11 +264,11 @@ func TestInterruptsEnables(t *testing.T) {
 
 	EnableSerialInterrupt()
 
-	vblank 	= VBlankInterruptEnabled()
-	timer 	= TimerInterruptEnabled()
+	vblank = VBlankInterruptEnabled()
+	timer = TimerInterruptEnabled()
 	lcdStat = LcdStatInterruptEnabled()
-	joypad 	= JoypadInterruptEnabled()
-	serial 	= SerialInterruptEnabled()
+	joypad = JoypadInterruptEnabled()
+	serial = SerialInterruptEnabled()
 
 	if !serial {
 		t.Error("TestInterrupts() test failed: the Serial interrupt should be enabled.")
@@ -280,11 +280,11 @@ func TestInterruptsEnables(t *testing.T) {
 
 	DisableSerialInterrupt()
 
-	vblank 	= VBlankInterruptEnabled()
-	timer 	= TimerInterruptEnabled()
+	vblank = VBlankInterruptEnabled()
+	timer = TimerInterruptEnabled()
 	lcdStat = LcdStatInterruptEnabled()
-	joypad 	= JoypadInterruptEnabled()
-	serial 	= SerialInterruptEnabled()
+	joypad = JoypadInterruptEnabled()
+	serial = SerialInterruptEnabled()
 
 	if serial {
 		t.Error("TestInterrupts() test failed: the Serial interrupt should be disabled.")
@@ -296,11 +296,11 @@ func TestInterruptsEnables(t *testing.T) {
 
 	EnableJoypadInterrupt()
 
-	vblank 	= VBlankInterruptEnabled()
-	timer 	= TimerInterruptEnabled()
+	vblank = VBlankInterruptEnabled()
+	timer = TimerInterruptEnabled()
 	lcdStat = LcdStatInterruptEnabled()
-	joypad 	= JoypadInterruptEnabled()
-	serial 	= SerialInterruptEnabled()
+	joypad = JoypadInterruptEnabled()
+	serial = SerialInterruptEnabled()
 
 	if !joypad {
 		t.Error("TestInterrupts() test failed: the Joypad interrupt should be enabled.")
@@ -312,11 +312,11 @@ func TestInterruptsEnables(t *testing.T) {
 
 	DisableJoypadInterrupt()
 
-	vblank 	= VBlankInterruptEnabled()
-	timer 	= TimerInterruptEnabled()
+	vblank = VBlankInterruptEnabled()
+	timer = TimerInterruptEnabled()
 	lcdStat = LcdStatInterruptEnabled()
-	joypad 	= JoypadInterruptEnabled()
-	serial 	= SerialInterruptEnabled()
+	joypad = JoypadInterruptEnabled()
+	serial = SerialInterruptEnabled()
 
 	if joypad {
 		t.Error("TestInterrupts() test failed: the Joypad interrupt should be disabled.")
@@ -328,21 +328,21 @@ func TestInterruptsEnables(t *testing.T) {
 }
 
 func TestInterruptsRequests(t *testing.T) {
-	var vblank 	bool
-	var timer 	bool
+	var vblank bool
+	var timer bool
 	var lcdStat bool
-	var joypad 	bool
-	var serial	bool
+	var joypad bool
+	var serial bool
 
 	ResetMemory()
 
 	RequestVBlankInterrupt()
 
-	vblank 	= VBlankInterruptRequested()
-	timer 	= TimerInterruptRequested()
+	vblank = VBlankInterruptRequested()
+	timer = TimerInterruptRequested()
 	lcdStat = LcdStatInterruptRequested()
-	joypad 	= JoypadInterruptRequested()
-	serial 	= SerialInterruptRequested()
+	joypad = JoypadInterruptRequested()
+	serial = SerialInterruptRequested()
 
 	if !vblank {
 		t.Error("TestInterrupts() test failed: the V-Blank interrupt should be Requested.")
@@ -354,11 +354,11 @@ func TestInterruptsRequests(t *testing.T) {
 
 	RemoveVBlankInterrupt()
 
-	vblank 	= VBlankInterruptRequested()
-	timer 	= TimerInterruptRequested()
+	vblank = VBlankInterruptRequested()
+	timer = TimerInterruptRequested()
 	lcdStat = LcdStatInterruptRequested()
-	joypad 	= JoypadInterruptRequested()
-	serial 	= SerialInterruptRequested()
+	joypad = JoypadInterruptRequested()
+	serial = SerialInterruptRequested()
 
 	if vblank {
 		t.Error("TestInterrupts() test failed: the V-Blank interrupt should be disabled.")
@@ -370,11 +370,11 @@ func TestInterruptsRequests(t *testing.T) {
 
 	RequestTimerInterrupt()
 
-	vblank 	= VBlankInterruptRequested()
-	timer 	= TimerInterruptRequested()
+	vblank = VBlankInterruptRequested()
+	timer = TimerInterruptRequested()
 	lcdStat = LcdStatInterruptRequested()
-	joypad 	= JoypadInterruptRequested()
-	serial 	= SerialInterruptRequested()
+	joypad = JoypadInterruptRequested()
+	serial = SerialInterruptRequested()
 
 	if !timer {
 		t.Error("TestInterrupts() test failed: the Timer interrupt should be Requested.")
@@ -386,11 +386,11 @@ func TestInterruptsRequests(t *testing.T) {
 
 	RemoveTimerInterrupt()
 
-	vblank 	= VBlankInterruptRequested()
-	timer 	= TimerInterruptRequested()
+	vblank = VBlankInterruptRequested()
+	timer = TimerInterruptRequested()
 	lcdStat = LcdStatInterruptRequested()
-	joypad 	= JoypadInterruptRequested()
-	serial 	= SerialInterruptRequested()
+	joypad = JoypadInterruptRequested()
+	serial = SerialInterruptRequested()
 
 	if timer {
 		t.Error("TestInterrupts() test failed: the Timer interrupt should be Removed.")
@@ -402,11 +402,11 @@ func TestInterruptsRequests(t *testing.T) {
 
 	RequestLcdStatInterrupt()
 
-	vblank 	= VBlankInterruptRequested()
-	timer 	= TimerInterruptRequested()
+	vblank = VBlankInterruptRequested()
+	timer = TimerInterruptRequested()
 	lcdStat = LcdStatInterruptRequested()
-	joypad 	= JoypadInterruptRequested()
-	serial 	= SerialInterruptRequested()
+	joypad = JoypadInterruptRequested()
+	serial = SerialInterruptRequested()
 
 	if !lcdStat {
 		t.Error("TestInterrupts() test failed: the LCD STAT interrupt should be Requested.")
@@ -418,11 +418,11 @@ func TestInterruptsRequests(t *testing.T) {
 
 	RemoveLcdStatInterrupt()
 
-	vblank 	= VBlankInterruptRequested()
-	timer 	= TimerInterruptRequested()
+	vblank = VBlankInterruptRequested()
+	timer = TimerInterruptRequested()
 	lcdStat = LcdStatInterruptRequested()
-	joypad 	= JoypadInterruptRequested()
-	serial 	= SerialInterruptRequested()
+	joypad = JoypadInterruptRequested()
+	serial = SerialInterruptRequested()
 
 	if lcdStat {
 		t.Error("TestInterrupts() test failed: the LCD STAT interrupt should be Removed.")
@@ -434,11 +434,11 @@ func TestInterruptsRequests(t *testing.T) {
 
 	RequestSerialInterrupt()
 
-	vblank 	= VBlankInterruptRequested()
-	timer 	= TimerInterruptRequested()
+	vblank = VBlankInterruptRequested()
+	timer = TimerInterruptRequested()
 	lcdStat = LcdStatInterruptRequested()
-	joypad 	= JoypadInterruptRequested()
-	serial 	= SerialInterruptRequested()
+	joypad = JoypadInterruptRequested()
+	serial = SerialInterruptRequested()
 
 	if !serial {
 		t.Error("TestInterrupts() test failed: the Serial interrupt should be Requested.")
@@ -450,11 +450,11 @@ func TestInterruptsRequests(t *testing.T) {
 
 	RemoveSerialInterrupt()
 
-	vblank 	= VBlankInterruptRequested()
-	timer 	= TimerInterruptRequested()
+	vblank = VBlankInterruptRequested()
+	timer = TimerInterruptRequested()
 	lcdStat = LcdStatInterruptRequested()
-	joypad 	= JoypadInterruptRequested()
-	serial 	= SerialInterruptRequested()
+	joypad = JoypadInterruptRequested()
+	serial = SerialInterruptRequested()
 
 	if serial {
 		t.Error("TestInterrupts() test failed: the Serial interrupt should be Removed.")
@@ -466,11 +466,11 @@ func TestInterruptsRequests(t *testing.T) {
 
 	RequestJoypadInterrupt()
 
-	vblank 	= VBlankInterruptRequested()
-	timer 	= TimerInterruptRequested()
+	vblank = VBlankInterruptRequested()
+	timer = TimerInterruptRequested()
 	lcdStat = LcdStatInterruptRequested()
-	joypad 	= JoypadInterruptRequested()
-	serial 	= SerialInterruptRequested()
+	joypad = JoypadInterruptRequested()
+	serial = SerialInterruptRequested()
 
 	if !joypad {
 		t.Error("TestInterrupts() test failed: the Joypad interrupt should be Requested.")
@@ -482,11 +482,11 @@ func TestInterruptsRequests(t *testing.T) {
 
 	RemoveJoypadInterrupt()
 
-	vblank 	= VBlankInterruptRequested()
-	timer 	= TimerInterruptRequested()
+	vblank = VBlankInterruptRequested()
+	timer = TimerInterruptRequested()
 	lcdStat = LcdStatInterruptRequested()
-	joypad 	= JoypadInterruptRequested()
-	serial 	= SerialInterruptRequested()
+	joypad = JoypadInterruptRequested()
+	serial = SerialInterruptRequested()
 
 	if joypad {
 		t.Error("TestInterrupts() test failed: the Joypad interrupt should be disabled.")

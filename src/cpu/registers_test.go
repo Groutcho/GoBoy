@@ -20,27 +20,27 @@ func TestSetGetA(t *testing.T) {
 
 	SetA(0xFF)
 	if a := GetA(); a != 0xFF {
-		t.Errorf("GetA() test failed: expected: 0xFF, got: Ox%02x", a, registers.F)
+		t.Errorf("GetA() test failed: expected: 0xFF, got: Ox%02x", a, F)
 	}
 
 	SetA(0x28)
 	if a := GetA(); a != 0x28 {
-		t.Errorf("GetA() test failed: expected: 0x28, got: Ox%02x", a, registers.F)
+		t.Errorf("GetA() test failed: expected: 0x28, got: Ox%02x", a, F)
 	}
 
 	SetA(0x44)
 	if a := GetA(); a != 0x44 {
-		t.Errorf("GetA() test failed: expected: 0x44, got: Ox%02x", a, registers.F)
+		t.Errorf("GetA() test failed: expected: 0x44, got: Ox%02x", a, F)
 	}
 
 	SetA(0x99)
 	if a := GetA(); a != 0x99 {
-		t.Errorf("GetA() test failed: expected: 0x99, got: Ox%02x", a, registers.F)
+		t.Errorf("GetA() test failed: expected: 0x99, got: Ox%02x", a, F)
 	}
 
 	SetA(0xFC)
 	if a := GetA(); a != 0xFC {
-		t.Errorf("GetA() test failed: expected: 0xFC, got: Ox%02x", a, registers.F)
+		t.Errorf("GetA() test failed: expected: 0xFC, got: Ox%02x", a, F)
 	}
 }
 
@@ -49,27 +49,27 @@ func TestSetGetF(t *testing.T) {
 
 	SetF(0x5C)
 	if f := GetF(); f != 0x5C {
-		t.Errorf("GetF() test failed: expected: 0x5C, got: Ox%02x", f, registers.F)
+		t.Errorf("GetF() test failed: expected: 0x5C, got: Ox%02x", f, F)
 	}
 
 	SetF(0x8C)
 	if f := GetF(); f != 0x8C {
-		t.Errorf("GetF() test failed: expected: 0x8C, got: Ox%02x", f, registers.F)
+		t.Errorf("GetF() test failed: expected: 0x8C, got: Ox%02x", f, F)
 	}
 
 	SetF(0xFF)
 	if f := GetF(); f != 0xFF {
-		t.Errorf("GetF() test failed: expected: 0xFF, got: Ox%02x", f, registers.F)
+		t.Errorf("GetF() test failed: expected: 0xFF, got: Ox%02x", f, F)
 	}
 
 	SetF(0xBB)
 	if f := GetF(); f != 0xBB {
-		t.Errorf("GetF() test failed: expected: 0xBB, got: Ox%02x", f, registers.F)
+		t.Errorf("GetF() test failed: expected: 0xBB, got: Ox%02x", f, F)
 	}
 
 	SetF(0x12)
 	if f := GetF(); f != 0x12 {
-		t.Errorf("GetF() test failed: expected: 0x12, got: Ox%02x", f, registers.F)
+		t.Errorf("GetF() test failed: expected: 0x12, got: Ox%02x", f, F)
 	}
 }
 
@@ -77,19 +77,19 @@ func TestGetFlagZf(t *testing.T) {
 	Reset()
 	SetF(0xFF) // 11111111
 	if set := GetFlagZf(); !set {
-		t.Errorf("GetFlagZf() test failed: Zero flag should be set.", registers.F)
+		t.Errorf("GetFlagZf() test failed: Zero flag should be set.", F)
 	}
 
 	Reset()
 	SetF(0x5c) // 01011100
-	if set:= GetFlagZf(); set {
-		t.Errorf("GetFlagZf() test failed: Zero flag should not be set.", registers.F)
+	if set := GetFlagZf(); set {
+		t.Errorf("GetFlagZf() test failed: Zero flag should not be set.", F)
 	}
 
 	Reset()
 	SetF(0x00)
-	if set:= GetFlagZf(); set {
-		t.Errorf("GetFlagZf() test failed: Zero flag should not be set.", registers.F)
+	if set := GetFlagZf(); set {
+		t.Errorf("GetFlagZf() test failed: Zero flag should not be set.", F)
 	}
 }
 
@@ -97,25 +97,25 @@ func TestGetFlagN(t *testing.T) {
 	Reset()
 	SetF(0xFF) // 11111111
 	if set := GetFlagN(); !set {
-		t.Errorf("GetFlagN() test failed: N flag should be set.", registers.F)
+		t.Errorf("GetFlagN() test failed: N flag should be set.", F)
 	}
 
 	Reset()
 	SetF(0x5c) // 01011100
-	if set:= GetFlagN(); !set {
-		t.Errorf("GetFlagN() test failed: N flag should be set.", registers.F)
+	if set := GetFlagN(); !set {
+		t.Errorf("GetFlagN() test failed: N flag should be set.", F)
 	}
 
 	Reset()
 	SetF(0x35) // 00110101
-	if set:= GetFlagN(); set {
-		t.Errorf("GetFlagN() test failed: N flag should not be set.", registers.F)
+	if set := GetFlagN(); set {
+		t.Errorf("GetFlagN() test failed: N flag should not be set.", F)
 	}
 
 	Reset()
 	SetF(0x00)
-	if set:= GetFlagN(); set {
-		t.Errorf("GetFlagN() test failed: N flag should not be set.", registers.F)
+	if set := GetFlagN(); set {
+		t.Errorf("GetFlagN() test failed: N flag should not be set.", F)
 	}
 }
 
@@ -123,25 +123,25 @@ func TestGetFlagH(t *testing.T) {
 	Reset()
 	SetF(0xFF) // 11111111
 	if set := GetFlagH(); !set {
-		t.Errorf("GetFlagH() test failed: N flag should be set.", registers.F)
+		t.Errorf("GetFlagH() test failed: N flag should be set.", F)
 	}
 
 	Reset()
 	SetF(0x3c) // 00111100
-	if set:= GetFlagH(); !set {
-		t.Errorf("GetFlagH() test failed: N flag should be set.", registers.F)
+	if set := GetFlagH(); !set {
+		t.Errorf("GetFlagH() test failed: N flag should be set.", F)
 	}
 
 	Reset()
 	SetF(0x15) // 00010101
-	if set:= GetFlagH(); set {
-		t.Errorf("GetFlagH() test failed: N flag should not be set.", registers.F)
+	if set := GetFlagH(); set {
+		t.Errorf("GetFlagH() test failed: N flag should not be set.", F)
 	}
 
 	Reset()
 	SetF(0x00)
-	if set:= GetFlagH(); set {
-		t.Errorf("GetFlagH() test failed: N flag should not be set.", registers.F)
+	if set := GetFlagH(); set {
+		t.Errorf("GetFlagH() test failed: N flag should not be set.", F)
 	}
 }
 
@@ -149,45 +149,45 @@ func TestGetFlagCy(t *testing.T) {
 	Reset()
 	SetF(0xFF) // 11111111
 	if set := GetFlagCy(); !set {
-		t.Errorf("GetFlagCy() test failed: CY flag should be set.", registers.F)
+		t.Errorf("GetFlagCy() test failed: CY flag should be set.", F)
 	}
 
 	Reset()
 	SetF(0x3c) // 00111100
-	if set:= GetFlagCy(); !set {
-		t.Errorf("GetFlagCy() test failed: CY flag should be set.", registers.F)
+	if set := GetFlagCy(); !set {
+		t.Errorf("GetFlagCy() test failed: CY flag should be set.", F)
 	}
 
 	Reset()
 	SetF(0x05) // 00000101
-	if set:= GetFlagCy(); set {
-		t.Errorf("GetFlagCy() test failed: CY flag should not be set.", registers.F)
+	if set := GetFlagCy(); set {
+		t.Errorf("GetFlagCy() test failed: CY flag should not be set.", F)
 	}
 
 	Reset()
 	SetF(0x00)
-	if set:= GetFlagCy(); set {
-		t.Errorf("GetFlagCy() test failed: CY flag should not be set.", registers.F)
+	if set := GetFlagCy(); set {
+		t.Errorf("GetFlagCy() test failed: CY flag should not be set.", F)
 	}
 
 	Reset()
 	SetFlagCy(true)
 	if set := GetFlagCy(); !set {
-		t.Errorf("GetFlagCy() test failed: CY flag should be set.", registers.F)
+		t.Errorf("GetFlagCy() test failed: CY flag should be set.", F)
 	}
 
 	SetFlagCy(false)
 	if set := GetFlagCy(); set {
-		t.Errorf("GetFlagCy() test failed: CY flag should not be set.", registers.F)
+		t.Errorf("GetFlagCy() test failed: CY flag should not be set.", F)
 	}
 }
 
 func TestIncPC(t *testing.T) {
-	registers.PC = 0x0025
+	PC = 0x0025
 	IncPC()
 
 	if pc := GetPC(); pc != 0x0026 {
-		t.Errorf("TestIncPC() failed: PC should be 0x0026, got 0x%04x", registers.PC)
+		t.Errorf("TestIncPC() failed: PC should be 0x0026, got 0x%04x", PC)
 	}
 }
 
@@ -218,7 +218,6 @@ func TestIncHL(t *testing.T) {
 	}
 }
 
-
 func TestIncAF(t *testing.T) {
 	SetAF(0x0025)
 	IncAF()
@@ -229,11 +228,11 @@ func TestIncAF(t *testing.T) {
 }
 
 func TestDecPC(t *testing.T) {
-	registers.PC = 0x0025
+	PC = 0x0025
 	DecPC()
 
 	if pc := GetPC(); pc != 0x0024 {
-		t.Errorf("TestDecPC() failed: PC should be 0x0024, got 0x%04x", registers.PC)
+		t.Errorf("TestDecPC() failed: PC should be 0x0024, got 0x%04x", PC)
 	}
 }
 
@@ -264,7 +263,6 @@ func TestDecHL(t *testing.T) {
 	}
 }
 
-
 func TestDecAF(t *testing.T) {
 	SetAF(0x0025)
 	DecAF()
@@ -287,7 +285,7 @@ func TestSetBit(t *testing.T) {
 		0x80,
 	}
 
-	for i := 0; i < len(values0x00); i+=2 {
+	for i := 0; i < len(values0x00); i += 2 {
 		if actual := SetBit(0x00, uint8(i), 1); actual != values0x00[i] {
 			t.Errorf("TestSetBit() failed: expected 0x%02x, got 0x%02x", values0x00[i], actual)
 		}
@@ -304,7 +302,7 @@ func TestSetBit(t *testing.T) {
 		0x7F,
 	}
 
-	for i := 0; i < len(values0xFF); i+=2 {
+	for i := 0; i < len(values0xFF); i += 2 {
 		if actual := SetBit(0xFF, uint8(i), 0); actual != values0xFF[i] {
 			t.Errorf("TestSetBit() failed: expected 0x%02x, got 0x%02x", values0xFF[i], actual)
 		}
@@ -312,11 +310,11 @@ func TestSetBit(t *testing.T) {
 }
 
 func TestGetBit(t *testing.T) {
-	if set := GetBit(0x0E, 3) /* 00001110 */; set != 1 {
-			t.Error("TestGetBit() failed: third bit of 0x0E should be set.")
+	if set := GetBit(0x0E, 3); /* 00001110 */ set != 1 {
+		t.Error("TestGetBit() failed: third bit of 0x0E should be set.")
 	}
-	if set := GetBit(0x0E, 5) /* 00001110 */; set != 0 {
-			t.Error("TestGetBit() failed: third bit of 0x0E should be unset.")
+	if set := GetBit(0x0E, 5); /* 00001110 */ set != 0 {
+		t.Error("TestGetBit() failed: third bit of 0x0E should be unset.")
 	}
 }
 
@@ -330,7 +328,7 @@ func TestSwap(t *testing.T) {
 		0x1F, 0xF1,
 	}
 
-	for i := 0; i < len(values); i+=2 {
+	for i := 0; i < len(values); i += 2 {
 		if actual := Swap(values[i]); actual != values[i+1] {
 			t.Errorf("TestSwap() failed: expected 0x%02x, got 0x%02x", 0xEF, actual)
 		}

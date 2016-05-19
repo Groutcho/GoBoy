@@ -132,7 +132,7 @@ func xCB_2E_sra() int {
 	SetFlagN(false)
 	SetFlagH(false)
 
-	Set(GetHL(), value)
+	Write(GetHL(), value)
 
 	return 4
 }

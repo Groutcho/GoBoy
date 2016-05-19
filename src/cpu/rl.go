@@ -125,7 +125,7 @@ func xCB_16_rl() int {
 	SetFlagN(false)
 	SetFlagH(false)
 
-	Set(GetHL(), value)
+	Write(GetHL(), value)
 
 	return 4
 }

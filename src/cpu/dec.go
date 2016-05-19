@@ -125,7 +125,7 @@ func x2D_dec() int {
 func x35_dec() int {
 	original := Get(GetHL())
 	value := original - 1
-	Set(GetHL(), value)
+	Write(GetHL(), value)
 
 	hc := IsSubHalfCarry(original, uint8(1))
 

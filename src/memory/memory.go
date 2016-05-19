@@ -79,14 +79,14 @@ func Get16(addr uint16) uint16 {
 	return uint16(uint16(RAM[addr+1])<<8 | uint16(RAM[addr]))
 }
 
-func Set(addr uint16, value byte) {
+func Write(addr uint16, value byte) {
 	if addr == DMA_ADDR {
 		startDMATransfer(uint16(value) * 0x100)
 	}
 	RAM[addr] = value
 }
 
-func Set16(addr uint16, value uint16) {
+func Write16(addr uint16, value uint16) {
 	RAM[addr] = GetLowBits(value)
 	RAM[addr+1] = GetHighBits(value)
 }

@@ -34,8 +34,8 @@ func push(value uint16) {
 	DecSP()
 	DecSP()
 
-	Set(GetSP(), GetHighBits(value))
-	Set(GetSP()+1, GetLowBits(value))
+	Write(GetSP(), GetHighBits(value))
+	Write(GetSP()+1, GetLowBits(value))
 }
 
 // Get the opcode at the current PC, increment PC then return the opcode.
@@ -91,8 +91,8 @@ func Call(addr uint16) {
 	DecSP()
 	DecSP()
 
-	Set(GetSP(), GetLowBits(GetPC()))
-	Set(GetSP()+1, GetHighBits(GetPC()))
+	Write(GetSP(), GetLowBits(GetPC()))
+	Write(GetSP()+1, GetHighBits(GetPC()))
 
 	SetPC(addr)
 }

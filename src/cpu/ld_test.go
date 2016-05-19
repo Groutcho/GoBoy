@@ -111,7 +111,7 @@ func TestLdReferenceHLInstructions(t *testing.T) {
 	SetPC(0x0000)
 
 	SetHL(0x1000)
-	Set(0x1000, 0xFB)
+	Write(0x1000, 0xFB)
 
 	ExecuteNext()
 	if a := GetA(); a != 0xFB {
@@ -160,7 +160,7 @@ func TestLdToReferenceHLInstructions(t *testing.T) {
 	SetPC(0x0000)
 
 	SetHL(0x1000)
-	Set(0x1000, 0xFB)
+	Write(0x1000, 0xFB)
 
 	SetA(0x58)
 	SetB(0x99)
@@ -207,7 +207,7 @@ func TestLdToReferenceHLInstructions(t *testing.T) {
 // ld   HL, SP+%s, where %s is a signed 8bit integer
 func TestF8_ld(t *testing.T) {
 	SetPC(0x0000)
-	Set(0x0000, 0x55)
+	Write(0x0000, 0x55)
 	SetSP(0x0050)
 	xF8_ld()
 
@@ -216,7 +216,7 @@ func TestF8_ld(t *testing.T) {
 	}
 
 	SetPC(0x0000)
-	Set(0x0000, 0x8F) // 0x8F = -0x71 as 2's complement
+	Write(0x0000, 0x8F) // 0x8F = -0x71 as 2's complement
 	SetSP(0x0071)
 	xF8_ld()
 
@@ -225,7 +225,7 @@ func TestF8_ld(t *testing.T) {
 	}
 
 	SetPC(0x0000)
-	Set(0x0000, 0xFF) // 0xFF = -0x01 as 2's complement
+	Write(0x0000, 0xFF) // 0xFF = -0x01 as 2's complement
 	SetSP(0x0001)
 	xF8_ld()
 

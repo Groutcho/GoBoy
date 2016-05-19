@@ -13,7 +13,7 @@ func x01_ld() int {
 
 // ld   (BC), A - [BC]=A
 func x02_ld() int {
-	Set(GetBC(), GetA())
+	Write(GetBC(), GetA())
 
 	return 2
 }
@@ -27,7 +27,7 @@ func x06_ld() int {
 
 // ld   (%2), SP - [%2]=SP
 func x08_ld() int {
-	Set16(FetchOperand16(), GetSP())
+	Write16(FetchOperand16(), GetSP())
 
 	return 3
 }
@@ -55,7 +55,7 @@ func x11_ld() int {
 
 // ld   (DE), A - [DE]=A
 func x12_ld() int {
-	Set(GetDE(), GetA())
+	Write(GetDE(), GetA())
 
 	return 2
 }
@@ -111,7 +111,7 @@ func x31_ld() int {
 
 // ld   (HL), %1 - [HL]=[NN]
 func x36_ld() int {
-	Set(GetHL(), FetchOperand8())
+	Write(GetHL(), FetchOperand8())
 
 	return 3
 }
@@ -461,49 +461,49 @@ func x6F_ld() int {
 
 // ld   (HL), B - [HL]=B
 func x70_ld() int {
-	Set(GetHL(), GetB())
+	Write(GetHL(), GetB())
 
 	return 2
 }
 
 // ld   (HL), C - [HL]=C
 func x71_ld() int {
-	Set(GetHL(), GetC())
+	Write(GetHL(), GetC())
 
 	return 2
 }
 
 // ld   (HL), D - [HL]=D
 func x72_ld() int {
-	Set(GetHL(), GetD())
+	Write(GetHL(), GetD())
 
 	return 2
 }
 
 // ld   (HL), E - [HL]=E
 func x73_ld() int {
-	Set(GetHL(), GetE())
+	Write(GetHL(), GetE())
 
 	return 2
 }
 
 // ld   (HL), H - [HL]=H
 func x74_ld() int {
-	Set(GetHL(), GetH())
+	Write(GetHL(), GetH())
 
 	return 2
 }
 
 // ld   (HL), L - [HL]=L
 func x75_ld() int {
-	Set(GetHL(), GetL())
+	Write(GetHL(), GetL())
 
 	return 2
 }
 
 // ld   (HL), A - [HL]=A
 func x77_ld() int {
-	Set(GetHL(), GetA())
+	Write(GetHL(), GetA())
 
 	return 2
 }
@@ -569,7 +569,7 @@ func xE0_ld() int {
 	offset := int(FetchOperand8())
 	addr := 0xFF00 + uint16(offset)
 	value := GetA()
-	Set(addr, value)
+	Write(addr, value)
 
 	return 3
 }
@@ -579,14 +579,14 @@ func xE2_ld() int {
 	offset := GetC()
 	addr := 0xFF00 + uint16(offset)
 	value := GetA()
-	Set(addr, value)
+	Write(addr, value)
 
 	return 2
 }
 
 // ld   (%2), A - [NN]=A
 func xEA_ld() int {
-	Set(FetchOperand16(), GetA())
+	Write(FetchOperand16(), GetA())
 
 	return 4
 }

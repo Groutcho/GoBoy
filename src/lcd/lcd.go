@@ -166,7 +166,7 @@ func SetBackgroundTile(x, y, index int) {
 		addr = uint16(TILEMAP_1)
 	}
 
-	mem.Set(addr+uint16(y*32+x), uint8(index))
+	mem.Write(addr+uint16(y*32+x), uint8(index))
 }
 
 func SetWindowTile(x, y, index int) {
@@ -175,7 +175,7 @@ func SetWindowTile(x, y, index int) {
 		addr = uint16(TILEMAP_1)
 	}
 
-	mem.Set(addr+uint16(y*32+x), uint8(index))
+	mem.Write(addr+uint16(y*32+x), uint8(index))
 }
 
 // Create a sprite at index x (FFE0 + x), of coordinates x, y,
@@ -402,7 +402,7 @@ func getTileColor(x, y int, bgAddr, tileAddr uint16) int {
 	py := y % 8
 
 	// get the tile address in the tile data table
-	addr := tileAddr + uint16(tIndex)*SIZEOF_TILE
+	addr := tileAddr + (uint16(tIndex)+20)*SIZEOF_TILE
 
 	return getPixel(addr, px, py)
 }
@@ -476,9 +476,6 @@ func redraw() {
 	}
 
 	mem.SetLY(0x00)
-
-	vblank := time.NewTicker(time.Millisecond * 16)
-	defer vblank.Stop()
 
 	for y := 0; y < SCANLINES; y++ {
 		if y < LCD_HEIGHT {

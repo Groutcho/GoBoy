@@ -256,13 +256,13 @@ def parse_ld(instruction):
 
 	dest = None
 	if opA.code == OPERAND16REF:
-		dest = 'Set(FetchOperand16(), '
+		dest = 'Write(FetchOperand16(), '
 	elif opA.code == OPERANDU8:
 		dest = 'int8(FetchOperand8())'
 	elif opA.code in (REG8, REG16):
 		dest = 'Set%s(' % opA.value
 	elif opA.code == REF_REG:
-		dest = 'Set(Get%s(), ' % opA.value
+		dest = 'Write(Get%s(), ' % opA.value
 
 	if dest is None or src is None:
 		return '// parsing error'
@@ -294,7 +294,7 @@ def parse_set(instr):
 		code = indent(dedent("""
 		addr := Get{0}()
 		value := SetBit(Get(addr), {1}, {2})
-		Set(addr, value)""".format(instr.pseudocode[1].value, n_bit, value)), '\t')
+		Write(addr, value)""".format(instr.pseudocode[1].value, n_bit, value)), '\t')
 
 	return code.strip()
 
@@ -344,7 +344,7 @@ def custom_impl_08():
 
 		code = \
 		"""
-		Set16(FetchOperand16(), GetSP())
+		Write16(FetchOperand16(), GetSP())
 		"""
 
 		return code.strip()
@@ -360,7 +360,7 @@ def custom_impl_E0():
 	offset := int(FetchOperand8())
 	addr := 0xFF00 + uint16(offset)
 	value := GetA()
-	Set(addr, value)
+	Write(addr, value)
 	"""
 
 	return code.strip()
@@ -392,7 +392,7 @@ def custom_impl_E2():
 	offset := GetC()
 	addr := 0xFF00 + uint16(offset)
 	value := GetA()
-	Set(addr, value)
+	Write(addr, value)
 	"""
 
 	return code.strip()
@@ -447,7 +447,7 @@ def parse_inc(instr):
 			nibble = "GetHighBits(original)"
 	elif target.code == REF_REG:
 		dest = "Get(Get{}())".format(target.value)
-		assign = "Set(Get{}(), value)".format(target.value)
+		assign = "Write(Get{}(), value)".format(target.value)
 
 	code = pattern.format(dest=dest, sign=sign, assign=assign, width=width,
 		nibble=nibble, n=n, hctype=hctype)
@@ -501,7 +501,7 @@ def parse_rotate(instr):
 		target = "Set%s(value)" % dest.value
 	else:
 		value = "Get(GetHL())"
-		target = "Set(GetHL(), value)"
+		target = "Write(GetHL(), value)"
 
 	if m in ('rlc', 'rl', 'rlca', 'rla'):
 		if m == 'rlc':
@@ -578,7 +578,7 @@ def parse_bitwise(instr):
 		target = "Set%s(value)" % dest.value
 	else:
 		value = "Get(GetHL())"
-		target = "Set(GetHL(), value)"
+		target = "Write(GetHL(), value)"
 
 	if m == 'sra':
 		code = template_sra.format(value=value, target=target)

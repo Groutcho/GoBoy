@@ -48,7 +48,7 @@ func xCB_35_swap() int {
 // swap (HL) - exchange [HL] low/hi-nibble
 func xCB_36_swap() int {
 	addr := GetHL()
-	Set(addr, Swap(Get(addr)))
+	Write(addr, Swap(Get(addr)))
 
 	return 4
 }
@@ -59,4 +59,3 @@ func xCB_37_swap() int {
 
 	return 2
 }
-

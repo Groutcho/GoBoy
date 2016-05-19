@@ -117,7 +117,7 @@ func xCB_26_sla() int {
 	SetFlagN(false)
 	SetFlagH(false)
 
-	Set(GetHL(), value)
+	Write(GetHL(), value)
 
 	return 4
 }

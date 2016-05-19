@@ -11,7 +11,7 @@ func TestGet(t *testing.T) {
 }
 
 func TestSet(t *testing.T) {
-	Set(0x5247, 0x99)
+	Write(0x5247, 0x99)
 
 	if b := Get(0x5247); b != 0x99 {
 		t.Errorf("TestGet() failed: expected 39, got 0x%04x", b)
@@ -40,7 +40,7 @@ func TestDMATransfer(t *testing.T) {
 		RAM[0x100+i] = 0x88
 	}
 
-	Set(0xFF46, 0x01)
+	Write(0xFF46, 0x01)
 
 	for i := 0; i < 40; i++ {
 		if RAM[0xFE00+i] != 0x88 {

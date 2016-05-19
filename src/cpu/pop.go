@@ -4,20 +4,20 @@ import . "memory"
 
 // AF=(SP),  SP=SP+2
 func xF1_pop() int {
-	SetF(Get(GetSP()))
-	IncSP()
-	SetA(Get(GetSP()))
-	IncSP()
+	F = Get(SP)
+	SP++
+	A = Get(SP)
+	SP++
 
 	return 3
 }
 
 // BC=(SP),  SP=SP+2
 func xC1_pop() int {
-	SetC(Get(GetSP()))
-	IncSP()
-	SetB(Get(GetSP()))
-	IncSP()
+	C = Get(SP)
+	SP++
+	B = Get(SP)
+	SP++
 
 	return 3
 }

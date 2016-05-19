@@ -3,7 +3,7 @@ package cpu
 import . "memory"
 
 func x22_ldi() int {
-	Set(GetHL(), GetA())
+	Write(GetHL(), GetA())
 	IncHL()
 
 	return 2
@@ -17,7 +17,7 @@ func x2A_ldi() int {
 }
 
 func x32_ldd() int {
-	Set(GetHL(), GetA())
+	Write(GetHL(), GetA())
 	DecHL()
 
 	return 2

@@ -56,7 +56,7 @@ func xCB_85_res() int {
 func xCB_86_res() int {
 	addr := GetHL()
 	value := SetBit(Get(addr), 0, 0)
-	Set(addr, value)
+	Write(addr, value)
 
 	return 4
 }
@@ -121,7 +121,7 @@ func xCB_8D_res() int {
 func xCB_8E_res() int {
 	addr := GetHL()
 	value := SetBit(Get(addr), 1, 0)
-	Set(addr, value)
+	Write(addr, value)
 
 	return 4
 }
@@ -186,7 +186,7 @@ func xCB_95_res() int {
 func xCB_96_res() int {
 	addr := GetHL()
 	value := SetBit(Get(addr), 2, 0)
-	Set(addr, value)
+	Write(addr, value)
 
 	return 4
 }
@@ -251,7 +251,7 @@ func xCB_9D_res() int {
 func xCB_9E_res() int {
 	addr := GetHL()
 	value := SetBit(Get(addr), 3, 0)
-	Set(addr, value)
+	Write(addr, value)
 
 	return 4
 }
@@ -316,7 +316,7 @@ func xCB_A5_res() int {
 func xCB_A6_res() int {
 	addr := GetHL()
 	value := SetBit(Get(addr), 4, 0)
-	Set(addr, value)
+	Write(addr, value)
 
 	return 4
 }
@@ -381,7 +381,7 @@ func xCB_AD_res() int {
 func xCB_AE_res() int {
 	addr := GetHL()
 	value := SetBit(Get(addr), 5, 0)
-	Set(addr, value)
+	Write(addr, value)
 
 	return 4
 }
@@ -446,7 +446,7 @@ func xCB_B5_res() int {
 func xCB_B6_res() int {
 	addr := GetHL()
 	value := SetBit(Get(addr), 6, 0)
-	Set(addr, value)
+	Write(addr, value)
 
 	return 4
 }
@@ -511,7 +511,7 @@ func xCB_BD_res() int {
 func xCB_BE_res() int {
 	addr := GetHL()
 	value := SetBit(Get(addr), 7, 0)
-	Set(addr, value)
+	Write(addr, value)
 
 	return 4
 }

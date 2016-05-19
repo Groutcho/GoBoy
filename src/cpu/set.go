@@ -56,7 +56,7 @@ func xCB_C5_set() int {
 func xCB_C6_set() int {
 	addr := GetHL()
 	value := SetBit(Get(addr), 0, 1)
-	Set(addr, value)
+	Write(addr, value)
 
 	return 4
 }
@@ -121,7 +121,7 @@ func xCB_CD_set() int {
 func xCB_CE_set() int {
 	addr := GetHL()
 	value := SetBit(Get(addr), 1, 1)
-	Set(addr, value)
+	Write(addr, value)
 
 	return 4
 }
@@ -186,7 +186,7 @@ func xCB_D5_set() int {
 func xCB_D6_set() int {
 	addr := GetHL()
 	value := SetBit(Get(addr), 2, 1)
-	Set(addr, value)
+	Write(addr, value)
 
 	return 4
 }
@@ -251,7 +251,7 @@ func xCB_DD_set() int {
 func xCB_DE_set() int {
 	addr := GetHL()
 	value := SetBit(Get(addr), 3, 1)
-	Set(addr, value)
+	Write(addr, value)
 
 	return 4
 }
@@ -316,7 +316,7 @@ func xCB_E5_set() int {
 func xCB_E6_set() int {
 	addr := GetHL()
 	value := SetBit(Get(addr), 4, 1)
-	Set(addr, value)
+	Write(addr, value)
 
 	return 4
 }
@@ -381,7 +381,7 @@ func xCB_ED_set() int {
 func xCB_EE_set() int {
 	addr := GetHL()
 	value := SetBit(Get(addr), 5, 1)
-	Set(addr, value)
+	Write(addr, value)
 
 	return 4
 }
@@ -446,7 +446,7 @@ func xCB_F5_set() int {
 func xCB_F6_set() int {
 	addr := GetHL()
 	value := SetBit(Get(addr), 6, 1)
-	Set(addr, value)
+	Write(addr, value)
 
 	return 4
 }
@@ -511,7 +511,7 @@ func xCB_FD_set() int {
 func xCB_FE_set() int {
 	addr := GetHL()
 	value := SetBit(Get(addr), 7, 1)
-	Set(addr, value)
+	Write(addr, value)
 
 	return 4
 }
