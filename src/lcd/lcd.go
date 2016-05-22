@@ -402,7 +402,7 @@ func getTileColor(x, y int, bgAddr, tileAddr uint16) int {
 	py := y % 8
 
 	// get the tile address in the tile data table
-	addr := tileAddr + (uint16(tIndex)+20)*SIZEOF_TILE
+	addr := tileAddr + (uint16(tIndex))*SIZEOF_TILE
 
 	return getPixel(addr, px, py)
 }
