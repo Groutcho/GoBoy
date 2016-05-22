@@ -428,6 +428,11 @@ def parse_inc(instr):
 	SetFlags(int(value), F_SET_IF, F_SET_{n}, hc, F_IGNORE, F_{width}bit)
 	"""
 
+	pattern16 = \
+	"""
+	Set{reg}(Get{reg}(){sign}1)
+	"""
+
 	if instr.mnemonic == 'inc':
 		sign = '+'
 		n = 0
@@ -449,8 +454,14 @@ def parse_inc(instr):
 		dest = "Get(Get{}())".format(target.value)
 		assign = "Write(Get{}(), value)".format(target.value)
 
-	code = pattern.format(dest=dest, sign=sign, assign=assign, width=width,
-		nibble=nibble, n=n, hctype=hctype)
+	if target.code == REG16:
+		code = pattern16.format(
+			reg=target.value, sign=sign)
+	else:
+		code = pattern.format(
+			dest=dest, sign=sign, 
+			assign=assign, width=width,
+			nibble=nibble, n=n, hctype=hctype)
 
 	return code.strip()
 
@@ -596,7 +607,6 @@ def parse_cp(instr):
 	left := int(GetA())
 	right := int({right})
 	result := left - right
-	SetA(uint8(result))
 
 	hc := IsSubHalfCarry(uint8(left), uint8(right))
 
@@ -877,7 +887,7 @@ package cpu
 def requirements(mnemonic):
 	imports = []
 
-	if mnemonic in ('add', 'bit', 'rla', 'dec', 'inc', 'ld', 'res',
+	if mnemonic in ('add', 'bit', 'rla', 'ld', 'res',
 		'rl', 'rlc', 'rlca', 'rr', 'rrc', 'rra', 'rrca', 'set', 'sra'):
 		imports.append('import . "common"')
 	if mnemonic in ('add', 'bit', 'adc', 'and', 'dec', 'inc', 'ld', 'swap', 'sub', 'xor',
