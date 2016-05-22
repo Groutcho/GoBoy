@@ -1,10 +1,10 @@
 package cpu
 
 import "testing"
-import . "memory"
 
-func TestC5_push(t* testing.T) {
-	ResetMemory()
+func TestC5_push(t *testing.T) {
+	ResetSystem()
+
 	SetSP(0x0A)
 	SetBC(0x1234)
 
@@ -12,12 +12,11 @@ func TestC5_push(t* testing.T) {
 
 	CheckRegister(t, REG_SP, 0x08)
 	testAddress(t, GetSP(), 0x34)
-	testAddress(t, GetSP() + 1, 0x12)
+	testAddress(t, GetSP()+1, 0x12)
 }
 
-
-func TestF5_push(t* testing.T) {
-	ResetMemory()
+func TestF5_push(t *testing.T) {
+	ResetSystem()
 
 	SetF(0x00)
 	SetFlags(0, F_SET_1, F_SET_1, F_SET_1, F_SET_1, 0)

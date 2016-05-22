@@ -4,9 +4,10 @@ import "testing"
 import . "memory"
 
 func TestC9_ret(t *testing.T) {
-	SetSP(0x0005)
-	Write(0x0005, 0x34)
-	Write(0x0006, 0x12)
+	ResetSystem()
+
+	SP = 0x0005
+	Write16(0x0005, 0x1234)
 
 	xC9_ret()
 
@@ -14,10 +15,10 @@ func TestC9_ret(t *testing.T) {
 }
 
 func TestD8_ret(t *testing.T) {
-	SetSP(0x0005)
-	SetPC(0x0000)
-	Write(0x0005, 0x34)
-	Write(0x0006, 0x12)
+	ResetSystem()
+
+	SP = 0x0005
+	Write16(0x0005, 0x1234)
 
 	SetFlagCy(false)
 	xD8_ret()
@@ -29,21 +30,17 @@ func TestD8_ret(t *testing.T) {
 }
 
 func TestD9_reti(t *testing.T) {
+	ResetSystem()
+
 	SetIME(false)
 
-	SetSP(0x0005)
-	SetPC(0x0000)
-	Write(0x0005, 0x34)
-	Write(0x0006, 0x12)
+	SP = 0x0005
+	Write16(0x0005, 0x1234)
 
-	xD8_ret()
+	xD9_reti()
 	CheckRegister(t, REG_PC, 0x1234)
 
-	if VBlankInterruptEnabled() &&
-		LcdStatInterruptEnabled() &&
-		TimerInterruptEnabled() &&
-		SerialInterruptEnabled() &&
-		JoypadInterruptEnabled() {
-		t.Error("TestD9_reti() failed: All interrupts should be enabled.")
+	if !GetIME() {
+		t.Error("TestD9_reti() failed: IME should be set.")
 	}
 }

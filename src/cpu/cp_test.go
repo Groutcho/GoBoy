@@ -2,7 +2,9 @@ package cpu
 
 import "testing"
 
-func TestCp(t* testing.T) {
+func TestCp(t *testing.T) {
+	ResetSystem()
+
 	SetA(0x80)
 	SetE(0x12)
 	SetF(0x00)

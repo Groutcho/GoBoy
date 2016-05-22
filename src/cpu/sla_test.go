@@ -2,7 +2,9 @@ package cpu
 
 import "testing"
 
-func TestSla(t* testing.T) {
+func TestSla(t *testing.T) {
+	ResetSystem()
+
 	SetE(0x82) // 1000 0010
 	xCB_23_sla()
 	CheckRegister(t, REG_E, 0x4) // 0000 0100

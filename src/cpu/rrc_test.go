@@ -2,7 +2,9 @@ package cpu
 
 import "testing"
 
-func TestRrc(t* testing.T) {
+func TestRrc(t *testing.T) {
+	ResetSystem()
+
 	SetF(0x00)
 	SetB(0x00)
 	xCB_08_rrc()

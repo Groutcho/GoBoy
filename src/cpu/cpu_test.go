@@ -4,6 +4,8 @@ import "testing"
 import . "memory"
 
 func TestFetch(t *testing.T) {
+	ResetSystem()
+
 	arr := make([]byte, 4)
 	arr[0] = 0x00
 	arr[1] = 0x58
@@ -62,6 +64,8 @@ func op3() int {
 }
 
 func TestExecuteNext(t *testing.T) {
+	ResetSystem()
+
 	SetPC(0x0000)
 
 	arr := make([]byte, 4)
@@ -128,6 +132,8 @@ func TestSimpleProgram01(t *testing.T) {
 
 // Test an overflowing increment
 func TestSimpleProgram02(t *testing.T) {
+	ResetSystem()
+
 	program := []byte{
 		0x3C,       // inc A
 		0x10, 0x00, // stop
@@ -158,6 +164,8 @@ func BenchmarkLdRegistersInstructions(b *testing.B) {
 }
 
 func TestInterruptsEnables(t *testing.T) {
+	ResetSystem()
+
 	var vblank bool
 	var timer bool
 	var lcdStat bool
@@ -328,6 +336,8 @@ func TestInterruptsEnables(t *testing.T) {
 }
 
 func TestInterruptsRequests(t *testing.T) {
+	ResetSystem()
+
 	var vblank bool
 	var timer bool
 	var lcdStat bool

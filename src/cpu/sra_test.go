@@ -2,7 +2,9 @@ package cpu
 
 import "testing"
 
-func TestSra(t* testing.T) {
+func TestSra(t *testing.T) {
+	ResetSystem()
+
 	SetB(0x00)
 	xCB_28_sra()
 	CheckRegister(t, REG_B, 0x00)

@@ -4,6 +4,8 @@ import "testing"
 import . "memory"
 
 func Test89_adc(t *testing.T) {
+	ResetSystem()
+
 	SetF(0x00)
 	SetA(0xF0)
 	SetC(0x0F)
@@ -39,6 +41,8 @@ func Test89_adc(t *testing.T) {
 }
 
 func Test8E_adc(t *testing.T) {
+	ResetSystem()
+
 	SetF(0x00)
 	SetA(0x20)
 	SetHL(0x15)
@@ -67,6 +71,8 @@ func Test8E_adc(t *testing.T) {
 }
 
 func TestCE_adc(t *testing.T) {
+	ResetSystem()
+
 	SetF(0x00)
 	SetA(0x20)
 	SetPC(0x0000)

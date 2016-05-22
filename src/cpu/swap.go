@@ -5,42 +5,42 @@ import . "memory"
 
 // swap B - exchange B low/hi-nibble
 func xCB_30_swap() int {
-	B = Swap(GetB())
+	B = Swap(B)
 
 	return 2
 }
 
 // swap C - exchange C low/hi-nibble
 func xCB_31_swap() int {
-	C = Swap(GetC())
+	C = Swap(C)
 
 	return 2
 }
 
 // swap D - exchange D low/hi-nibble
 func xCB_32_swap() int {
-	D = Swap(GetD())
+	D = Swap(D)
 
 	return 2
 }
 
 // swap E - exchange E low/hi-nibble
 func xCB_33_swap() int {
-	E = Swap(GetE())
+	E = Swap(E)
 
 	return 2
 }
 
 // swap H - exchange H low/hi-nibble
 func xCB_34_swap() int {
-	H = Swap(GetH())
+	H = Swap(H)
 
 	return 2
 }
 
 // swap L - exchange L low/hi-nibble
 func xCB_35_swap() int {
-	L = Swap(GetL())
+	L = Swap(L)
 
 	return 2
 }
@@ -55,7 +55,7 @@ func xCB_36_swap() int {
 
 // swap A - exchange A low/hi-nibble
 func xCB_37_swap() int {
-	A = Swap(GetA())
+	A = Swap(A)
 
 	return 2
 }

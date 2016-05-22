@@ -5,7 +5,7 @@ import . "memory"
 
 // AF=(SP),  SP=SP+2
 func TestF1_pop(t *testing.T) {
-	ResetMemory()
+	ResetSystem()
 
 	SetAF(0x0000)
 	SetSP(0x0020)

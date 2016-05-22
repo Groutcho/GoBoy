@@ -9,12 +9,16 @@ func SetIME(value bool) {
 	IME = value
 }
 
-func handleInterrupt(interrupt int) {	
+func GetIME() bool {
+	return IME
+}
+
+func handleInterrupt(interrupt int) {
 	if IME && GetInterruptEnable(uint8(interrupt)) {
 		SetIME(false)
 		SetInterruptRequest(uint8(interrupt), false)
-		push(GetPC())
-		SetPC(GetInterruptHandler(interrupt))
+		push(PC)
+		PC = GetInterruptHandler(interrupt)
 	}
 }
 

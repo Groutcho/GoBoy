@@ -3,7 +3,9 @@ package cpu
 import "testing"
 
 // D = D-1
-func Test15_dec(t* testing.T) {
+func Test15_dec(t *testing.T) {
+	ResetSystem()
+
 	SetD(0x15)
 	x15_dec()
 	CheckRegister(t, REG_D, 0x14)

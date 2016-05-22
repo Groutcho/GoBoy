@@ -3,19 +3,19 @@ package cpu
 import "testing"
 import . "memory"
 
-func TestCD_call(t* testing.T) {
+func TestCD_call(t *testing.T) {
 
 	program := []byte{
-		0x00, // garbage
-		0x00, // garbage
-		0x00, // garbage
-		0x00, // garbage
-		0x00, // garbage
-		0x00, // garbage
-		0x00, // garbage
-		0x00, // garbage
-		0x00, // garbage
-		0x00, // garbage
+		0x00,             // garbage
+		0x00,             // garbage
+		0x00,             // garbage
+		0x00,             // garbage
+		0x00,             // garbage
+		0x00,             // garbage
+		0x00,             // garbage
+		0x00,             // garbage
+		0x00,             // garbage
+		0x00,             // garbage
 		0xCD, 0x15, 0xFF, // call 0xFF15
 		0x00, // garbage <- PC before call
 		0x00, // garbage
@@ -44,19 +44,19 @@ func TestCD_call(t* testing.T) {
 	}
 }
 
-func TestDC_call(t* testing.T) {
+func TestDC_call(t *testing.T) {
 
 	program := []byte{
-		0x00, // garbage
-		0x00, // garbage
-		0x00, // garbage
-		0x00, // garbage
-		0x00, // garbage
-		0x00, // garbage
-		0x00, // garbage
-		0x00, // garbage
-		0x00, // garbage
-		0x00, // garbage
+		0x00,             // garbage
+		0x00,             // garbage
+		0x00,             // garbage
+		0x00,             // garbage
+		0x00,             // garbage
+		0x00,             // garbage
+		0x00,             // garbage
+		0x00,             // garbage
+		0x00,             // garbage
+		0x00,             // garbage
 		0xDC, 0x15, 0xFF, // call 0xFF15
 		0x00, // garbage <- PC before call
 		0x00, // garbage
@@ -95,19 +95,19 @@ func TestDC_call(t* testing.T) {
 	CheckRegister(t, REG_SP, 0x0014)
 }
 
-func TestD4_call(t* testing.T) {
+func TestD4_call(t *testing.T) {
 
 	program := []byte{
-		0x00, // garbage
-		0x00, // garbage
-		0x00, // garbage
-		0x00, // garbage
-		0x00, // garbage
-		0x00, // garbage
-		0x00, // garbage
-		0x00, // garbage
-		0x00, // garbage
-		0x00, // garbage
+		0x00,             // garbage
+		0x00,             // garbage
+		0x00,             // garbage
+		0x00,             // garbage
+		0x00,             // garbage
+		0x00,             // garbage
+		0x00,             // garbage
+		0x00,             // garbage
+		0x00,             // garbage
+		0x00,             // garbage
 		0xD4, 0x15, 0xFF, // call 0xFF15
 		0x00, // garbage <- PC before call
 		0x00, // garbage
@@ -146,19 +146,19 @@ func TestD4_call(t* testing.T) {
 	CheckRegister(t, REG_SP, 0x0014)
 }
 
-func TestC4_call(t* testing.T) {
+func TestC4_call(t *testing.T) {
 
 	program := []byte{
-		0x00, // garbage
-		0x00, // garbage
-		0x00, // garbage
-		0x00, // garbage
-		0x00, // garbage
-		0x00, // garbage
-		0x00, // garbage
-		0x00, // garbage
-		0x00, // garbage
-		0x00, // garbage
+		0x00,             // garbage
+		0x00,             // garbage
+		0x00,             // garbage
+		0x00,             // garbage
+		0x00,             // garbage
+		0x00,             // garbage
+		0x00,             // garbage
+		0x00,             // garbage
+		0x00,             // garbage
+		0x00,             // garbage
 		0xC4, 0x15, 0xFF, // call 0xFF15
 		0x00, // garbage <- PC before call
 		0x00, // garbage
@@ -197,19 +197,19 @@ func TestC4_call(t* testing.T) {
 	CheckRegister(t, REG_SP, 0x0014)
 }
 
-func TestC4CC_call(t* testing.T) {
+func TestC4CC_call(t *testing.T) {
 
 	program := []byte{
-		0x00, // garbage
-		0x00, // garbage
-		0x00, // garbage
-		0x00, // garbage
-		0x00, // garbage
-		0x00, // garbage
-		0x00, // garbage
-		0x00, // garbage
-		0x00, // garbage
-		0x00, // garbage
+		0x00,             // garbage
+		0x00,             // garbage
+		0x00,             // garbage
+		0x00,             // garbage
+		0x00,             // garbage
+		0x00,             // garbage
+		0x00,             // garbage
+		0x00,             // garbage
+		0x00,             // garbage
+		0x00,             // garbage
 		0xCC, 0x15, 0xFF, // call 0xFF15
 		0x00, // garbage <- PC before call
 		0x00, // garbage

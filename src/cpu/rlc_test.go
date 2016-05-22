@@ -2,7 +2,9 @@ package cpu
 
 import "testing"
 
-func TestRlc(t* testing.T) {
+func TestRlc(t *testing.T) {
+	ResetSystem()
+
 	SetF(0x00)
 	SetH(0x00)
 	xCB_04_rlc()

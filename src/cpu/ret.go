@@ -3,13 +3,9 @@ package cpu
 import . "memory"
 
 func ret() {
-	h := Get(GetSP() + 1)
-	l := Get(GetSP())
+	PC = Get16(SP)
 
-	IncSP()
-	IncSP()
-
-	SetPC(uint16(h) << 8 | uint16(l))
+	SP += 2
 }
 
 func xC9_ret() int {

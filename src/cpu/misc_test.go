@@ -2,7 +2,9 @@ package cpu
 
 import "testing"
 
-func Test37_scf(t* testing.T) {
+func Test37_scf(t *testing.T) {
+	ResetSystem()
+
 	SetFlagCy(false)
 	x37_scf()
 
@@ -11,7 +13,9 @@ func Test37_scf(t* testing.T) {
 	}
 }
 
-func Test27_daa(t* testing.T) {
+func Test27_daa(t *testing.T) {
+	ResetSystem()
+
 	SetF(0x00)
 	SetA(0x2A)
 	x27_daa()

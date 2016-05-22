@@ -4,7 +4,8 @@ import "testing"
 import . "memory"
 
 func TestInterrupt(t *testing.T) {
-	ResetMemory()
+	ResetSystem()
+
 	SetPC(0x5555)
 	Write16(0x0060, 0x1234)
 	DisableJoypadInterrupt()

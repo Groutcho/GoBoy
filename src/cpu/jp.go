@@ -6,7 +6,7 @@ func jumpToOperand16(addr uint16) int {
 }
 
 func jumpToOffset(offset int) int {
-	SetPC(uint16(int(GetPC()) + offset))
+	PC = uint16(int(PC) + offset)
 	return 3
 }
 
@@ -16,7 +16,7 @@ func xC3_jp() int {
 }
 
 func xE9_jp() int {
-	SetPC(GetHL())
+	PC = GetHL()
 	return 1
 }
 

@@ -2,7 +2,9 @@ package cpu
 
 import "testing"
 
-func TestSrl(t* testing.T) {
+func TestSrl(t *testing.T) {
+	ResetSystem()
+
 	SetC(0x00)
 	xCB_39_srl()
 	CheckRegister(t, REG_C, 0x00)

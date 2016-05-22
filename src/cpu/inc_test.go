@@ -5,6 +5,8 @@ import . "memory"
 
 // inc  H - H = H+1
 func Test24_inc(t *testing.T) {
+	ResetSystem()
+
 	SetH(0x00)
 	x24_inc()
 
@@ -13,6 +15,8 @@ func Test24_inc(t *testing.T) {
 }
 
 func Test34_inc(t *testing.T) {
+	ResetSystem()
+
 	SetHL(0x0025)
 	Write(0x0025, 0x88)
 	x34_inc()

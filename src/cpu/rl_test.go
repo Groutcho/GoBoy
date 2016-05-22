@@ -2,7 +2,9 @@ package cpu
 
 import "testing"
 
-func TestRl(t* testing.T) {
+func TestRl(t *testing.T) {
+	ResetSystem()
+
 	SetF(0x00)
 	SetL(0x00)
 	xCB_15_rl()

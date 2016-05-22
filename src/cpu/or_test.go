@@ -4,6 +4,8 @@ import "testing"
 import . "memory"
 
 func TestOr(t *testing.T) {
+	ResetSystem()
+
 	SetA(0x0F)
 	SetB(0xF0)
 	xB0_or()
@@ -28,6 +30,8 @@ func TestOr(t *testing.T) {
 }
 
 func TestXor(t *testing.T) {
+	ResetSystem()
+
 	SetA(0x0F)
 	SetB(0xF0)
 	xA8_xor()
@@ -52,6 +56,8 @@ func TestXor(t *testing.T) {
 }
 
 func TestAnd(t *testing.T) {
+	ResetSystem()
+
 	SetA(0x0F)
 	SetB(0xF0)
 	xA0_and()

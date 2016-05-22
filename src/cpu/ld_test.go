@@ -4,6 +4,8 @@ import "testing"
 import . "memory"
 
 func TestLdImmediateInstructions(t *testing.T) {
+	ResetSystem()
+
 	program := []byte{
 		0x3E, 0x25, // ld A 0x25
 		0x06, 0x65, // ld B 0x65
