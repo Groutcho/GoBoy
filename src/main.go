@@ -239,4 +239,5 @@ func main() {
 	lcd.Initialize()
 
 	run()
+	// runTests()
 }
