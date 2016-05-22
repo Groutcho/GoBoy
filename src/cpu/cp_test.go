@@ -1,31 +1,46 @@
 package cpu
 
-import "testing"
+import (
+	"memory"
+	"testing"
+)
 
 func TestCp(t *testing.T) {
 	ResetSystem()
 
-	SetA(0x80)
-	SetE(0x12)
-	SetF(0x00)
+	A = 0x80
+	E = 0x12
+	F = 0x00
 	xBB_cp()
 	testFlags(t, false, true, true, false)
 
-	SetA(0x80)
-	SetL(0x80)
-	SetF(0x00)
+	A = 0x80
+	L = 0x80
+	F = 0x00
 	xBD_cp()
 	testFlags(t, true, true, false, false)
 
-	SetA(0x55)
-	SetL(0x05)
-	SetF(0x00)
+	A = 0x55
+	L = 0x05
+	F = 0x00
 	xBD_cp()
 	testFlags(t, false, true, false, false)
 
-	SetA(0x55)
-	SetL(0xFF)
-	SetF(0x00)
+	A = 0x55
+	L = 0xFF
+	F = 0x00
 	xBD_cp()
 	testFlags(t, false, true, true, true)
+
+	A = 0x23
+	PC = 0
+	memory.Write(0, 0x23)
+	xFE_cp()
+	testFlags(t, true, true, false, false)
+
+	A = 0x23
+	PC = 0
+	memory.Write(0, 0x28)
+	xFE_cp()
+	testFlags(t, true, true, true, false)
 }

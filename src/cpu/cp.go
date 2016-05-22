@@ -8,7 +8,6 @@ func xB8_cp() int {
 	left := int(GetA())
 	right := int(GetB())
 	result := left - right
-	SetA(uint8(result))
 
 	hc := IsSubHalfCarry(uint8(left), uint8(right))
 
@@ -22,7 +21,6 @@ func xB9_cp() int {
 	left := int(GetA())
 	right := int(GetC())
 	result := left - right
-	SetA(uint8(result))
 
 	hc := IsSubHalfCarry(uint8(left), uint8(right))
 
@@ -36,7 +34,6 @@ func xBA_cp() int {
 	left := int(GetA())
 	right := int(GetD())
 	result := left - right
-	SetA(uint8(result))
 
 	hc := IsSubHalfCarry(uint8(left), uint8(right))
 
@@ -50,7 +47,6 @@ func xBB_cp() int {
 	left := int(GetA())
 	right := int(GetE())
 	result := left - right
-	SetA(uint8(result))
 
 	hc := IsSubHalfCarry(uint8(left), uint8(right))
 
@@ -64,7 +60,6 @@ func xBC_cp() int {
 	left := int(GetA())
 	right := int(GetH())
 	result := left - right
-	SetA(uint8(result))
 
 	hc := IsSubHalfCarry(uint8(left), uint8(right))
 
@@ -78,7 +73,6 @@ func xBD_cp() int {
 	left := int(GetA())
 	right := int(GetL())
 	result := left - right
-	SetA(uint8(result))
 
 	hc := IsSubHalfCarry(uint8(left), uint8(right))
 
@@ -92,7 +86,6 @@ func xBE_cp() int {
 	left := int(GetA())
 	right := int(Get(GetHL()))
 	result := left - right
-	SetA(uint8(result))
 
 	hc := IsSubHalfCarry(uint8(left), uint8(right))
 
@@ -106,7 +99,6 @@ func xBF_cp() int {
 	left := int(GetA())
 	right := int(GetA())
 	result := left - right
-	SetA(uint8(result))
 
 	hc := IsSubHalfCarry(uint8(left), uint8(right))
 
@@ -120,7 +112,6 @@ func xFE_cp() int {
 	left := int(GetA())
 	right := int(FetchOperand8())
 	result := left - right
-	SetA(uint8(result))
 
 	hc := IsSubHalfCarry(uint8(left), uint8(right))
 
