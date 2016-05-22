@@ -31,25 +31,24 @@ var (
 )
 
 func push(value uint16) {
-	DecSP()
-	DecSP()
+	SP -= 2
 
-	Write(GetSP(), GetHighBits(value))
-	Write(GetSP()+1, GetLowBits(value))
+	Write(SP, GetHighBits(value))
+	Write(SP+1, GetLowBits(value))
 }
 
 // Get the opcode at the current PC, increment PC then return the opcode.
 // If opcode is an extended opcode, i.e CB XX, return FF + XX after
 // incrementing the PC twice.
 func Fetch() (uint16, int) {
-	opcode := uint16(Get(GetPC()))
+	opcode := uint16(Get(PC))
 	inc := 1
-	IncPC()
+	PC++
 
 	if opcode == 0xCB {
-		inc = 2
-		opcode = 0xFF + uint16(Get(GetPC()))
-		IncPC()
+		inc++
+		opcode = 256 + uint16(Get(PC))
+		PC++
 	}
 
 	return opcode, inc
@@ -58,7 +57,7 @@ func Fetch() (uint16, int) {
 // Get the 8bit word at the address pointed by the program counter
 // and increment the program counter.
 func FetchOperand8() uint8 {
-	operand := Get(GetPC())
+	operand := Get(PC)
 	IncPC()
 	return operand
 }
@@ -66,7 +65,7 @@ func FetchOperand8() uint8 {
 // Get the 8bit signed word at the address pointed by the program counter
 // and increment the program counter.
 func FetchOperand8s() int {
-	operand := Get(GetPC())
+	operand := Get(PC)
 	IncPC()
 	if operand > 128 {
 		return int(operand) - 0x100
@@ -77,9 +76,9 @@ func FetchOperand8s() int {
 // Get the 16bit word at the address pointed by the program counter
 // and increment the program counter twice.
 func FetchOperand16() uint16 {
-	lsb := uint16(Get(GetPC()))
+	lsb := uint16(Get(PC))
 	IncPC()
-	msb := uint16(Get(GetPC()))
+	msb := uint16(Get(PC))
 	IncPC()
 	return (msb << 8) | lsb
 }
@@ -91,8 +90,8 @@ func Call(addr uint16) {
 	DecSP()
 	DecSP()
 
-	Write(GetSP(), GetLowBits(GetPC()))
-	Write(GetSP()+1, GetHighBits(GetPC()))
+	Write(GetSP(), GetLowBits(PC))
+	Write(GetSP()+1, GetHighBits(PC))
 
 	SetPC(addr)
 }
@@ -107,7 +106,7 @@ func DumpRegisters() {
 	fmt.Printf("D: 0x%02X  E: 0x%02X\n", GetD(), GetE())
 	fmt.Printf("H: 0x%02X  L: 0x%02X\n", GetH(), GetL())
 	fmt.Printf("SP: 0x%04X\n", GetSP())
-	fmt.Printf("PC: 0x%04X\n", GetPC())
+	fmt.Printf("PC: 0x%04X\n", PC)
 	fmt.Printf("#instructions: %09d\n", instructionsCount)
 	fmt.Printf("time: %vs\n", elapsed)
 	fmt.Printf("frequency: %fMhz", float64(cycleCount)/elapsed.Seconds()/1000000)
@@ -122,10 +121,10 @@ func SetBreakpoint(addr uint16) {
 // by this instruction, as a multiple of 4, i.e unit cycles and not
 // actual CPU cycles. The minimal amount of cycles is 1.
 func ExecuteNext() int {
-	var opcode = uint16(0)
-	var inc = 0
+	var opcode uint16
+	var inc int
 
-	pc := GetPC()
+	pc := PC
 	for i := 0; i < len(breakpoints); i++ {
 		if pc != 0 && breakpoints[i] == pc {
 			fmt.Printf("breakpoint reached: 0x%04X\n", pc)
@@ -136,7 +135,7 @@ func ExecuteNext() int {
 
 	defer func() {
 		if x := recover(); x != nil {
-			log.Printf("[0x%04X] %02X (%s)", GetPC()-uint16(inc), opcode, x)
+			log.Printf("[0x%04X] %02X (%s)", PC-uint16(inc), opcode, x)
 			log.Printf("Dumping memory...")
 			dump := GetRange(0x0000, 0xFFFF)
 			ioutil.WriteFile("dump.bin", dump, 0644)
@@ -145,7 +144,10 @@ func ExecuteNext() int {
 	}()
 
 	opcode, inc = Fetch()
-	// fmt.Printf("[0x%04X] %02X\n", GetPC()-uint16(inc), opcode)
+	// fmt.Printf("[0x%04X] %02X\n", PC-uint16(inc), opcode)
+
+	// TODO: activate disassembly on demand
+	disasm(opcode, PC, inc)
 
 	if opcode == 0x76 { // halt
 		// TODO

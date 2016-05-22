@@ -32,7 +32,7 @@ func TestFetch(t *testing.T) {
 		t.Errorf("TestFetch(): at second Fetch(), expected PC @ 0x%04x, got 0x%04x", (startingPC + 2), currentPC)
 	}
 
-	if opcode, _ := Fetch(); opcode != 0x197 {
+	if opcode, _ := Fetch(); opcode != 0x198 {
 		t.Errorf("TestFetch(): at last Fetch(), expected extended opcode conversion CB 98 -> 197, got %02x", opcode)
 	}
 

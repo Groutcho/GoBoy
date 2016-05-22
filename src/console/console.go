@@ -41,6 +41,8 @@ func Prompt() {
 			lcd.PrintVideoInformation()
 		case "btm":
 			lcd.PrintBackgroundTileMap()
+		case "dump":
+			cpu.DumpASM()
 		case "brk":
 			addr, err := strconv.ParseInt(args[1], 0, 16)
 			if err != nil {

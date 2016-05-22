@@ -1,7 +1,7 @@
 package cpu
 
 func jumpToOperand16(addr uint16) int {
-	SetPC(addr)
+	PC = addr
 	return 4
 }
 
